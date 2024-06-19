@@ -1,0 +1,21 @@
+TeamCostco
+└── src/
+    └── main/
+        └── java/
+        │   └── com/
+        │       └── teamproject/
+        │           ├── Main.java
+        │           ├── model/
+        │           │   ├── Product.java
+        │           │   └── ...
+        │           ├── view/
+        │           │   ├── ProductForm.java
+        │           │   └── ...
+        │           ├── controller/
+        │           │   ├── ProductController.java
+        │           │   └── ...
+        │           └── dao/
+        │               ├── ProductDAO.java
+        │               └── ...
+        └── resources/
+            └── images/
