@@ -5,13 +5,12 @@ import java.awt.event.ActionListener;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import main.java.com.teamcostco.MainForm;
-import main.java.com.teamcostco.model.AuthManager;
 import main.java.com.teamcostco.model.HomeModel;
+import main.java.com.teamcostco.model.manager.AuthManager;
 import main.java.com.teamcostco.view.panels.HomePanel;
 
 public class HomeController extends PanelController<HomePanel> {

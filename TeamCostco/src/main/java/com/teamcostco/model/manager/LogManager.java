@@ -1,4 +1,4 @@
-package main.java.com.teamcostco.model;
+package main.java.com.teamcostco.model.manager;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

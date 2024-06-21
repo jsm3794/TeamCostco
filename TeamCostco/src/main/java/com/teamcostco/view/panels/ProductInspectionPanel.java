@@ -1,5 +1,7 @@
 package main.java.com.teamcostco.view.panels;
 
-public class ProductInspectionPanel {
+import javax.swing.JPanel;
+
+public class ProductInspectionPanel extends JPanel {
 
 }

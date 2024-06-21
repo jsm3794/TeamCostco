@@ -2,12 +2,9 @@ package main.java.com.teamcostco.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDateTime;
 
 import main.java.com.teamcostco.MainForm;
-import main.java.com.teamcostco.model.AuthManager;
-import main.java.com.teamcostco.model.LogManager;
-import main.java.com.teamcostco.model.MemberModel;
+import main.java.com.teamcostco.model.manager.AuthManager;
 import main.java.com.teamcostco.view.panels.LoginPanel;
 
 public class LoginController extends PanelController<LoginPanel> {

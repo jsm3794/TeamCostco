@@ -1,10 +1,11 @@
-package main.java.com.teamcostco.model;
+package main.java.com.teamcostco.model.manager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import main.java.com.teamcostco.model.MemberModel;
 import main.java.com.teamcostco.model.database.DatabaseUtil;
 
 public class AuthManager {

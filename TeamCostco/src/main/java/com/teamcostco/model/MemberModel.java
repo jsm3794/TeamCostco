@@ -3,7 +3,6 @@ package main.java.com.teamcostco.model;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 public class MemberModel {
 	private String member_id;
@@ -85,7 +84,5 @@ public class MemberModel {
 		return "MemberModel [member_id=" + member_id + ", id=" + id + ", pw=" + pw + ", email=" + email
 				+ ", role_level=" + role_level + ", created_at=" + created_at + ", updated_at=" + updated_at + "]";
 	}
-	
-	
 
 }
