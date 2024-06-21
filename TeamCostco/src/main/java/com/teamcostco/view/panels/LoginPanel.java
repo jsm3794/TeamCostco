@@ -1,79 +1,92 @@
 package main.java.com.teamcostco.view.panels;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
 public class LoginPanel extends JPanel {
-
-    private JTextField usernameField;
+	private static final long serialVersionUID = 1L;
+	
+	private JTextField idField;
     private JPasswordField passwordField;
     private JButton loginButton;
-    private JLabel statusLabel;
 
     public LoginPanel() {
-        // Set layout manager
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
 
-        // Username Label
-        JLabel usernameLabel = new JLabel("Username:");
+        // Panel background color
+        setBackground(new Color(60, 63, 65));
+
+        // Panel preferred size
+        setPreferredSize(new Dimension(480, 640));
+
+        // ID Label
+        JLabel idLabel = new JLabel("ID:");
+        idLabel.setForeground(Color.WHITE);
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(usernameLabel, gbc);
+        gbc.insets = new Insets(10, 10, 5, 10);
+        gbc.anchor = GridBagConstraints.EAST;
+        add(idLabel, gbc);
 
-        // Username Text Field
-        usernameField = new JTextField(15);
+        // ID TextField
+        idField = new JTextField(15);
         gbc.gridx = 1;
         gbc.gridy = 0;
-        add(usernameField, gbc);
+        gbc.insets = new Insets(10, 0, 5, 10);
+        gbc.anchor = GridBagConstraints.WEST;
+        add(idField, gbc);
 
         // Password Label
         JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setForeground(Color.WHITE);
         gbc.gridx = 0;
         gbc.gridy = 1;
+        gbc.insets = new Insets(5, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.EAST;
         add(passwordLabel, gbc);
 
         // Password Field
         passwordField = new JPasswordField(15);
         gbc.gridx = 1;
         gbc.gridy = 1;
+        gbc.insets = new Insets(5, 0, 10, 10);
+        gbc.anchor = GridBagConstraints.WEST;
         add(passwordField, gbc);
 
         // Login Button
         loginButton = new JButton("Login");
+        loginButton.setBackground(new Color(30, 144, 255));
+        loginButton.setForeground(Color.WHITE);
         gbc.gridx = 1;
         gbc.gridy = 2;
+        gbc.insets = new Insets(10, 0, 0, 10);
+        gbc.anchor = GridBagConstraints.CENTER;
         add(loginButton, gbc);
 
-        // Status Label
-        statusLabel = new JLabel();
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        add(statusLabel, gbc);
-
-        // Add action listener to the login button
-        loginButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String username = usernameField.getText();
-                String password = new String(passwordField.getPassword());
-                if (authenticate(username, password)) {
-                    statusLabel.setText("Login successful");
-                } else {
-                    statusLabel.setText("Login failed");
-                }
-            }
-        });
+        // Panel border
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
     }
 
-    private boolean authenticate(String username, String password) {
-        // Placeholder authentication logic
-        // Replace with actual authentication logic as needed
-        return "admin".equals(username) && "password".equals(password);
+    public JTextField getIdField() {
+        return idField;
+    }
+
+    public JPasswordField getPasswordField() {
+        return passwordField;
+    }
+
+    public JButton getLoginButton() {
+        return loginButton;
     }
 }

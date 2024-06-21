@@ -1,45 +1,50 @@
 package main.java.com.teamcostco;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Insets;
 
 import javax.swing.JFrame;
-import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 
 import main.java.com.teamcostco.component.Navigator;
-import main.java.com.teamcostco.view.panels.DefectiveInventoryPanel;
-import main.java.com.teamcostco.view.panels.OrderListPanel;
-import main.java.com.teamcostco.view.panels.ReceivingProcessPanel;
+import main.java.com.teamcostco.controller.HomeController;
+import main.java.com.teamcostco.controller.LoginController;
 
 public class MainForm {
-
-	public static Navigator nav = new Navigator("orderlist");
+	
+	public static Navigator nav = new Navigator("home");
+	
+	public static final int FORM_WIDTH = 480;
+	public static final int FORM_HEIGHT = 640;
 
 	public static void main(String[] args) {
-
+		
 		JFrame frame = new JFrame("팀코스트코");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(480, 640);
-		frame.setLayout(null);
+		frame.setLayout(new BorderLayout());
+
+		// Navigator 설정
+		setupNavigator();
+
+		frame.add(nav, BorderLayout.CENTER);
+		frame.pack(); // 내부 컨텐츠 크기에 맞게 폼 사이즈 조정
+		frame.setMinimumSize(frame.getSize());
 		frame.setLocationRelativeTo(null);
-		
-		{
-			// Navigator 매핑
-			nav.mappingTarget("orderlist", OrderListPanel.class);
-			nav.mappingTarget("receiving", ReceivingProcessPanel.class);
-			nav.mappingTarget("defective", DefectiveInventoryPanel.class);
-
-			// Navigator 사이즈 설정
-			nav.setSize(new Dimension(480, 640));
-
-			// 페이지 이동
-			nav.navigateToHome();
-		}
-
-		frame.add(nav);
 		frame.setVisible(true);
+	}
+	
+	private static void setupNavigator() {
+		
+		// Navigator 컨트롤러 매핑
+		nav.mappingTarget("home", HomeController.class);
+		nav.mappingTarget("login", LoginController.class);
+
+		// Navigator 디자인
+		nav.setPreferredSize(new Dimension(FORM_WIDTH, FORM_HEIGHT));
+		nav.setBorder(new LineBorder(Color.RED, 1));
+
+		// 기본 페이지로 이동
+		nav.navigateTo("home", false);
 	}
 }
