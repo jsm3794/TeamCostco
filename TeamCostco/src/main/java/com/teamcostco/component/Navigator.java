@@ -3,6 +3,7 @@ package main.java.com.teamcostco.component;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
@@ -77,17 +78,27 @@ public class Navigator extends JPanel {
 	 * 주어진 경로에 해당하는 패널 인스턴스를 반환하는 메서드.
 	 * 
 	 * @param route 네비게이션 경로를 나타내는 문자열.
+	 * @param params 추가로 전달할 파라미터들
 	 * @return 주어진 경로에 매핑된 패널 클래스의 새 인스턴스. 매핑된 패널 클래스가 없거나 인스턴스를 생성할 수 없는 경우 null을
 	 *         반환합니다.
 	 */
-	private JPanel getPanelInstance(String route) {
+	private JPanel getPanelInstance(String route, Object... params) {
 		Class<? extends PanelController<?>> controller = mappings.get(route);
 		if (controller == null) {
 			return null;
 		}
 
 		try {
-			return controller.getDeclaredConstructor().newInstance().getPanel();
+			if (params == null || params.length == 0) {
+				return controller.getDeclaredConstructor().newInstance().getPanel();
+			} else {
+				for (Constructor<?> constructor : controller.getDeclaredConstructors()) {
+					if (constructor.getParameterCount() == params.length) {
+						return ((PanelController<?>) constructor.newInstance(params)).getPanel();
+					}
+				}
+				throw new NoSuchMethodException("No matching constructor found");
+			}
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException
 				| NoSuchMethodException e) {
 			e.printStackTrace();
@@ -100,25 +111,24 @@ public class Navigator extends JPanel {
 	 * 
 	 * @param route     네비게이션할 경로를 나타내는 문자열.
 	 * @param useTopNav 최상단 네비게이션을 사용할지 여부를 나타내는 boolean 값. true이면 최상단 네비게이션을 사용합니다.
+	 * @param params    추가로 전달할 파라미터들
 	 */
-	public void navigateTo(String route, boolean useTopNav) {
+	public void navigateTo(String route, boolean useTopNav, Object... params) {
 		if (!panelStack.isEmpty()) {
 			pop();
 		}
-		push(route, useTopNav);
+		push(route, useTopNav, params);
 		updateView();
 	}
 
 	// 최상단 패널을 제거합니다.
 	public void pop() {
-
 		if (!panelStack.isEmpty()) {
 			JPanel panel = panelStack.pop();
 			panel.removeAll();
 			panel = null;
 			updateView();
 		}
-
 	}
 
 	/**
@@ -126,10 +136,10 @@ public class Navigator extends JPanel {
 	 * 
 	 * @param route     네비게이션할 경로를 나타내는 문자열
 	 * @param useTopNav 최상단 네비게이션을 사용할지 여부를 나타내는 boolean 값
+	 * @param params    추가로 전달할 파라미터들
 	 */
-	public void push(String route, boolean useTopNav) {
-
-		JPanel panel = getPanelInstance(route);
+	public void push(String route, boolean useTopNav, Object... params) {
+		JPanel panel = getPanelInstance(route, params);
 
 		if (useTopNav && panel != null) {
 			topNav = new TopNavigator(panel.toString());
@@ -175,7 +185,6 @@ public class Navigator extends JPanel {
 
 	// 최상단 패널을 다시 화면에 뿌려줍니다.
 	private void updateView() {
-
 		if (!panelStack.isEmpty() && getCanUpdate()) {
 			JPanel view = panelStack.peek();
 			this.removeAll();
