@@ -11,10 +11,12 @@ import main.java.com.teamcostco.MainForm;
 import main.java.com.teamcostco.model.HomeModel;
 import main.java.com.teamcostco.model.manager.AuthManager;
 import main.java.com.teamcostco.view.panels.HomeTestPanel;
+import main.java.com.teamcostco.view.panels.NewHome;
 
-public class HomeTestController extends PanelController<HomeTestPanel> {
+public class HomeTestController extends PanelController<NewHome> {
 	
 	private Timer timer;
+	
 	
 	public HomeTestController() {
 		
