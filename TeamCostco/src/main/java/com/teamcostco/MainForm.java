@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 
 import main.java.com.teamcostco.component.Navigator;
+import main.java.com.teamcostco.controller.HomeController;
 import main.java.com.teamcostco.controller.HomeTestController;
 import main.java.com.teamcostco.controller.LoginTestController;
 import main.java.com.teamcostco.controller.SignTestController;
@@ -49,6 +50,6 @@ public class MainForm {
 		//nav.setBorder(new LineBorder(Color.RED, 1));
 
 		// 기본 페이지로 이동
-		nav.navigateTo("home", false);
+		nav.push("home", false);
 	}
 }
