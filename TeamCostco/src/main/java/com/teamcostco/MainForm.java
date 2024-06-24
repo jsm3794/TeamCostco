@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 
 import main.java.com.teamcostco.component.Navigator;
+import main.java.com.teamcostco.controller.HomeController;
 import main.java.com.teamcostco.controller.HomeTestController;
 import main.java.com.teamcostco.controller.LoginTestController;
 import main.java.com.teamcostco.controller.OrderDetailController;
