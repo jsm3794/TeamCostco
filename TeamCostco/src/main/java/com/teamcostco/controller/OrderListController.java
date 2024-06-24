@@ -31,8 +31,8 @@ import main.java.com.teamcostco.view.panels.OrderListPanel;
 
 public class OrderListController extends PanelController<OrderListPanel> {
 
-	private static final String DB_URL = "jdbc:oracle:thin:@127.0.0.1:1521:XE"; // 데이터베이스 URL
-	private static final String DB_USER = "hr"; // 데이터베이스 사용자 이름
+	private static final String DB_URL = "jdbc:oracle:thin:@3.34.139.200:1521:xe"; // 데이터베이스 URL
+	private static final String DB_USER = "TeamCostco"; // 데이터베이스 사용자 이름
 	private static final String DB_PASSWORD = "1234"; // 데이터베이스 비밀번호
 
 	public OrderListController() {
@@ -114,7 +114,7 @@ public class OrderListController extends PanelController<OrderListPanel> {
 		List<OrderModel> filteredData = new ArrayList<>();
 
 		try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-			String sql = "SELECT * FROM Order_request WHERE 1=1";
+			String sql = "SELECT * FROM orderrequest WHERE 1=1";
 			if (startDate != null) {
 				sql += " AND order_date >= ?";
 			}
