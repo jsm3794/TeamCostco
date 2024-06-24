@@ -27,13 +27,10 @@ import javax.swing.JPanel;
 
 import main.java.com.teamcostco.MainForm;
 import main.java.com.teamcostco.model.OrderModel;
+import main.java.com.teamcostco.model.database.DatabaseUtil;
 import main.java.com.teamcostco.view.panels.OrderListPanel;
 
 public class OrderListController extends PanelController<OrderListPanel> {
-
-	private static final String DB_URL = "jdbc:oracle:thin:@3.34.139.200:1521:xe"; // 데이터베이스 URL
-	private static final String DB_USER = "TeamCostco"; // 데이터베이스 사용자 이름
-	private static final String DB_PASSWORD = "1234"; // 데이터베이스 비밀번호
 
 	public OrderListController() {
 		initControl();
@@ -112,22 +109,22 @@ public class OrderListController extends PanelController<OrderListPanel> {
 		LocalDate endDate = parseDate(view.endDateField.getText());
 
 		List<OrderModel> filteredData = new ArrayList<>();
-
-		try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+		
+		try (Connection conn = DatabaseUtil.getConnection()) {
 			String sql = "SELECT * FROM orderrequest WHERE 1=1";
 			if (startDate != null) {
-				sql += " AND order_date >= ?";
+				sql += " AND request_date >= ?";
 			}
 			if (endDate != null) {
-				sql += " AND order_date <= ?";
+				sql += " AND request_date <= ?";
 			}
 			if (!view.itemNumberField.getText().trim().isEmpty()) {
 				// 부분 일치 검색을 위해 % 기호 추가
-				sql += " AND item_number LIKE ?";
+				sql += " AND product_id LIKE ?";
 			}
 			if (!view.supplierField.getText().trim().isEmpty()) {
 				// 부분 일치 검색을 위해 % 기호 추가
-				sql += " AND client LIKE ?";
+				sql += " AND client_name LIKE ?";
 			}
 
 			// PreparedStatement 설정 부분에서 문자열 앞뒤로 % 기호 추가
@@ -148,16 +145,17 @@ public class OrderListController extends PanelController<OrderListPanel> {
 					pstmt.setString(paramIndex++, "%" + view.supplierField.getText().trim() + "%");
 				}
 				// 나머지 코드는 동일하게 유지
-
+				
 				try (ResultSet rs = pstmt.executeQuery()) {
 					while (rs.next()) {
+						System.out.println("sdd");
 						filteredData.add(new OrderModel(rs));
 					}
 
 				}
 			}
 		} catch (SQLException e) {
-			System.out.println("연결안됨");
+			e.printStackTrace();
 		}
 
 		for (OrderModel data : filteredData) {

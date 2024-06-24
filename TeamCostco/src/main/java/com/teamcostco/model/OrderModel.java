@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class OrderModel {
 
 	private String client; // 거래처
-	private int item_number; // 품번
+	private String item_number; // 품번
 	private String product_name; // 품명
 	private int order_quantity; // 발주수량
 	private int quantity_of_wh; // 입고수량
@@ -16,13 +16,13 @@ public class OrderModel {
 
 	public OrderModel(ResultSet rs) throws SQLException {
 
-		this.client = rs.getString("client");
-		this.item_number = rs.getInt("item_number");
+		this.client = rs.getString("client_name");
+		this.item_number = rs.getString("product_id");
 		this.product_name = rs.getString("product_name");
-		this.order_quantity = rs.getInt("order_quantity");
+		this.order_quantity = rs.getInt("order_num");
 		this.quantity_of_wh = rs.getInt("quantity_of_wh");
 		this.remaining_capacity = rs.getInt("remaining_capacity");
-		this.order_date = rs.getDate("order_date");
+		this.order_date = rs.getDate("request_date");
 	}
 
 	public String getClient() {
@@ -33,11 +33,11 @@ public class OrderModel {
 		this.client = client;
 	}
 
-	public int getItem_number() {
+	public String getItem_number() {
 		return item_number;
 	}
 
-	public void setItem_number(int item_number) {
+	public void setItem_number(String item_number) {
 		this.item_number = item_number;
 	}
 
@@ -83,9 +83,11 @@ public class OrderModel {
 
 	@Override
 	public String toString() {
-		return "고객=" + client + "\n상품번호=" + item_number + "\n제품명=" + product_name + "\n주문수량=" + order_quantity
-				+ "\n창고수량=" + quantity_of_wh + "\n남은용량=" + remaining_capacity + "\n주문일자=" + order_date;
-
+		return "거래처=" + client + "\n 발주번호=" + item_number + "\n 상품명=" + product_name
+				+ "\n 발주수량=" + order_quantity + "\n 창고잔량=" + quantity_of_wh + "\n 입고수량="
+				+ remaining_capacity + "\n 발주일자=" + order_date;
 	}
+
+	
 
 }
