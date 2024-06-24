@@ -15,14 +15,14 @@ public class MemberModel {
 	private int membership_level;
 	
 	public MemberModel(ResultSet rs) throws SQLException {
-		this.member_id = rs.getString("member_id");
+		this.member_id = rs.getString("employee_id");
 		this.id = rs.getString("login_id");
 		this.pw = rs.getString("login_pw");
-		this.email = rs.getString("member_email");
-		this.phone_number = rs.getString("member_phone_number");
+		this.email = rs.getString("employee_email");
+		this.phone_number = rs.getString("employee_phone_number");
 		this.create_date = rs.getTimestamp("create_date");
-		this.member_point = rs.getInt("member_point");
-		this.membership_level = rs.getInt("membership_level");
+		//this.member_point = rs.getInt("member_point");
+		//this.membership_level = rs.getInt("membership_level");
 	}
 
 	

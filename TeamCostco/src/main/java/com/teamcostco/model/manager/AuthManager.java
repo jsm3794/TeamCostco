@@ -32,7 +32,7 @@ public class AuthManager {
 
 		try {
 			conn = DatabaseUtil.getConnection();
-			String sql = "SELECT * FROM members WHERE login_id = ? AND login_pw = ?";
+			String sql = "SELECT * FROM employees WHERE login_id = ? AND login_pw = ?";
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, id);
 			ps.setString(2, pw);

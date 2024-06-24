@@ -39,8 +39,8 @@ public class SignTestController extends PanelController<SignPanelTest>{
                 }
                 
                 else {
-                    String sql = "INSERT INTO members(member_id, login_id, login_pw, member_email, member_phone_number)"
-                    		+ " VALUES(member_seq.nextval, ?, ?, ?, ?)";
+                    String sql = "INSERT INTO employees(employee_id, login_id, login_pw, employee_email, employee_phone_number)"
+                    		+ " VALUES(employee_seq.nextval, ?, ?, ?, ?)";
                     try (
                         Connection con = connector.getConnection();
                         PreparedStatement pstmt = con.prepareStatement(sql);
