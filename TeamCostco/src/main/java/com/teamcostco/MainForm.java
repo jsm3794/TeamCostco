@@ -8,19 +8,19 @@ import javax.swing.JFrame;
 import main.java.com.teamcostco.component.Navigator;
 import main.java.com.teamcostco.controller.HomeTestController;
 import main.java.com.teamcostco.controller.LoginTestController;
+import main.java.com.teamcostco.controller.OrderDetailController;
+import main.java.com.teamcostco.controller.OrderListController;
 import main.java.com.teamcostco.controller.SignTestController;
 
-
-
 public class MainForm {
-	
+
 	public static Navigator nav = new Navigator("home");
-	
+
 	public static final int FORM_WIDTH = 480;
 	public static final int FORM_HEIGHT = 640;
 
 	public static void main(String[] args) {
-		
+
 		JFrame frame = new JFrame("팀코스트코");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
@@ -34,21 +34,21 @@ public class MainForm {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
-	
+
 	private static void setupNavigator() {
-		
+
 		// Navigator 컨트롤러 매핑
 		nav.mappingTarget("home", HomeTestController.class);
 		nav.mappingTarget("login", LoginTestController.class);
 		nav.mappingTarget("sign", SignTestController.class);
-
-		
+		nav.mappingTarget("orderlist", OrderListController.class);
+		nav.mappingTarget("orderdetail", OrderDetailController.class);
 
 		// Navigator 디자인
 		nav.setPreferredSize(new Dimension(FORM_WIDTH, FORM_HEIGHT));
-		//nav.setBorder(new LineBorder(Color.RED, 1));
+		// nav.setBorder(new LineBorder(Color.RED, 1));
 
 		// 기본 페이지로 이동
-		nav.navigateTo("home", false);
+		nav.navigateTo("orderlist", false);
 	}
 }
