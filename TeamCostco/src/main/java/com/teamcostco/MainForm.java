@@ -1,15 +1,16 @@
 package main.java.com.teamcostco;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
-import javax.swing.border.LineBorder;
 
 import main.java.com.teamcostco.component.Navigator;
-import main.java.com.teamcostco.controller.HomeController;
-import main.java.com.teamcostco.controller.LoginController;
+import main.java.com.teamcostco.controller.HomeTestController;
+import main.java.com.teamcostco.controller.LoginTestController;
+import main.java.com.teamcostco.controller.SignTestController;
+
+
 
 public class MainForm {
 	
@@ -37,12 +38,15 @@ public class MainForm {
 	private static void setupNavigator() {
 		
 		// Navigator 컨트롤러 매핑
-		nav.mappingTarget("home", HomeController.class);
-		nav.mappingTarget("login", LoginController.class);
+		nav.mappingTarget("home", HomeTestController.class);
+		nav.mappingTarget("login", LoginTestController.class);
+		nav.mappingTarget("sign", SignTestController.class);
+
+		
 
 		// Navigator 디자인
 		nav.setPreferredSize(new Dimension(FORM_WIDTH, FORM_HEIGHT));
-		nav.setBorder(new LineBorder(Color.RED, 1));
+		//nav.setBorder(new LineBorder(Color.RED, 1));
 
 		// 기본 페이지로 이동
 		nav.navigateTo("home", false);
