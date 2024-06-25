@@ -82,29 +82,33 @@ public class Navigator extends JPanel {
 	 * @return 주어진 경로에 매핑된 패널 클래스의 새 인스턴스. 매핑된 패널 클래스가 없거나 인스턴스를 생성할 수 없는 경우 null을
 	 *         반환합니다.
 	 */
-	private JPanel getPanelInstance(String route, Object... params) {
-		Class<? extends PanelController<?>> controller = mappings.get(route);
-		if (controller == null) {
-			return null;
-		}
+	private PanelControllerPair getPanelInstance(String route, Object... params) {
+	    Class<? extends PanelController<?>> controllerClass = mappings.get(route);
+	    if (controllerClass == null) {
+	        return null;
+	    }
 
-		try {
-			if (params == null || params.length == 0) {
-				return controller.getDeclaredConstructor().newInstance().getPanel();
-			} else {
-				for (Constructor<?> constructor : controller.getDeclaredConstructors()) {
-					if (constructor.getParameterCount() == params.length) {
-						return ((PanelController<?>) constructor.newInstance(params)).getPanel();
-					}
-				}
-				throw new NoSuchMethodException("No matching constructor found");
-			}
-		} catch (InstantiationException | IllegalAccessException | InvocationTargetException
-				| NoSuchMethodException e) {
-			e.printStackTrace();
-			return null;
-		}
+	    try {
+	        PanelController<?> controller;
+	        if (params == null || params.length == 0) {
+	            controller = controllerClass.getDeclaredConstructor().newInstance();
+	        } else {
+	            for (Constructor<?> constructor : controllerClass.getDeclaredConstructors()) {
+	                if (constructor.getParameterCount() == params.length) {
+	                    controller = (PanelController<?>) constructor.newInstance(params);
+	                    break;
+	                }
+	            }
+	            throw new NoSuchMethodException("No matching constructor found");
+	        }
+	        JPanel panel = controller.getPanel();
+	        return new PanelControllerPair(panel, controller);
+	    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+	        e.printStackTrace();
+	        return null;
+	    }
 	}
+
 
 	/**
 	 * 주어진 경로로 네비게이션하는 메서드.
@@ -139,34 +143,41 @@ public class Navigator extends JPanel {
 	 * @param params    추가로 전달할 파라미터들
 	 */
 	public void push(String route, boolean useTopNav, Object... params) {
-		JPanel panel = getPanelInstance(route, params);
+	    PanelControllerPair pair = getPanelInstance(route, params);
+	    if (pair == null) {
+	        return;
+	    }
 
-		if (useTopNav && panel != null) {
-			topNav = new TopNavigator(panel.toString());
-			topNav.setClickListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					SwingUtilities.invokeLater(() -> {
-						pop();
-						if (!panelStack.isEmpty()) {
-							updateView();
-						} else {
-							navigateToHome();
-						}
-					});
-				}
-			});
-			myPanel = addTopNav(panel, topNav);
-		} else {
-			myPanel = panel;
-		}
+	    JPanel panel = pair.getPanel();
+	    Object controller = pair.getController();
 
-		if (myPanel != null) {
-			panelStack.push(myPanel);
-		}
+	    if (useTopNav && panel != null) {
+	        topNav = new TopNavigator(controller.toString());
+	        topNav.setClickListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                SwingUtilities.invokeLater(() -> {
+	                    pop();
+	                    if (!panelStack.isEmpty()) {
+	                        updateView();
+	                    } else {
+	                        navigateToHome();
+	                    }
+	                });
+	            }
+	        });
+	        myPanel = addTopNav(panel, topNav);
+	    } else {
+	        myPanel = panel;
+	    }
 
-		updateView();
+	    if (myPanel != null) {
+	        panelStack.push(myPanel);
+	    }
+
+	    updateView();
 	}
+
 
 	/**
 	 * 주어진 패널에 최상단 네비게이션 패널을 추가하는 메서드.
@@ -193,4 +204,23 @@ public class Navigator extends JPanel {
 			this.repaint();
 		}
 	}
+}
+
+
+class PanelControllerPair {
+    private JPanel panel;
+    private Object controller; // 적절한 컨트롤러 타입으로 변경하세요.
+
+    public PanelControllerPair(JPanel panel, Object controller) {
+        this.panel = panel;
+        this.controller = controller;
+    }
+
+    public JPanel getPanel() {
+        return panel;
+    }
+
+    public Object getController() {
+        return controller;
+    }
 }
