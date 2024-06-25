@@ -1,26 +1,27 @@
-package main.java.com.teamcostco.view.panels.textfields;
+package main.java.com.teamcostco.view.textfields;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.RenderingHints;
 
-import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
-public class JPlaceholderPasswordField extends JPasswordField {
+public class JPlaceholderTextField extends JTextField {
 
 	private String ph;
 
-	public JPlaceholderPasswordField(String ph) {
+	public JPlaceholderTextField(String ph) {
 		this.ph = ph;
 		setPreferredSize(new Dimension(100, 40));
 		setMargin(new Insets(5, 5, 5, 5));
 	}
 
-	public JPlaceholderPasswordField() {
+	public JPlaceholderTextField() {
 		this(null);
 	}
 
@@ -29,7 +30,7 @@ public class JPlaceholderPasswordField extends JPasswordField {
 	 */
 	@Override
 	public String getText() {
-		String text = new String(super.getPassword());
+		String text = super.getText();
 
 		if (text.trim().length() == 0 && ph != null) {
 			text = ph;
@@ -42,7 +43,7 @@ public class JPlaceholderPasswordField extends JPasswordField {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		if (super.getPassword().length > 0 || ph == null) {
+		if (super.getText().length() > 0 || ph == null) {
 			return;
 		}
 
