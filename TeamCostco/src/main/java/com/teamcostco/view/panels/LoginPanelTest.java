@@ -59,7 +59,7 @@ public class LoginPanelTest extends JPanel {
 		JPanel image_panel = new JPanel();
 		image_panel.setBounds(12, 58, 456, 154);
 		ImageIcon imageIcon = new ImageIcon(
-				"C:\\aiautomationkdw\\repositories\\JavaStudy\\JavaStudy\\src\\project\\123.png"); // 이미지 경로 설정
+				LoginPanelTest.class.getResource("/main/resources/logo.png")); // 이미지 경로 설정
 		JLabel imageLabel = new JLabel(imageIcon);
 		image_panel.add(imageLabel);
 		add(image_panel);

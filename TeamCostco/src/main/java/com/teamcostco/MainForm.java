@@ -50,6 +50,6 @@ public class MainForm {
 		// nav.setBorder(new LineBorder(Color.RED, 1));
 
 		// 기본 페이지로 이동
-		nav.navigateTo("orderlist", false);
+		nav.navigateTo("home", false);
 	}
 }
