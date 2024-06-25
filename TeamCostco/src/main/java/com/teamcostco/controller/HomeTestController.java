@@ -31,6 +31,7 @@ public class HomeTestController extends PanelController<NewHome> {
 				Inventorymodification();
 				StockAccumulation();
 				ReceivingProcess();
+				ProductRegistration();
 			} else {
 				MainForm.nav.navigateTo("login", false);
 			}
@@ -76,7 +77,7 @@ public class HomeTestController extends PanelController<NewHome> {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainForm.nav.push("sign", true);
+				MainForm.nav.push("order", true);
 			}
 		});
 	}
@@ -121,6 +122,16 @@ public class HomeTestController extends PanelController<NewHome> {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				MainForm.nav.push("sign", true);
+			}
+		});
+	}
+	
+	public void ProductRegistration() {
+		view.getProductRegistration().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainForm.nav.push("sign", true);		
 			}
 		});
 	}

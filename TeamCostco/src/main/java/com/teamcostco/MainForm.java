@@ -9,6 +9,8 @@ import main.java.com.teamcostco.component.Navigator;
 import main.java.com.teamcostco.controller.HomeController;
 import main.java.com.teamcostco.controller.HomeTestController;
 import main.java.com.teamcostco.controller.LoginTestController;
+import main.java.com.teamcostco.controller.OrderDetailController;
+import main.java.com.teamcostco.controller.OrderListController;
 import main.java.com.teamcostco.controller.SignTestController;
 
 
@@ -42,6 +44,8 @@ public class MainForm {
 		nav.mappingTarget("home", HomeTestController.class);
 		nav.mappingTarget("login", LoginTestController.class);
 		nav.mappingTarget("sign", SignTestController.class);
+		nav.mappingTarget("order", OrderListController.class);
+		nav.mappingTarget("orderdetail", OrderDetailController.class);
 
 		
 

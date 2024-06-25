@@ -5,17 +5,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import main.java.com.teamcostco.model.EmployeeModel;
 import main.java.com.teamcostco.model.MemberModel;
 import main.java.com.teamcostco.model.database.DatabaseUtil;
 
 public class AuthManager {
 	private static AuthManager instance;
 	private boolean isLoggedIn = false;
-	private MemberModel memberModel;
+	private EmployeeModel employeeModel;
 
 	private AuthManager() {
 		this.isLoggedIn = false;
-		this.memberModel = null;
+		this.employeeModel = null;
 	}
 
 	public static synchronized AuthManager getInstance() {
@@ -40,7 +41,7 @@ public class AuthManager {
 
 			if (rs.next()) {
 				this.isLoggedIn = true;
-				memberModel = new MemberModel(rs);
+				employeeModel = new EmployeeModel(rs);
 				return true;
 			} else {
 				return false;
@@ -55,14 +56,14 @@ public class AuthManager {
 
 	public void logout() {
 		this.isLoggedIn = false;
-		this.memberModel = null;
+		this.employeeModel = null;
 	}
 
 	public boolean isLoggedIn() {
 		return isLoggedIn;
 	}
 
-	public MemberModel getCurrentUserModel() {
-		return memberModel;
+	public EmployeeModel getCurrentUserModel() {
+		return employeeModel;
 	}
 }
