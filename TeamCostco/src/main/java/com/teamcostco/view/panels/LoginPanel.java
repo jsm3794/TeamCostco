@@ -2,119 +2,91 @@ package main.java.com.teamcostco.view.panels;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
-import javax.swing.ImageIcon;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
-import main.java.com.teamcostco.view.textfields.JPlaceholderPasswordField;
-import main.java.com.teamcostco.view.textfields.JPlaceholderTextField;
-import main.utils.Constants;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
 public class LoginPanel extends JPanel {
-
 	private static final long serialVersionUID = 1L;
-	private static final Dimension PANEL_SIZE = new Dimension(480, 640);
+	
+	private JTextField idField;
+    private JPasswordField passwordField;
+    private JButton loginButton;
 
-	private JPlaceholderTextField idField;
-	private JPlaceholderPasswordField passwordField;
-	private JButton loginButton;
-	private JButton signButton;
-	private JPanel imagePanel;
-	private JLabel imageLabel;
-	private JLabel lblPdaLogin;
+    public LoginPanel() {
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
 
-	/**
-	 * Create the panel.
-	 */
-	public LoginPanel() {
-		setBackground(Color.WHITE);
-		initializeComponents();
-		layoutComponents();
-	}
+        // Panel background color
+        setBackground(new Color(60, 63, 65));
 
-	private void initializeComponents() {
-		setPreferredSize(PANEL_SIZE);
-		setLayout(null);
+        // Panel preferred size
+        setPreferredSize(new Dimension(480, 640));
 
-		idField = new JPlaceholderTextField("아이디");
-		idField.setBounds(12, 298, 456, 40);
+        // ID Label
+        JLabel idLabel = new JLabel("ID:");
+        idLabel.setForeground(Color.WHITE);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(10, 10, 5, 10);
+        gbc.anchor = GridBagConstraints.EAST;
+        add(idLabel, gbc);
 
-		loginButton = new JButton("로그인");
-		loginButton.setForeground(Constants.BUTTON_FOREGROUND_COLOR);
-		loginButton.setBackground(Constants.BUTTON_BACKGROUND_COLOR);
-		loginButton.setBounds(12, 398, 456, 40); // 크기 설정 추가
+        // ID TextField
+        idField = new JTextField(15);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(10, 0, 5, 10);
+        gbc.anchor = GridBagConstraints.WEST;
+        add(idField, gbc);
 
-		passwordField = new JPlaceholderPasswordField("비밀번호");
-		passwordField.setBounds(12, 348, 456, 40); // 크기 설정 추가
+        // Password Label
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setForeground(Color.WHITE);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.insets = new Insets(5, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.EAST;
+        add(passwordLabel, gbc);
 
-		imagePanel = new JPanel();
-		imagePanel.setBounds(12, 10, 456, 154);
-		imagePanel.setBackground(null);
-		ImageIcon imageIcon = new ImageIcon(LoginPanel.class.getResource("/main/resources/logo.png"));
-		imageLabel = new JLabel(imageIcon);
-		imagePanel.add(imageLabel);
+        // Password Field
+        passwordField = new JPasswordField(15);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.insets = new Insets(5, 0, 10, 10);
+        gbc.anchor = GridBagConstraints.WEST;
+        add(passwordField, gbc);
 
-		signButton = new JButton("회원가입");
-		signButton.setForeground(Constants.BUTTON_FOREGROUND_COLOR);
-		signButton.setBackground(Constants.BUTTON_BACKGROUND_COLOR);
-		signButton.setBounds(12, 448, 456, 40);
-	}
+        // Login Button
+        loginButton = new JButton("Login");
+        loginButton.setBackground(new Color(30, 144, 255));
+        loginButton.setForeground(Color.WHITE);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.insets = new Insets(10, 0, 0, 10);
+        gbc.anchor = GridBagConstraints.CENTER;
+        add(loginButton, gbc);
 
-	private void layoutComponents() {
-		add(idField);
-		add(loginButton);
-		add(passwordField);
-		add(imagePanel);
-		add(signButton);
-		
-		JLabel lblNewLabel = new JLabel("TeamCostco");
-		lblNewLabel.setForeground(new Color(0x067FC4));
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setFont(new Font("맑은 고딕", Font.BOLD, 25));
-		lblNewLabel.setBounds(12, 173, 457, 28);
-		add(lblNewLabel);
-		
-		lblPdaLogin = new JLabel("PDA Login");
-		lblPdaLogin.setHorizontalAlignment(SwingConstants.CENTER);
-		lblPdaLogin.setForeground(Color.DARK_GRAY);
-		lblPdaLogin.setFont(new Font("맑은 고딕", Font.PLAIN, 20));
-		lblPdaLogin.setBounds(12, 205, 456, 28);
-		add(lblPdaLogin);
-	}
+        // Panel border
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+    }
 
-	public JPlaceholderTextField getIdField() {
-		return idField;
-	}
+    public JTextField getIdField() {
+        return idField;
+    }
 
-	public void setIdField(JPlaceholderTextField idField) {
-		this.idField = idField;
-	}
+    public JPasswordField getPasswordField() {
+        return passwordField;
+    }
 
-	public JPlaceholderPasswordField getPasswordField() {
-		return passwordField;
-	}
-
-	public void setPasswordField(JPlaceholderPasswordField passwordField) {
-		this.passwordField = passwordField;
-	}
-
-	public JButton getLoginButton() {
-		return loginButton;
-	}
-
-	public void setLoginButton(JButton loginButton) {
-		this.loginButton = loginButton;
-	}
-
-	public JButton getSignButton() {
-		return signButton;
-	}
-
-	public void setSignButton(JButton signButton) {
-		this.signButton = signButton;
-	}
+    public JButton getLoginButton() {
+        return loginButton;
+    }
 }
