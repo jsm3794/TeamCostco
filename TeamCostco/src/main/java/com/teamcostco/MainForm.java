@@ -2,15 +2,17 @@ package main.java.com.teamcostco;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.util.Enumeration;
 
 import javax.swing.JFrame;
+import javax.swing.UIManager;
+import javax.swing.plaf.FontUIResource;
 
 import main.java.com.teamcostco.component.Navigator;
 import main.java.com.teamcostco.controller.HomeController;
 import main.java.com.teamcostco.controller.HomeTestController;
 import main.java.com.teamcostco.controller.LoginTestController;
-import main.java.com.teamcostco.controller.OrderDetailController;
-import main.java.com.teamcostco.controller.OrderListController;
 import main.java.com.teamcostco.controller.SignTestController;
 
 
@@ -38,14 +40,25 @@ public class MainForm {
 		frame.setVisible(true);
 	}
 	
+	private static void setupUISettings() {
+		Enumeration<Object> keys = UIManager.getDefaults().keys();
+		while (keys.hasMoreElements()) {
+			Object key = keys.nextElement();
+			Object value = UIManager.get(key);
+			if (value instanceof FontUIResource) {
+				UIManager.put(key, new FontUIResource(new Font("맑은 고딕", Font.PLAIN, 18)));
+			}
+		}
+	}
+	
+	
 	private static void setupNavigator() {
 		
 		// Navigator 컨트롤러 매핑
 		nav.mappingTarget("home", HomeTestController.class);
 		nav.mappingTarget("login", LoginTestController.class);
 		nav.mappingTarget("sign", SignTestController.class);
-		nav.mappingTarget("order", OrderListController.class);
-		nav.mappingTarget("orderdetail", OrderDetailController.class);
+
 
 		
 
@@ -56,4 +69,6 @@ public class MainForm {
 		// 기본 페이지로 이동
 		nav.push("home", false);
 	}
+	
+	
 }

@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import main.java.com.teamcostco.view.textfields.JPlaceholderTextField;
+
 public class ProductRegistrationPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
@@ -23,6 +25,8 @@ public class ProductRegistrationPanel extends JPanel {
     private JComboBox<String> comboBoxLargeCategory;
     private JComboBox<String> comboBoxMediumCategory;
     private JComboBox<String> comboBoxSmallCategory;
+    private JTextField textField;
+    private JTextField textField_1;
 
     /**
      * Create the panel.
@@ -45,7 +49,7 @@ public class ProductRegistrationPanel extends JPanel {
         lblNewLabel_1.setBounds(12, 98, 90, 30);
         add(lblNewLabel_1);
 
-        textFieldProductCode = new JTextField();
+        textFieldProductCode = new JPlaceholderTextField("ex) PRID00000001");
         textFieldProductCode.setBounds(114, 98, 354, 30);
         add(textFieldProductCode);
         textFieldProductCode.setColumns(10);
@@ -123,6 +127,36 @@ public class ProductRegistrationPanel extends JPanel {
             }
         });
         add(btnCancel);
+        
+        JLabel lblNewLabel_2 = new JLabel("구입가");
+        lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
+        lblNewLabel_2.setBounds(240, 319, 174, 35);
+        add(lblNewLabel_2);
+        
+        JLabel lblNewLabel_2_1 = new JLabel("판매가");
+        lblNewLabel_2_1.setHorizontalAlignment(SwingConstants.CENTER);
+        lblNewLabel_2_1.setBounds(54, 319, 174, 35);
+        add(lblNewLabel_2_1);
+        
+        textField = new JTextField();
+        textField.setBounds(243, 364, 174, 41);
+        add(textField);
+        textField.setColumns(10);
+        
+        textField_1 = new JTextField();
+        textField_1.setColumns(10);
+        textField_1.setBounds(54, 364, 174, 41);
+        add(textField_1);
+        
+        JLabel lblNewLabel_1_4_1 = new JLabel("상품");
+        lblNewLabel_1_4_1.setHorizontalAlignment(SwingConstants.CENTER);
+        lblNewLabel_1_4_1.setBounds(12, 425, 90, 30);
+        add(lblNewLabel_1_4_1);
+        
+        JPlaceholderTextField plchldrtxtfldEx = new JPlaceholderTextField("ex) 신라면");
+        plchldrtxtfldEx.setColumns(10);
+        plchldrtxtfldEx.setBounds(114, 425, 354, 30);
+        add(plchldrtxtfldEx);
     }
     
         public static void main(String[] args) {
@@ -144,9 +178,4 @@ public class ProductRegistrationPanel extends JPanel {
                 }
             });
         }
-    
-
-    
-    
-    
 }
