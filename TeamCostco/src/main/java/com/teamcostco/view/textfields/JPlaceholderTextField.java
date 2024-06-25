@@ -1,4 +1,4 @@
-package main.java.com.teamcostco.view.panels.textfields;
+package main.java.com.teamcostco.view.textfields;
 
 import java.awt.Color;
 import java.awt.Dimension;
