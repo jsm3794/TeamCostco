@@ -24,13 +24,14 @@ public class HomeTestController extends PanelController<NewHome> {
 			if (AuthManager.getInstance().isLoggedIn()) {
 				startTimer();
 				inventorySeach();
-				MaterialDispatch();
-				ProductInspection();
-				OrderList();
-				WareHouseList();
-				Inventorymodification();
-				StockAccumulation();
-				ReceivingProcess();
+				materialDispatch();
+				productInspection();
+				orderList();
+				wareHouseList();
+				inventorymodification();
+				stockAccumulation();
+				receivingProcess();
+				productRegistration();
 			} else {
 				MainForm.nav.navigateTo("login", false);
 			}
@@ -48,7 +49,7 @@ public class HomeTestController extends PanelController<NewHome> {
 		});
 	}
 	
-	public void MaterialDispatch() {
+	public void materialDispatch() {
 		
 		view.getMaterialDispatchBtn().addActionListener(new ActionListener() {
 			
@@ -59,7 +60,7 @@ public class HomeTestController extends PanelController<NewHome> {
 		});
 	}
 	
-	public void ProductInspection() {
+	public void productInspection() {
 
 		view.getProductInspectionBtn().addActionListener(new ActionListener() {
 
@@ -70,7 +71,7 @@ public class HomeTestController extends PanelController<NewHome> {
 		});
 	}
 	
-	public void OrderList() {
+	public void orderList() {
 
 		view.getOrderListBtn().addActionListener(new ActionListener() {
 
@@ -81,7 +82,7 @@ public class HomeTestController extends PanelController<NewHome> {
 		});
 	}
 	
-	public void WareHouseList() {
+	public void wareHouseList() {
 
 		view.getWareHouseListBtn().addActionListener(new ActionListener() {
 
@@ -92,7 +93,7 @@ public class HomeTestController extends PanelController<NewHome> {
 		});
 	}
 	
-	public void Inventorymodification() {
+	public void inventorymodification() {
 
 		view.getInventorymodificationBtn().addActionListener(new ActionListener() {
 
@@ -103,7 +104,7 @@ public class HomeTestController extends PanelController<NewHome> {
 		});
 	}
 	
-	public void StockAccumulation() {
+	public void stockAccumulation() {
 
 		view.getStockAccumulationBtn().addActionListener(new ActionListener() {
 
@@ -114,13 +115,25 @@ public class HomeTestController extends PanelController<NewHome> {
 		});
 	}
 	
-	public void ReceivingProcess() {
+	public void receivingProcess() {
 
 		view.getReceivingProcessBtn().addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				MainForm.nav.push("sign", true);
+			}
+		});
+	}
+	
+	public void productRegistration() {
+		
+		view.getProductRegistrationBtn().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainForm.nav.push("registration", true);
+				
 			}
 		});
 	}

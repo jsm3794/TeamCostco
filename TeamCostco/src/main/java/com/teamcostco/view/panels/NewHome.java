@@ -27,6 +27,7 @@ public JLabel timeLabel;
 	private JButton InventorymodificationBtn; // 재고수정
 	private JButton StockAccumulationBtn; // 재고적치
 	private JButton ReceivingProcessBtn; // 입고처리
+	private JButton ProductRegistrationBtn; // 상품등록
 	
 	/**
 	 * Create the panel.
@@ -40,7 +41,7 @@ public JLabel timeLabel;
 		setLayout(null);
 		
         JPanel image_panel = new JPanel();
-        image_panel.setBounds(12, 40, 456, 144);
+        image_panel.setBounds(12, 10, 456, 144);
         ImageIcon image = new ImageIcon("C:\\aiautomationkdw\\repositories\\JavaStudy\\JavaStudy\\src\\project\\123.png");
         JLabel imageLabel = new JLabel(image);
 		image_panel.add(imageLabel);
@@ -48,70 +49,78 @@ public JLabel timeLabel;
 		
 		
 		InventorySeachBtn = new JButton("재고조회");
-		InventorySeachBtn.setFont(new Font("굴림", Font.BOLD, 22));
-		InventorySeachBtn.setBackground(new Color(0, 122, 255));
+		InventorySeachBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
+		InventorySeachBtn.setBackground(new Color(6, 127, 196));
 		InventorySeachBtn.setForeground(new Color(255, 255, 255));
-		InventorySeachBtn.setBounds(12, 360, 225, 60);
+		InventorySeachBtn.setBounds(12, 290, 225, 60);
 		add(InventorySeachBtn);
 		
 		MaterialDispatchBtn = new JButton("재고이동");
-		MaterialDispatchBtn.setFont(new Font("굴림", Font.BOLD, 22));
-		MaterialDispatchBtn.setBackground(new Color(0, 122, 255));
+		MaterialDispatchBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
+		MaterialDispatchBtn.setBackground(new Color(6, 127, 196));
 		MaterialDispatchBtn.setForeground(new Color(255, 255, 255));
-		MaterialDispatchBtn.setBounds(12, 430, 225, 60);
+		MaterialDispatchBtn.setBounds(12, 360, 225, 60);
 		add(MaterialDispatchBtn);
 		
 		ProductInspectionBtn = new JButton("제품검수");
-		ProductInspectionBtn.setFont(new Font("굴림", Font.BOLD, 22));
-		ProductInspectionBtn.setBackground(new Color(0, 122, 255));
+		ProductInspectionBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
+		ProductInspectionBtn.setBackground(new Color(6, 127, 196));
 		ProductInspectionBtn.setForeground(new Color(255, 255, 255));
-		ProductInspectionBtn.setBounds(12, 500, 225, 60);
+		ProductInspectionBtn.setBounds(12, 430, 225, 60);
 		add(ProductInspectionBtn);
 		
 		OrderListBtn = new JButton("발주내역");
-		OrderListBtn.setFont(new Font("굴림", Font.BOLD, 22));
-		OrderListBtn.setBackground(new Color(0, 122, 255));
+		OrderListBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
+		OrderListBtn.setBackground(new Color(6, 127, 196));
 		OrderListBtn.setForeground(new Color(255, 255, 255));
-		OrderListBtn.setBounds(12, 570, 225, 60);
+		OrderListBtn.setBounds(12, 500, 225, 60);
 		add(OrderListBtn);
 		
 		WareHouseListBtn = new JButton("창고목록");
-		WareHouseListBtn.setFont(new Font("굴림", Font.BOLD, 22));
-		WareHouseListBtn.setBackground(new Color(0, 122, 255));
+		WareHouseListBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
+		WareHouseListBtn.setBackground(new Color(6, 127, 196));
 		WareHouseListBtn.setForeground(new Color(255, 255, 255));
-		WareHouseListBtn.setBounds(243, 360, 225, 60);
+		WareHouseListBtn.setBounds(243, 290, 225, 60);
 		add(WareHouseListBtn);
 		
 		InventorymodificationBtn = new JButton("재고수정");
-		InventorymodificationBtn.setFont(new Font("굴림", Font.BOLD, 22));
-		InventorymodificationBtn.setBackground(new Color(0, 122, 255));
+		InventorymodificationBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
+		InventorymodificationBtn.setBackground(new Color(6, 127, 196));
 		InventorymodificationBtn.setForeground(new Color(255, 255, 255));
-		InventorymodificationBtn.setBounds(243, 430, 225, 60);
+		InventorymodificationBtn.setBounds(243, 360, 225, 60);
 		add(InventorymodificationBtn);
 		
 		StockAccumulationBtn = new JButton("재고적치");
-		StockAccumulationBtn.setFont(new Font("굴림", Font.BOLD, 22));
-		StockAccumulationBtn.setBackground(new Color(0, 122, 255));
+		StockAccumulationBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
+		StockAccumulationBtn.setBackground(new Color(6, 127, 196));
 		StockAccumulationBtn.setForeground(new Color(255, 255, 255));
-		StockAccumulationBtn.setBounds(243, 500, 225, 60);
+		StockAccumulationBtn.setBounds(243, 430, 225, 60);
 		add(StockAccumulationBtn);
 		
 		ReceivingProcessBtn = new JButton("입고처리");
-		ReceivingProcessBtn.setFont(new Font("굴림", Font.BOLD, 22));
-		ReceivingProcessBtn.setBackground(new Color(0, 122, 255));
+		ReceivingProcessBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
+		ReceivingProcessBtn.setBackground(new Color(6, 127, 196));
 		ReceivingProcessBtn.setForeground(new Color(255, 255, 255));
-		ReceivingProcessBtn.setBounds(243, 570, 225, 60);
+		ReceivingProcessBtn.setBounds(243, 500, 225, 60);
 		add(ReceivingProcessBtn);
+		
+		ProductRegistrationBtn = new JButton("상품등록");
+		ProductRegistrationBtn.setForeground(Color.WHITE);
+		ProductRegistrationBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
+		ProductRegistrationBtn.setBackground(new Color(6, 127, 196));
+		ProductRegistrationBtn.setBounds(12, 570, 225, 60);
+		add(ProductRegistrationBtn);
 		
 		JPanel panel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
-		panel.setBounds(12, 236, 456, 114);
+		panel.setBounds(12, 164, 456, 114);
 		add(panel);
 		
 		timeLabel = new JLabel("...");
-		timeLabel.setFont(new Font("굴림", Font.BOLD, 30));
+		timeLabel.setFont(new Font("맑은 고딕", Font.BOLD, 25));
         timeLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(timeLabel, BorderLayout.SOUTH);
+        
         
 	}
 	
@@ -153,6 +162,10 @@ public JLabel timeLabel;
 
 	public JButton getReceivingProcessBtn() {
 		return ReceivingProcessBtn;
+	}
+	
+	public JButton getProductRegistrationBtn() {
+		return ProductRegistrationBtn;
 	}
 }
 
