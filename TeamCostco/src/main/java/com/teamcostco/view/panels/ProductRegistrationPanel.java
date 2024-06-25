@@ -130,32 +130,32 @@ public class ProductRegistrationPanel extends JPanel {
         
         JLabel lblNewLabel_2 = new JLabel("구입가");
         lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
-        lblNewLabel_2.setBounds(240, 319, 174, 35);
+        lblNewLabel_2.setBounds(294, 368, 174, 35);
         add(lblNewLabel_2);
         
         JLabel lblNewLabel_2_1 = new JLabel("판매가");
         lblNewLabel_2_1.setHorizontalAlignment(SwingConstants.CENTER);
-        lblNewLabel_2_1.setBounds(54, 319, 174, 35);
+        lblNewLabel_2_1.setBounds(12, 368, 174, 35);
         add(lblNewLabel_2_1);
         
         textField = new JTextField();
-        textField.setBounds(243, 364, 174, 41);
+        textField.setBounds(294, 413, 174, 41);
         add(textField);
         textField.setColumns(10);
         
         textField_1 = new JTextField();
         textField_1.setColumns(10);
-        textField_1.setBounds(54, 364, 174, 41);
+        textField_1.setBounds(12, 413, 174, 41);
         add(textField_1);
         
         JLabel lblNewLabel_1_4_1 = new JLabel("상품");
         lblNewLabel_1_4_1.setHorizontalAlignment(SwingConstants.CENTER);
-        lblNewLabel_1_4_1.setBounds(12, 425, 90, 30);
+        lblNewLabel_1_4_1.setBounds(12, 298, 90, 30);
         add(lblNewLabel_1_4_1);
         
         JPlaceholderTextField plchldrtxtfldEx = new JPlaceholderTextField("ex) 신라면");
         plchldrtxtfldEx.setColumns(10);
-        plchldrtxtfldEx.setBounds(114, 425, 354, 30);
+        plchldrtxtfldEx.setBounds(114, 298, 354, 30);
         add(plchldrtxtfldEx);
     }
     
