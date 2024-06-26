@@ -35,6 +35,34 @@ public class ProductRegistrationController extends PanelController<ProductRegist
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String productCode = view.getTextFieldProductCode().getText();
+				String productName = view.gettextFieldProductName().getText();
+				String largeCategory = (String) view.getComboBoxLargeCategory().getSelectedItem();
+				String mediumCategory = (String) view.getComboBoxMediumCategory().getSelectedItem();
+				String smallCategory = (String) view.getComboBoxSmallCategory().getSelectedItem();
+				int purchasePrice = Integer.parseInt(view.getTextFieldPurchasePrice().getText());
+				int sellingPrice = Integer.parseInt(view.getTextFieldSellingPrice().getText());
+				String sql = "INSERT INTO product VALUES(product_seq.nextval, ?, ?, ?, ?, ?, ?, ?, 0, 0)";
+				try(
+					Connection con = DatabaseUtil.getConnection();
+				) {
+					try(
+						PreparedStatement pstmt = con.prepareStatement(sql);
+					) {						
+						
+						pstmt.setString(1, productCode);
+						pstmt.setString(2, productName);
+						pstmt.setString(3, findLargeCategoryId(largeCategory));
+						pstmt.setString(4, findMediumCategoryId(mediumCategory));
+						pstmt.setString(5, findSmallCategoryId(smallCategory));
+						pstmt.setInt(6, purchasePrice);
+						pstmt.setInt(7, sellingPrice);
+						
+						pstmt.executeUpdate();
+					}
+					
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
 				
 			}
 		});
@@ -104,6 +132,67 @@ public class ProductRegistrationController extends PanelController<ProductRegist
 			e.printStackTrace();
 		}
 	}
+	
+	private String findLargeCategoryId(String text) {
+		String str = "";
+		String sql = "SELECT main_id FROM maincategory WHERE main_name = ?";
+		try(Connection con = DatabaseUtil.getConnection();){
+			try(PreparedStatement pstmt = con.prepareStatement(sql);){
+				pstmt.setString(1, text);
+				try(ResultSet rs = pstmt.executeQuery();) {
+					if(rs.next()) {
+						str = rs.getString("main_id");
+					}
+				}
+				
+			}
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		return str;
+	}
+	
+	private String findMediumCategoryId(String text) {
+		String str = "";
+		String sql = "SELECT midium_id FROM midiumcategory WHERE midium_name = ?";
+		try(Connection con = DatabaseUtil.getConnection();){
+			try(PreparedStatement pstmt = con.prepareStatement(sql);){
+				pstmt.setString(1, text);
+				try(ResultSet rs = pstmt.executeQuery();) {
+					if(rs.next()) {
+						str = rs.getString("midium_id");
+					}
+				}
+			}
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		return str;
+	}
+	
+	private String findSmallCategoryId(String text) {
+		String str = "";
+		String sql = "SELECT small_id FROM smallcategory WHERE small_name = ?";
+		try(Connection con = DatabaseUtil.getConnection();){
+			try(PreparedStatement pstmt = con.prepareStatement(sql);){
+				pstmt.setString(1, text);
+				try(ResultSet rs = pstmt.executeQuery();){
+					if(rs.next()) {
+						str = rs.getString("small_id");
+					}
+				}
+			}
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+		return str;
+	}
+	
+	
+	
 
 	@Override
 	public String toString() {
