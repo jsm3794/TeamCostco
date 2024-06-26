@@ -112,7 +112,6 @@ public class OrderListPanel extends JPanel {
 		resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.Y_AXIS));
 		JScrollPane scrollPane = new JScrollPane(resultPanel);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
 		// 패널에 패널 추가
 		add(searchPanel, BorderLayout.NORTH);

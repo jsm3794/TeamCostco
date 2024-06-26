@@ -83,11 +83,15 @@ public class OrderModel {
 
 	@Override
 	public String toString() {
-		return "거래처=" + client + "\n 발주번호=" + item_number + "\n 상품명=" + product_name
-				+ "\n 발주수량=" + order_quantity + "\n 창고잔량=" + quantity_of_wh + "\n 입고수량="
-				+ remaining_capacity + "\n 발주일자=" + order_date;
+	    StringBuilder sb = new StringBuilder();
+	    String lineSeparator = "\n";
+	    sb.append("거래처=").append(client).append(lineSeparator);
+	    sb.append("발주번호=").append(item_number).append(lineSeparator);
+	    sb.append("상품명=").append(product_name).append(lineSeparator);
+	    sb.append("발주수량=").append(order_quantity).append(lineSeparator);
+	    sb.append("창고잔량=").append(quantity_of_wh).append(lineSeparator);
+	    sb.append("입고수량=").append(remaining_capacity).append(lineSeparator);
+	    sb.append("발주일자=").append(order_date);
+	    return sb.toString();
 	}
-
-	
-
 }
