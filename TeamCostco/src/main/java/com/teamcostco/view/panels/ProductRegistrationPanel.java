@@ -30,7 +30,7 @@ public class ProductRegistrationPanel extends JPanel {
     private JComboBox<String> comboBoxSmallCategory;
     private JButton initializationBtn;
     private JButton productRegistrationBtn;
-
+    
     /**
      * Create the panel.
      */
@@ -77,27 +77,23 @@ public class ProductRegistrationPanel extends JPanel {
         add(comboBoxSmallCategory);
 
         initializationBtn = new JButton("초기화");
-        initializationBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
         initializationBtn.setForeground(new Color(255, 255, 255));
         initializationBtn.setBackground(new Color(6, 127, 196));
         initializationBtn.setBounds(12, 503, 225, 67);
         add(initializationBtn);
 
         productRegistrationBtn = new JButton("등록");
-        productRegistrationBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
         productRegistrationBtn.setForeground(new Color(255, 255, 255));
         productRegistrationBtn.setBackground(new Color(6, 127, 196));
         productRegistrationBtn.setBounds(243, 503, 225, 67);
         add(productRegistrationBtn);
         
         JLabel purchasePriceLabel = new JLabel("구입가");
-        purchasePriceLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
         purchasePriceLabel.setHorizontalAlignment(SwingConstants.CENTER);
         purchasePriceLabel.setBounds(276, 350, 174, 35);
         add(purchasePriceLabel);
         
         JLabel sellingPriceLabel = new JLabel("판매가");
-        sellingPriceLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
         sellingPriceLabel.setHorizontalAlignment(SwingConstants.CENTER);
         sellingPriceLabel.setBounds(30, 350, 174, 35);
         add(sellingPriceLabel);

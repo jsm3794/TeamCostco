@@ -35,6 +35,7 @@ public class ProductRegistrationController extends PanelController<ProductRegist
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String productCode = view.getTextFieldProductCode().getText();
+				
 			}
 		});
 	}
