@@ -68,9 +68,9 @@ public class OrderListPanel extends JPanel {
 		searchPanel.add(dateLabel, gbc);
 
 		datePanel = new JPanel(new FlowLayout());
-		startDateField = new JTextField(17);
+		startDateField = new JTextField(11);
 		startDateField.setHorizontalAlignment(SwingConstants.CENTER);
-		endDateField = new JTextField(17);
+		endDateField = new JTextField(11);
 		endDateField.setHorizontalAlignment(SwingConstants.CENTER);
 		datePanel.add(startDateField);
 		datePanel.add(new JLabel("~"));
