@@ -33,6 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 public class OrderListPanel extends JPanel {
@@ -67,9 +68,10 @@ public class OrderListPanel extends JPanel {
 		searchPanel.add(dateLabel, gbc);
 
 		datePanel = new JPanel(new FlowLayout());
-		startDateField = new JTextField(10);
-		endDateField = new JTextField(10);
-
+		startDateField = new JTextField(17);
+		startDateField.setHorizontalAlignment(SwingConstants.CENTER);
+		endDateField = new JTextField(17);
+		endDateField.setHorizontalAlignment(SwingConstants.CENTER);
 		datePanel.add(startDateField);
 		datePanel.add(new JLabel("~"));
 		datePanel.add(endDateField);
@@ -106,6 +108,8 @@ public class OrderListPanel extends JPanel {
 		gbc.anchor = GridBagConstraints.CENTER; // 가운데 정렬
 		gbc.weightx = 1.0; // X 방향으로 전체 공간을 균등하게 차지
 		searchPanel.add(searchButton, gbc);
+		searchButton.setBackground(new Color(6, 127, 196));
+		searchButton.setForeground(new Color(255, 255, 255));
 
 		// 결과 패널
 		resultPanel = new JPanel();
