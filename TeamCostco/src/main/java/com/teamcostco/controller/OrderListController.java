@@ -148,7 +148,6 @@ public class OrderListController extends PanelController<OrderListPanel> {
 				
 				try (ResultSet rs = pstmt.executeQuery()) {
 					while (rs.next()) {
-						System.out.println("sdd");
 						filteredData.add(new OrderModel(rs));
 					}
 
