@@ -36,11 +36,11 @@ public class OrderDetailPanel extends JPanel {
 
 		// 하단 패널 설정
 		JPanel bottomPanel = new JPanel(new BorderLayout());
-		bottomPanel.setBackground(Color.WHITE); // 배경색 설정
+		//bottomPanel.setBackground(Color.WHITE); // 배경색 설정
 
 		// 입고처리 버튼 설정
 		JButton processButton = new JButton("입고처리");
-		processButton.setFont(new Font("Serif", Font.PLAIN, 18)); // 글자 크기 키우기
+		processButton.setFont(new Font("맑은 고딕", Font.PLAIN, 18)); // 글자 크기 키우기
 		processButton.setFocusPainted(false); // 포커스 제거
 		processButton.setBackground(Constants.BUTTON_BACKGROUND_COLOR); // 배경색 설정
 		processButton.setForeground(Color.WHITE); // 글자색 설정

@@ -10,19 +10,19 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import main.java.com.teamcostco.model.OrderModel;
+import main.java.com.teamcostco.model.OrderDetailModel;
 import main.java.com.teamcostco.view.panels.OrderDetailPanel;
 
 public class OrderDetailController extends PanelController<OrderDetailPanel> {
     
-    public OrderModel data;
+    public OrderDetailModel data;
 
-    public OrderDetailController(OrderModel data) {
+    public OrderDetailController(OrderDetailModel data) {
         this.data = data;
         initControl(data);
     }
 
-    private void initControl(OrderModel data) {
+    private void initControl(OrderDetailModel data) {
         String[] lines = data.toString().split("\n");
 
         view.dataPanel.setLayout(new GridLayout(lines.length, 1, 10, 10)); // 세로로 레이블 정렬, 간격 설정
@@ -36,13 +36,11 @@ public class OrderDetailController extends PanelController<OrderDetailPanel> {
 
             String[] keyValue = line.split("=", 2);
             JLabel keyLabel = new JLabel(keyValue[0]);
-            keyLabel.setFont(new Font("Serif", Font.BOLD, 18)); // 레이블을 굵게
             keyLabel.setBorder(new EmptyBorder(5, 10, 5, 10)); // 여백 설정
             keyLabel.setOpaque(true);
             keyLabel.setBackground(new Color(240, 240, 240));
 
             JLabel valueLabel = new JLabel(keyValue[1]);
-            valueLabel.setFont(new Font("Serif", Font.PLAIN, 18));
             valueLabel.setBorder(new EmptyBorder(5, 10, 5, 10));
             valueLabel.setHorizontalAlignment(JLabel.CENTER);
 
