@@ -18,6 +18,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -121,46 +123,45 @@ public class DialogManager {
 	
 	
 	public static Context showLoadingBox(JPanel parentPanel) {
-        ensureInitialized();
+	    ensureInitialized();
 
-        instance.overlayOpacity = 0.0f;
-        instance.displayOpacity = 0.0f;
+	    instance.overlayOpacity = 0.0f;
+	    instance.displayOpacity = 0.0f;
 
-        instance.displayPanel = instance.createDisplayPanel();
-        instance.displayPanel.setPreferredSize(new Dimension(100, 100)); // 고정 크기 설정
+	    instance.displayPanel = instance.createDisplayPanel();
+	    instance.displayPanel.setPreferredSize(new Dimension(100, 100)); // 고정 크기 설정
 
-        ImageIcon scaledLoadingIcon = new ImageIcon(DialogManager.class.getResource("/main/resources/loading.gif"));
+	    ImageIcon loadingIcon = new ImageIcon(DialogManager.class.getResource("/main/resources/loading.png"));
+	    RotatingLabel loadingLabel = new RotatingLabel(loadingIcon);
+	    loadingLabel.setHorizontalAlignment(JLabel.CENTER);
+	    loadingLabel.setVerticalAlignment(JLabel.CENTER);
+	    instance.displayPanel.add(loadingLabel, BorderLayout.CENTER);
+	    
+	    instance.overlayPanel.removeAll();
+	    GridBagConstraints gbc = new GridBagConstraints();
+	    gbc.gridx = 0;
+	    gbc.gridy = 0;
+	    gbc.insets = new Insets(0, 0, 0, 0);
+	    gbc.anchor = GridBagConstraints.CENTER;
+	    instance.overlayPanel.add(instance.displayPanel, gbc);
 
-        JLabel loadingLabel = new JLabel(scaledLoadingIcon);
-        loadingLabel.setHorizontalAlignment(JLabel.CENTER);
-        loadingLabel.setVerticalAlignment(JLabel.CENTER);
-        instance.displayPanel.add(loadingLabel, BorderLayout.CENTER);
+	    JLayeredPane layeredPane = parentPanel.getRootPane().getLayeredPane();
+	    instance.overlayPanel.setSize(parentPanel.getSize());
 
-        instance.overlayPanel.removeAll();
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        gbc.anchor = GridBagConstraints.CENTER;
-        instance.overlayPanel.add(instance.displayPanel, gbc);
+	    if (instance.overlayPanel.getParent() != null) {
+	        ((JLayeredPane) instance.overlayPanel.getParent()).remove(instance.overlayPanel);
+	    }
 
-        JLayeredPane layeredPane = parentPanel.getRootPane().getLayeredPane();
-        instance.overlayPanel.setSize(parentPanel.getSize());
+	    layeredPane.add(instance.overlayPanel, JLayeredPane.MODAL_LAYER);
+	    layeredPane.revalidate();
+	    layeredPane.repaint();
 
-        if (instance.overlayPanel.getParent() != null) {
-            ((JLayeredPane) instance.overlayPanel.getParent()).remove(instance.overlayPanel);
-        }
+	    instance.overlayPanel.requestFocusInWindow();
 
-        layeredPane.add(instance.overlayPanel, JLayeredPane.MODAL_LAYER);
-        layeredPane.revalidate();
-        layeredPane.repaint();
+	    instance.fadeIn();
 
-        instance.overlayPanel.requestFocusInWindow(); // overlayPanel이 포커스를 받도록 설정
-
-        instance.fadeIn();
-
-        return new Context(layeredPane, parentPanel);
-    }
+	    return new Context(layeredPane, parentPanel);
+	}
 
 	public static Context showMessageBox(JPanel parentPanel, String message, boolean isConfirmation,
 			ActionListener yesAction, ActionListener noAction) {
@@ -354,4 +355,88 @@ public class DialogManager {
 			}
 		}
 	}
+}
+
+class RotatingLabel extends JLabel {
+    private int angle = 0;
+    private final int ROTATION_SPEED = 100; // 회전 속도 (밀리초)
+    private final BufferedImage originalImage;
+    private float alpha = 0.7f; // 투명도 (0.0f ~ 1.0f)
+
+    public RotatingLabel(ImageIcon icon) {
+        super(icon);
+        this.originalImage = iconToBufferedImage(icon);
+        setPreferredSize(new Dimension(originalImage.getWidth(), originalImage.getHeight()));
+        setOpaque(false);
+        Timer timer = new Timer(ROTATION_SPEED, e -> {
+            angle = (angle + 30) % 360;
+            repaint();
+        });
+        timer.start();
+    }
+
+    private BufferedImage iconToBufferedImage(ImageIcon icon) {
+        BufferedImage bi = new BufferedImage(
+            icon.getIconWidth(),
+            icon.getIconHeight(),
+            BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = bi.createGraphics();
+        icon.paintIcon(null, g2d, 0, 0);
+        g2d.dispose();
+        return bi;
+    }
+
+    public void setAlpha(float alpha) {
+        this.alpha = alpha;
+        repaint();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g.create();
+        configureGraphics(g2d);
+
+        int x = getWidth() / 2;
+        int y = getHeight() / 2;
+
+        BufferedImage rotatedImage = rotateImage(originalImage, angle);
+        
+        int drawX = x - rotatedImage.getWidth() / 2;
+        int drawY = y - rotatedImage.getHeight() / 2;
+
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        g2d.drawImage(rotatedImage, drawX, drawY, null);
+
+        g2d.dispose();
+    }
+
+    private void configureGraphics(Graphics2D g2d) {
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+    }
+
+    private BufferedImage rotateImage(BufferedImage image, int angle) {
+        double rads = Math.toRadians(angle);
+        double sin = Math.abs(Math.sin(rads));
+        double cos = Math.abs(Math.cos(rads));
+        int w = image.getWidth();
+        int h = image.getHeight();
+        int newWidth = (int) Math.floor(w * cos + h * sin);
+        int newHeight = (int) Math.floor(h * cos + w * sin);
+
+        BufferedImage rotated = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = rotated.createGraphics();
+        configureGraphics(g2d);
+
+        AffineTransform at = new AffineTransform();
+        at.translate((newWidth - w) / 2, (newHeight - h) / 2);
+        at.rotate(rads, w / 2, h / 2);
+        g2d.setTransform(at);
+        g2d.drawImage(image, 0, 0, null);
+        g2d.dispose();
+
+        return rotated;
+    }
 }
