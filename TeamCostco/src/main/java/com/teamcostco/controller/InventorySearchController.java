@@ -33,10 +33,10 @@ public class InventorySearchController extends PanelController<InventorySearchPa
 		// 검색 버튼 클릭 시 DB에서 데이터를 가져와 테이블에 표시
 		view.searchButton.addActionListener(e -> {
 			DialogManager.showMessageBox(view, "메세지<br>gdgdgdgdㅎㅇ", true, evt -> System.out.println("예"), null);
-//			String searchKeyword = view.searchField.getText();
-//			String categoriName = (String) view.categoryComboBox.getSelectedItem();
-//			loadData(view.model, searchKeyword, categoriName);
-//			bindTableAction();
+			String searchKeyword = view.searchField.getText();
+			String categoriName = (String) view.categoryComboBox.getSelectedItem();
+			loadData(view.model, searchKeyword, categoriName);
+			bindTableAction();
 		});
 
 		loadCategories(view.categoryComboBox);

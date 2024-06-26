@@ -11,6 +11,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import main.java.com.teamcostco.view.textfields.JPlaceholderTextField;
+import javax.swing.JLabel;
 
 public class InventorySearchPanel extends JPanel {
 
@@ -62,7 +63,10 @@ public class InventorySearchPanel extends JPanel {
         });
         searchButton.setBounds(365, 60, 103, 43);
         add(searchButton);
+        
+        JLabel lblNewLabel = new JLabel("분류구분");
+        lblNewLabel.setBounds(18, 23, 63, 15);
+        add(lblNewLabel);
     }
- 
 }
 
