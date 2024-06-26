@@ -4,6 +4,11 @@ package main.java.com.teamcostco.view.panels;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Rectangle;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -11,14 +16,15 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import main.java.com.teamcostco.model.database.DatabaseUtil;
 import main.java.com.teamcostco.view.textfields.JPlaceholderTextField;
 
 public class ProductRegistrationPanel extends JPanel {
 
-    private static final long serialVersionUID = 1L;
+    public static final long serialVersionUID = 1L;
     private JTextField textFieldProductCode;
     private JTextField textFieldPurchasePrice;
-	private JTextField textFieldSellingPrice;
+    private JTextField textFieldSellingPrice;
     private JComboBox<String> comboBoxLargeCategory;
     private JComboBox<String> comboBoxMediumCategory;
     private JComboBox<String> comboBoxSmallCategory;
@@ -50,10 +56,6 @@ public class ProductRegistrationPanel extends JPanel {
 
         comboBoxLargeCategory = new JComboBox<>();
         comboBoxLargeCategory.setBounds(114, 118, 354, 40);
-        // 예시로 아이템 추가
-        comboBoxLargeCategory.addItem("대분류1");
-        comboBoxLargeCategory.addItem("대분류2");
-        comboBoxLargeCategory.addItem("대분류3");
         add(comboBoxLargeCategory);
 
         JLabel middleClassificationLabel = new JLabel("중분류");
@@ -63,10 +65,6 @@ public class ProductRegistrationPanel extends JPanel {
 
         comboBoxMediumCategory = new JComboBox<>();
         comboBoxMediumCategory.setBounds(114, 168, 354, 40);
-        // 예시로 아이템 추가
-        comboBoxMediumCategory.addItem("중분류1");
-        comboBoxMediumCategory.addItem("중분류2");
-        comboBoxMediumCategory.addItem("중분류3");
         add(comboBoxMediumCategory);
 
         JLabel smallClassificationLabel = new JLabel("소분류");
@@ -76,10 +74,6 @@ public class ProductRegistrationPanel extends JPanel {
 
         comboBoxSmallCategory = new JComboBox<>();
         comboBoxSmallCategory.setBounds(114, 218, 354, 40);
-        // 예시로 아이템 추가
-        comboBoxSmallCategory.addItem("소분류1");
-        comboBoxSmallCategory.addItem("소분류2");
-        comboBoxSmallCategory.addItem("소분류3");
         add(comboBoxSmallCategory);
 
         initializationBtn = new JButton("초기화");
@@ -161,5 +155,5 @@ public class ProductRegistrationPanel extends JPanel {
 
 	public JComboBox<String> getComboBoxSmallCategory() {
 		return comboBoxSmallCategory;
-	}
+	}	
 }
