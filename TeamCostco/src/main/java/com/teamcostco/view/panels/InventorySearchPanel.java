@@ -20,10 +20,11 @@ public class InventorySearchPanel extends JPanel {
     public JButton searchButton;
     public JTextField searchField;
     public JComboBox<String> categoryComboBox;
+    public JComboBox<String> cb_CategorizeName;
     public DefaultTableModel model;
     public JTable table;
-    private JPlaceholderTextField textField;
-    private JTable table_1;
+    public JPlaceholderTextField textField;
+    public JTable table_1;
 
     public InventorySearchPanel() {
         setLayout(null);
@@ -31,20 +32,22 @@ public class InventorySearchPanel extends JPanel {
         
      
         categoryComboBox = new JComboBox<>();
-        categoryComboBox.setBounds(87, 10, 153, 40);
+        categoryComboBox.addItem("전체"); 
+        categoryComboBox.setBounds(119, 10, 153, 40);
         add(categoryComboBox);
 
+        cb_CategorizeName = new JComboBox<>();
+        cb_CategorizeName.addItem("상품분류");
+        cb_CategorizeName.setSelectedIndex(0);
+        cb_CategorizeName.setBounds(284, 10, 184, 40);
+        add(cb_CategorizeName);
+        
         textField = new JPlaceholderTextField("상품명");
         textField.setBounds(23, 60, 324, 43);
         add(textField);
         textField.setColumns(10);
 
        
-        JComboBox<String> cb_CategorizeName = new JComboBox<>();
-        cb_CategorizeName.addItem("전체 구역");
-        cb_CategorizeName.setSelectedIndex(0);
-        cb_CategorizeName.setBounds(252, 10, 216, 40);
-        add(cb_CategorizeName);
 
         // Create the table with a DefaultTableModel
         model = new DefaultTableModel(new Object[][] {}, new String[] { "구역", "상품명", "수량" });
@@ -65,7 +68,7 @@ public class InventorySearchPanel extends JPanel {
         add(searchButton);
         
         JLabel lblNewLabel = new JLabel("분류구분");
-        lblNewLabel.setBounds(18, 23, 63, 15);
+        lblNewLabel.setBounds(44, 23, 63, 15);
         add(lblNewLabel);
     }
 }
