@@ -20,6 +20,8 @@ import javax.swing.table.DefaultTableModel;
 
 import main.utils.Constants;
 
+
+
 public class AmountModifyPanel2 extends JPanel {
     private JTextField productNameField;
     private JComboBox<String> categoryComboBox;
@@ -35,7 +37,7 @@ public class AmountModifyPanel2 extends JPanel {
     private JButton minusButton;
     private JComboBox<String> mr_comboBox;
     
-    private String[] modification_reason = new String[] {
+    private static String[] modification_reason = new String[] {
             "DAM001 - 파손 (Damage)",
             "DEF002 - 결함 (Defective)",
             "EXP003- 유통기한 경과 (Expired)",
@@ -53,8 +55,6 @@ public class AmountModifyPanel2 extends JPanel {
 	public JComboBox<String> getCategoryComboBox() {
 		return categoryComboBox;
 	}
-
-
 
 	public JButton getModifyButton() {
 		return modifyButton;
@@ -92,7 +92,7 @@ public class AmountModifyPanel2 extends JPanel {
 		return minusButton;
 	}
 
-	public String[] getModification_reason() {
+	public static String[] getModification_reason() {
 		return modification_reason;
 	}
 
