@@ -186,8 +186,11 @@ public class ProductRegistrationController extends PanelController<ProductRegist
 					pstmt.setInt(8, sellingPrice);
 
 					pstmt.executeUpdate();
-					DialogManager.showMessageBox(view, "등록성공", evt ->{MainForm.nav.pop();});
-					
+					String msg = String.format("등록성공<br>ID: PRID%08d<br>상품: %s", seq_val, productName);
+					DialogManager.showMessageBox(view, msg, evt -> {
+						MainForm.nav.navigateTo("registration", true);
+					});
+
 				} catch (SQLException ex) {
 					ex.printStackTrace();
 				}
