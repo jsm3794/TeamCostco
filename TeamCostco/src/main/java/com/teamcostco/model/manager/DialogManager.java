@@ -293,8 +293,18 @@ public class DialogManager {
 		if (instance.overlayPanel.getParent() != null) {
 			instance.overlayPanel.getParent().remove(instance.overlayPanel);
 		}
-		parentPanel.revalidate();
-		parentPanel.repaint();
+
+		Container currentParent = parentPanel;
+		while (currentParent != null) {
+		    if (!(currentParent instanceof JPanel)) {
+		        currentParent = currentParent.getParent();
+		        continue;
+		    }
+		    
+		    currentParent.revalidate();
+		    currentParent.repaint();
+		    currentParent = currentParent.getParent();
+		}
 	}
 
 	private static JButton createRoundButton(String text, ActionListener action) {
