@@ -10,7 +10,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,7 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import main.java.com.teamcostco.MainForm;
-import main.java.com.teamcostco.model.OrderModel;
+import main.java.com.teamcostco.model.OrderDetailModel;
 import main.java.com.teamcostco.model.database.DatabaseUtil;
 import main.java.com.teamcostco.view.panels.OrderListPanel;
 
@@ -108,7 +107,7 @@ public class OrderListController extends PanelController<OrderListPanel> {
 		LocalDate startDate = parseDate(view.startDateField.getText());
 		LocalDate endDate = parseDate(view.endDateField.getText());
 
-		List<OrderModel> filteredData = new ArrayList<>();
+		List<OrderDetailModel> filteredData = new ArrayList<>();
 		
 		try (Connection conn = DatabaseUtil.getConnection()) {
 			String sql = "SELECT * FROM orderrequest WHERE 1=1";
@@ -148,7 +147,7 @@ public class OrderListController extends PanelController<OrderListPanel> {
 				
 				try (ResultSet rs = pstmt.executeQuery()) {
 					while (rs.next()) {
-						filteredData.add(new OrderModel(rs));
+						filteredData.add(new OrderDetailModel(rs));
 					}
 
 				}
@@ -157,7 +156,7 @@ public class OrderListController extends PanelController<OrderListPanel> {
 			e.printStackTrace();
 		}
 
-		for (OrderModel data : filteredData) {
+		for (OrderDetailModel data : filteredData) {
 			JPanel entryPanel = createEntryPanel(data);
 			if (entryPanel != null) {
 				view.resultPanel.add(entryPanel);
@@ -169,16 +168,14 @@ public class OrderListController extends PanelController<OrderListPanel> {
 		view.resultPanel.repaint();
 	}
 
-	private JPanel createEntryPanel(OrderModel data) {
+	private JPanel createEntryPanel(OrderDetailModel data) {
 		JPanel entryPanel = new JPanel();
 		entryPanel.setLayout(new BoxLayout(entryPanel, BoxLayout.Y_AXIS));
-		for (String line : data.toString().split("\n")) {
-			JLabel label = new JLabel(line);
-			if (line.startsWith("입고수량:")) {
-				label.setFont(label.getFont().deriveFont(Font.BOLD, 14)); // 글씨 크기 설정
-			}
-			entryPanel.add(label);
-		}
+		
+		entryPanel.add(new JLabel("거래처: " + data.getClient()));
+		entryPanel.add(new JLabel("발주번호: " + data.getItem_number()));
+		entryPanel.add(new JLabel("상품명: " + data.getProduct_name()));
+
 		entryPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		entryPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, entryPanel.getPreferredSize().height));
 		entryPanel.setPreferredSize(new Dimension(460, entryPanel.getPreferredSize().height));

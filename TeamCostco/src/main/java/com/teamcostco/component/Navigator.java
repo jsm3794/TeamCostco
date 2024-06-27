@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import main.java.com.teamcostco.controller.PanelController;
+import main.java.com.teamcostco.model.OrderModel;
 
 public class Navigator extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -93,13 +94,27 @@ public class Navigator extends JPanel {
 	        if (params == null || params.length == 0) {
 	            controller = controllerClass.getDeclaredConstructor().newInstance();
 	        } else {
+	            Constructor<?> matchingConstructor = null;
 	            for (Constructor<?> constructor : controllerClass.getDeclaredConstructors()) {
 	                if (constructor.getParameterCount() == params.length) {
-	                    controller = (PanelController<?>) constructor.newInstance(params);
-	                    break;
+	                    Class<?>[] paramTypes = constructor.getParameterTypes();
+	                    boolean match = true;
+	                    for (int i = 0; i < params.length; i++) {
+	                        if (!paramTypes[i].isInstance(params[i])) {
+	                            match = false;
+	                            break;
+	                        }
+	                    }
+	                    if (match) {
+	                        matchingConstructor = constructor;
+	                        break;
+	                    }
 	                }
 	            }
-	            throw new NoSuchMethodException("No matching constructor found");
+	            if (matchingConstructor == null) {
+	                throw new NoSuchMethodException("No matching constructor found");
+	            }
+	            controller = (PanelController<?>) matchingConstructor.newInstance(params);
 	        }
 	        JPanel panel = controller.getPanel();
 	        return new PanelControllerPair(panel, controller);

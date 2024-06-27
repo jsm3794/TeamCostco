@@ -4,7 +4,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class OrderModel {
+public class OrderDetailModel {
 
 	private String client; // 거래처
 	private String item_number; // 품번
@@ -14,7 +14,7 @@ public class OrderModel {
 	private int remaining_capacity; // 잔량
 	private Date order_date; // 발주일자
 
-	public OrderModel(ResultSet rs) throws SQLException {
+	public OrderDetailModel(ResultSet rs) throws SQLException {
 
 		this.client = rs.getString("client_name");
 		this.item_number = rs.getString("product_id");
@@ -94,4 +94,5 @@ public class OrderModel {
 	    sb.append("발주일자=").append(order_date);
 	    return sb.toString();
 	}
+
 }

@@ -41,10 +41,9 @@ public class MainForm {
 	
 	private static void initSettings() {
 		// Navigator 설정
-		setupNavigator();
-		
 		// UI 기본 설정
 		setupUISettings();
+		setupNavigator();
 	}
 
 	private static void setupNavigator() {
