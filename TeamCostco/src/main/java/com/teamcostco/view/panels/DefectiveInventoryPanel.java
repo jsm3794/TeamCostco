@@ -9,6 +9,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -106,4 +107,5 @@ public class DefectiveInventoryPanel extends JPanel {
 
 		scrollPane.setViewportView(table);
 	}
+
 }
