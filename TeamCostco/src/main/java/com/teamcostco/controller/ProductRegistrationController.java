@@ -85,6 +85,7 @@ public class ProductRegistrationController extends PanelController<ProductRegist
 
     public void initializationComponents() {
         view.getInitializationBtn().addActionListener(new ActionListener() {
+        	
             @Override
             public void actionPerformed(ActionEvent e) {
                 MainForm.nav.navigateTo("registration", true);
@@ -126,7 +127,6 @@ public class ProductRegistrationController extends PanelController<ProductRegist
         view.getproductRegistrationBtn().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String productCode = view.getTextFieldProductCode().getText();
                 String productName = view.gettextFieldProductName().getText();
                 String purchasePriceText = view.getTextFieldPurchasePrice().getText();
                 String sellingPriceText = view.getTextFieldSellingPrice().getText();
@@ -149,26 +149,45 @@ public class ProductRegistrationController extends PanelController<ProductRegist
                 String largeCategory = (String) view.getComboBoxLargeCategory().getSelectedItem();
                 String mediumCategory = (String) view.getComboBoxMediumCategory().getSelectedItem();
                 String smallCategory = (String) view.getComboBoxSmallCategory().getSelectedItem();
-
-                String sql = "INSERT INTO product VALUES(product_seq.nextval, ?, ?, ?, ?, ?, ?, ?, 0, 0)";
+                
+                // 시퀀스 값 가져오기
+                long seq_val = 0;
+                
+                try (Connection con = DatabaseUtil.getConnection();
+                     PreparedStatement pstmtSeq = con.prepareStatement("SELECT PRODUCT_SEQ1.nextval AS seq FROM dual")) {
+                    ResultSet rs = pstmtSeq.executeQuery();
+                    if (rs.next()) {
+                        seq_val = rs.getLong("seq");
+                    }
+                } catch(SQLException ex) {
+                    ex.printStackTrace();
+                }
+                
+                // INSERT 쿼리 실행
+                String sql = "INSERT INTO product VALUES(?, 'PRID' || LPAD(?, 8, '0'), ?, ?, ?, ?, ?, ?, 0, 0)";
                 try (Connection con = DatabaseUtil.getConnection();
                      PreparedStatement pstmt = con.prepareStatement(sql)) {
-                    pstmt.setString(1, productCode);
-                    pstmt.setString(2, productName);
-                    pstmt.setString(3, findLargeCategoryId(largeCategory));
-                    pstmt.setString(4, findMediumCategoryId(mediumCategory));
-                    pstmt.setString(5, findSmallCategoryId(smallCategory));
-                    pstmt.setInt(6, purchasePrice);
-                    pstmt.setInt(7, sellingPrice);
+
+                    pstmt.setLong(1, 0); // 첫 번째 ?는 알아서 증가함
+                    pstmt.setLong(2, seq_val); // 2번째 시퀀스는 새로운 시퀀스를 만들어서 써야함
+                    pstmt.setString(3, productName);
+                    pstmt.setString(4, findLargeCategoryId(largeCategory));
+                    pstmt.setString(5, findMediumCategoryId(mediumCategory));
+                    pstmt.setString(6, findSmallCategoryId(smallCategory));
+                    pstmt.setInt(7, purchasePrice);
+                    pstmt.setInt(8, sellingPrice);
 
                     pstmt.executeUpdate();
                     DialogManager.showMessageBox(view, "등록성공", false, null, null);
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
     }
+
+
+
 
     private String findLargeCategoryId(String text) {
         String str = "";
@@ -222,15 +241,20 @@ public class ProductRegistrationController extends PanelController<ProductRegist
     }
     
     private String getProductCode() {
-    	
     	try(
     		Connection con = DatabaseUtil.getConnection();
     	) {
-    		String sql = "SELECT product_seq.currval AS current_value FROM dual;";
+    		String sql = "SELECT product_seq.currval FROM product";
     		try(
-    			PreparedStatement pstmt = con.prepareStatement(getProductCode())
+    			PreparedStatement pstmt = con.prepareStatement(sql)
     		) {
-    			
+    			try(
+    				ResultSet rs = pstmt.executeQuery();
+    			) {
+    				if (rs.next()) {
+    					return String.format("PRID%08d",rs.getInt("product_seq.currval"));    					
+    				}
+    			}
     		}
     	} catch (SQLException e) {
 			e.printStackTrace();
