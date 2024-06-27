@@ -126,17 +126,31 @@ public class ProductRegistrationController extends PanelController<ProductRegist
         view.getproductRegistrationBtn().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	
                 String productCode = view.getTextFieldProductCode().getText();
                 String productName = view.gettextFieldProductName().getText();
+                String purchasePriceText = view.getTextFieldPurchasePrice().getText();
+                String sellingPriceText = view.getTextFieldSellingPrice().getText();
+
+                // 필수 입력값 확인
+                if (productName.isEmpty() || productName.isEmpty() || purchasePriceText.isEmpty() || sellingPriceText.isEmpty()) {
+                    DialogManager.showMessageBox(view, "모든 필드를 입력하세요.", false, null, null);
+                    return;
+                }
+
+                int purchasePrice, sellingPrice;
+                try {
+                    purchasePrice = Integer.parseInt(purchasePriceText);
+                    sellingPrice = Integer.parseInt(sellingPriceText);
+                } catch (NumberFormatException ex) {
+                    DialogManager.showMessageBox(view, "가격 필드는 숫자여야 합니다.", false, null, null);
+                    return;
+                }
+
                 String largeCategory = (String) view.getComboBoxLargeCategory().getSelectedItem();
                 String mediumCategory = (String) view.getComboBoxMediumCategory().getSelectedItem();
                 String smallCategory = (String) view.getComboBoxSmallCategory().getSelectedItem();
-                int purchasePrice = Integer.parseInt(view.getTextFieldPurchasePrice().getText());
-                int sellingPrice = Integer.parseInt(view.getTextFieldSellingPrice().getText());
-                
+
                 String sql = "INSERT INTO product VALUES(product_seq.nextval, ?, ?, ?, ?, ?, ?, ?, 0, 0)";
-                
                 try (Connection con = DatabaseUtil.getConnection();
                      PreparedStatement pstmt = con.prepareStatement(sql)) {
                     pstmt.setString(1, productCode);
@@ -206,9 +220,37 @@ public class ProductRegistrationController extends PanelController<ProductRegist
         }
         return str;
     }
+    
+    private String getProductCode() {
+    	
+    	try(
+    		Connection con = DatabaseUtil.getConnection();
+    	) {
+    		String sql = "SELECT product_seq.currval AS current_value FROM dual;";
+    		try(
+    			PreparedStatement pstmt = con.prepareStatement(getProductCode())
+    		) {
+    			
+    		}
+    	} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+    }
 
     @Override
     public String toString() {
         return "상품등록";
     }
 }
+
+
+
+
+
+
+
+
+
+
+
