@@ -65,7 +65,7 @@ public class MainForm {
 		// nav.setBorder(new LineBorder(Color.RED, 1));
 
 		// 기본 페이지로 이동
-		nav.navigateTo("warehouseList", false);
+		nav.navigateTo("modification", false);
 	}
 	
 	private static void setupUISettings() {
