@@ -110,7 +110,7 @@ public class InventorySearchController extends PanelController<InventorySearchPa
 			break;
 		case "중분류":
 			joinSql = "JOIN midiumcategory mc ON p.medium_id = mc.midium_id ";
-			joinSql2 = "AND mc.medium_name LIKE ?";
+			joinSql2 = "AND mc.midium_name LIKE ?";
 			break;
 		case "소분류":
 			joinSql = "JOIN smallcategory s ON p.small_id = s.small_id ";
@@ -124,7 +124,8 @@ public class InventorySearchController extends PanelController<InventorySearchPa
 		String sql = "SELECT p.product_id, p.product_name, main_name, p.current_inventory, p.selling_price "
 				+ "FROM product p " + joinSql + "WHERE p.product_name LIKE ? " + joinSql2;
 
-		System.out.println(searchKeyword);
+		System.out.println(joinSql);
+		System.out.println(joinSql2);
 		System.out.println(categoryName);
 		
 		try (Connection connection = DatabaseUtil.getConnection();
