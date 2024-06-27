@@ -174,7 +174,7 @@ public class DialogManager {
 	    return showMessageBox(parentPanel, message, false, okAction, null);
 	}
 	
-	public static Context showMessageBox(JPanel parentPanel, String message, boolean isConfirmation,
+	private static Context showMessageBox(JPanel parentPanel, String message, boolean isConfirmation,
 			ActionListener yesAction, ActionListener noAction) {
 		ensureInitialized();
 
@@ -247,7 +247,12 @@ public class DialogManager {
 			buttonPanel.add(yesButton);
 			buttonPanel.add(noButton);
 		} else {
-			JButton okButton = createRoundButton("확인", e -> closeDialog(parentPanel));
+			JButton okButton = createRoundButton("확인", e -> {
+				if (noAction != null) {
+					noAction.actionPerformed(e);
+				}
+				closeDialog(parentPanel);
+			});
 			buttonPanel.setLayout(new GridLayout(1, 1));
 			buttonPanel.add(okButton);
 		}
