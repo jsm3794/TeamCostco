@@ -22,20 +22,22 @@ public class HomeTestController extends PanelController<NewHome> {
 		
 		SwingUtilities.invokeLater(() -> {
 			if (AuthManager.getInstance().isLoggedIn()) {
-				startTimer();
-				inventorySeach();
-				materialDispatch();
-				productInspection();
-				orderList();
-				wareHouseList();
-				inventorymodification();
-				stockAccumulation();
-				receivingProcess();
-				productRegistration();
+
 			} else {
-				MainForm.nav.navigateTo("login", false);
+				//MainForm.nav.navigateTo("login", false);
 			}
 		});
+		
+		startTimer();
+		inventorySeach();
+		materialDispatch();
+		productInspection();
+		orderList();
+		wareHouseList();
+		inventorymodification();
+		stockAccumulation();
+		receivingProcess();
+		productRegistration();
 		
 	}
 	
@@ -77,7 +79,7 @@ public class HomeTestController extends PanelController<NewHome> {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainForm.nav.push("sign", true);
+				MainForm.nav.push("orderlist", true);
 			}
 		});
 	}
@@ -121,7 +123,7 @@ public class HomeTestController extends PanelController<NewHome> {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainForm.nav.push("sign", true);
+				MainForm.nav.push("productinspection", true);
 			}
 		});
 	}

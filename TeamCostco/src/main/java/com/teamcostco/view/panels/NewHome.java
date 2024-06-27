@@ -42,7 +42,7 @@ public JLabel timeLabel;
 		
         JPanel image_panel = new JPanel();
         image_panel.setBounds(12, 10, 456, 144);
-        ImageIcon image = new ImageIcon("C:\\aiautomationkdw\\repositories\\JavaStudy\\JavaStudy\\src\\project\\123.png");
+        ImageIcon image = new ImageIcon(NewHome.class.getResource("/main/resources/homeLogo.png"));
         JLabel imageLabel = new JLabel(image);
 		image_panel.add(imageLabel);
 		add(image_panel);
