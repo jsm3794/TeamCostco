@@ -248,8 +248,8 @@ public class DialogManager {
 			buttonPanel.add(noButton);
 		} else {
 			JButton okButton = createRoundButton("확인", e -> {
-				if (noAction != null) {
-					noAction.actionPerformed(e);
+				if (yesAction != null) {
+					yesAction.actionPerformed(e);
 				}
 				closeDialog(parentPanel);
 			});
