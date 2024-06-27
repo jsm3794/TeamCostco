@@ -145,7 +145,7 @@ public class DialogManager {
 		instance.overlayPanel.add(instance.displayPanel, gbc);
 
 		JLayeredPane layeredPane = parentPanel.getRootPane().getLayeredPane();
-		instance.overlayPanel.setSize(parentPanel.getParent().getSize());
+		instance.overlayPanel.setSize(parentPanel.getSize());
 
 		if (instance.overlayPanel.getParent() != null) {
 			((JLayeredPane) instance.overlayPanel.getParent()).remove(instance.overlayPanel);
@@ -162,6 +162,18 @@ public class DialogManager {
 		return new Context(layeredPane, parentPanel);
 	}
 
+	// 예/아니오 버튼이 있는 확인 대화상자
+	public static Context showMessageBox(JPanel parentPanel, String message,
+	        ActionListener yesAction, ActionListener noAction) {
+	    return showMessageBox(parentPanel, message, true, yesAction, noAction);
+	}
+
+	// 확인 버튼만 있는 알림 대화상자
+	public static Context showMessageBox(JPanel parentPanel, String message,
+	        ActionListener okAction) {
+	    return showMessageBox(parentPanel, message, false, okAction, null);
+	}
+	
 	public static Context showMessageBox(JPanel parentPanel, String message, boolean isConfirmation,
 			ActionListener yesAction, ActionListener noAction) {
 		ensureInitialized();
@@ -268,7 +280,7 @@ public class DialogManager {
 		gbc.anchor = GridBagConstraints.CENTER;
 		instance.overlayPanel.add(instance.displayPanel, gbc);
 
-		instance.overlayPanel.setSize(parentPanel.getParent().getSize());
+		instance.overlayPanel.setSize(parentPanel.getSize());
 		JLayeredPane layeredPane = parentPanel.getRootPane().getLayeredPane();
 
 		if (instance.overlayPanel.getParent() != null) {
