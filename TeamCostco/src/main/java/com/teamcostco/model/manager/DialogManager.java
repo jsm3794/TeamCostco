@@ -162,7 +162,19 @@ public class DialogManager {
 		return new Context(layeredPane, parentPanel);
 	}
 
-	public static Context showMessageBox(JPanel parentPanel, String message, boolean isConfirmation,
+	// 예/아니오 버튼이 있는 확인 대화상자
+	public static Context showMessageBox(JPanel parentPanel, String message,
+	        ActionListener yesAction, ActionListener noAction) {
+	    return showMessageBox(parentPanel, message, true, yesAction, noAction);
+	}
+
+	// 확인 버튼만 있는 알림 대화상자
+	public static Context showMessageBox(JPanel parentPanel, String message,
+	        ActionListener okAction) {
+	    return showMessageBox(parentPanel, message, false, okAction, null);
+	}
+	
+	private static Context showMessageBox(JPanel parentPanel, String message, boolean isConfirmation,
 			ActionListener yesAction, ActionListener noAction) {
 		ensureInitialized();
 
@@ -235,7 +247,12 @@ public class DialogManager {
 			buttonPanel.add(yesButton);
 			buttonPanel.add(noButton);
 		} else {
-			JButton okButton = createRoundButton("확인", e -> closeDialog(parentPanel));
+			JButton okButton = createRoundButton("확인", e -> {
+				if (yesAction != null) {
+					yesAction.actionPerformed(e);
+				}
+				closeDialog(parentPanel);
+			});
 			buttonPanel.setLayout(new GridLayout(1, 1));
 			buttonPanel.add(okButton);
 		}

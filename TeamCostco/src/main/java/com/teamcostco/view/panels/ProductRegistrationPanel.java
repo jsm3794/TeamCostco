@@ -22,7 +22,6 @@ import main.java.com.teamcostco.view.textfields.JPlaceholderTextField;
 public class ProductRegistrationPanel extends JPanel {
 
     public static final long serialVersionUID = 1L;
-    private JTextField textFieldProductCode;
     private JTextField textFieldProductName;
     private JTextField textFieldPurchasePrice;
     private JTextField textFieldSellingPrice;
@@ -40,41 +39,31 @@ public class ProductRegistrationPanel extends JPanel {
         setBounds(new Rectangle(0, 0, 480, 640));
         setLayout(null);
 
-        JLabel productCodeLabel = new JLabel("상품코드");
-        productCodeLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        productCodeLabel.setBounds(12, 67, 90, 40);
-        add(productCodeLabel);
-
-        textFieldProductCode = new JPlaceholderTextField("ex) PRID00000001");
-        textFieldProductCode.setBounds(114, 68, 354, 40);
-        add(textFieldProductCode);
-        textFieldProductCode.setColumns(10);
-
         JLabel largeClassificationLabel = new JLabel("대분류");
         largeClassificationLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        largeClassificationLabel.setBounds(12, 117, 90, 40);
+        largeClassificationLabel.setBounds(12, 65, 90, 40);
         add(largeClassificationLabel);
 
         comboBoxLargeCategory = new JComboBox<>();
-        comboBoxLargeCategory.setBounds(114, 118, 354, 40);
+        comboBoxLargeCategory.setBounds(114, 65, 354, 40);
         add(comboBoxLargeCategory);
 
         JLabel middleClassificationLabel = new JLabel("중분류");
         middleClassificationLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        middleClassificationLabel.setBounds(12, 167, 90, 40);
+        middleClassificationLabel.setBounds(12, 140, 90, 40);
         add(middleClassificationLabel);
 
         comboBoxMediumCategory = new JComboBox<>();
-        comboBoxMediumCategory.setBounds(114, 168, 354, 40);
+        comboBoxMediumCategory.setBounds(114, 140, 354, 40);
         add(comboBoxMediumCategory);
 
         JLabel smallClassificationLabel = new JLabel("소분류");
         smallClassificationLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        smallClassificationLabel.setBounds(12, 218, 90, 40);
+        smallClassificationLabel.setBounds(12, 215, 90, 40);
         add(smallClassificationLabel);
 
         comboBoxSmallCategory = new JComboBox<>();
-        comboBoxSmallCategory.setBounds(114, 218, 354, 40);
+        comboBoxSmallCategory.setBounds(114, 215, 354, 40);
         add(comboBoxSmallCategory);
 
         initializationBtn = new JButton("초기화");
@@ -113,12 +102,12 @@ public class ProductRegistrationPanel extends JPanel {
         
         JLabel productLabel = new JLabel("상품");
         productLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        productLabel.setBounds(12, 268, 90, 40);
+        productLabel.setBounds(12, 280, 90, 40);
         add(productLabel);
         
         textFieldProductName = new JPlaceholderTextField("ex) 신라면");
         textFieldProductName.setColumns(10);
-        textFieldProductName.setBounds(114, 268, 354, 40);
+        textFieldProductName.setBounds(114, 280, 354, 40);
         add(textFieldProductName);
     }
 
@@ -128,10 +117,6 @@ public class ProductRegistrationPanel extends JPanel {
 
 	public JButton getproductRegistrationBtn() {
 		return productRegistrationBtn;
-	}
-
-	public JTextField getTextFieldProductCode() {
-		return textFieldProductCode;
 	}
 	
 	public JTextField gettextFieldProductName() {
