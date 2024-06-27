@@ -162,6 +162,18 @@ public class DialogManager {
 		return new Context(layeredPane, parentPanel);
 	}
 
+	// 예/아니오 버튼이 있는 확인 대화상자
+	public static Context showMessageBox(JPanel parentPanel, String message,
+	        ActionListener yesAction, ActionListener noAction) {
+	    return showMessageBox(parentPanel, message, true, yesAction, noAction);
+	}
+
+	// 확인 버튼만 있는 알림 대화상자
+	public static Context showMessageBox(JPanel parentPanel, String message,
+	        ActionListener okAction) {
+	    return showMessageBox(parentPanel, message, false, okAction, null);
+	}
+	
 	public static Context showMessageBox(JPanel parentPanel, String message, boolean isConfirmation,
 			ActionListener yesAction, ActionListener noAction) {
 		ensureInitialized();
