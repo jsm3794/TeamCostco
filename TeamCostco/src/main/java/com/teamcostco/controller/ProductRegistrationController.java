@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.SwingUtilities;
+
 import main.java.com.teamcostco.MainForm;
 import main.java.com.teamcostco.model.database.DatabaseUtil;
 import main.java.com.teamcostco.model.manager.DialogManager;
@@ -138,7 +140,7 @@ public class ProductRegistrationController extends PanelController<ProductRegist
 				// 필수 입력값 확인
 				if (productName.isEmpty() || productName.isEmpty() || purchasePriceText.isEmpty()
 						|| sellingPriceText.isEmpty()) {
-					DialogManager.showMessageBox(view, "모든 필드를 입력하세요.", false, null, null);
+					DialogManager.showMessageBox(view, "모든 필드를 입력하세요.", null);
 					return;
 				}
 
@@ -147,7 +149,7 @@ public class ProductRegistrationController extends PanelController<ProductRegist
 					purchasePrice = Integer.parseInt(purchasePriceText);
 					sellingPrice = Integer.parseInt(sellingPriceText);
 				} catch (NumberFormatException ex) {
-					DialogManager.showMessageBox(view, "가격 필드는 숫자여야 합니다.", false, null, null);
+					DialogManager.showMessageBox(view, "가격 필드는 숫자여야 합니다.", null);
 					return;
 				}
 
@@ -184,7 +186,7 @@ public class ProductRegistrationController extends PanelController<ProductRegist
 					pstmt.setInt(8, sellingPrice);
 
 					pstmt.executeUpdate();
-					DialogManager.showMessageBox(view, "등록성공", false, null, null);
+					DialogManager.showMessageBox(view, "등록성공", evt ->{MainForm.nav.pop();});
 					
 				} catch (SQLException ex) {
 					ex.printStackTrace();
