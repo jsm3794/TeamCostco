@@ -1,22 +1,52 @@
 package main.java.com.teamcostco.model;
 
-public class Product {
+import java.sql.Date;
 
-	int product_id;
-	int product_name;
-	
-	public int getProduct_id() {
-		return product_id;
+public class Product {
+    private int productId; // 제품 ID
+    private String productcode; // 제품일렬번호
+    private String productName; // 제품명
+    private String mainid; // 대분류
+    private String mediumid; // 중분류
+    private String smallid; // 소분류
+
+    
+    public int getProductId() {
+		return productId;
 	}
-	public void setProduct_id(int product_id) {
-		this.product_id = product_id;
+	public void setProductId(int productId) {
+		this.productId = productId;
 	}
-	public int getProduct_name() {
-		return product_name;
+	public String getProductcode() {
+		return productcode;
 	}
-	public void setProduct_name(int product_name) {
-		this.product_name = product_name;
+	public void setProductcode(String productcode) {
+		this.productcode = productcode;
 	}
-	
-	
+	public String getProductName() {
+		return productName;
+	}
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+	public String getMainid() {
+		return mainid;
+	}
+	public void setMainid(String mainid) {
+		this.mainid = mainid;
+	}
+	public String getMediumid() {
+		return mediumid;
+	}
+	public void setMediumid(String mediumid) {
+		this.mediumid = mediumid;
+	}
+	public String getSmallid() {
+		return smallid;
+	}
+	public void setSmallid(String smallid) {
+		this.smallid = smallid;
+	}
+    
+
 }
