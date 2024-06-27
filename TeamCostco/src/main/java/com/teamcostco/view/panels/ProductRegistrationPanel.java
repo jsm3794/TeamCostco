@@ -23,6 +23,7 @@ public class ProductRegistrationPanel extends JPanel {
 
     public static final long serialVersionUID = 1L;
     private JTextField textFieldProductCode;
+    private JTextField textFieldProductName;
     private JTextField textFieldPurchasePrice;
     private JTextField textFieldSellingPrice;
     private JComboBox<String> comboBoxLargeCategory;
@@ -115,10 +116,10 @@ public class ProductRegistrationPanel extends JPanel {
         productLabel.setBounds(12, 268, 90, 40);
         add(productLabel);
         
-        JPlaceholderTextField plchldrtxtfldEx = new JPlaceholderTextField("ex) 신라면");
-        plchldrtxtfldEx.setColumns(10);
-        plchldrtxtfldEx.setBounds(114, 268, 354, 40);
-        add(plchldrtxtfldEx);
+        textFieldProductName = new JPlaceholderTextField("ex) 신라면");
+        textFieldProductName.setColumns(10);
+        textFieldProductName.setBounds(114, 268, 354, 40);
+        add(textFieldProductName);
     }
 
 	public JButton getInitializationBtn() {
@@ -131,6 +132,10 @@ public class ProductRegistrationPanel extends JPanel {
 
 	public JTextField getTextFieldProductCode() {
 		return textFieldProductCode;
+	}
+	
+	public JTextField gettextFieldProductName() {
+		return textFieldProductName;
 	}
 
 	public JTextField getTextFieldPurchasePrice() {
