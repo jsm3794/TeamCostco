@@ -145,7 +145,7 @@ public class DialogManager {
 		instance.overlayPanel.add(instance.displayPanel, gbc);
 
 		JLayeredPane layeredPane = parentPanel.getRootPane().getLayeredPane();
-		instance.overlayPanel.setSize(parentPanel.getSize());
+		instance.overlayPanel.setSize(parentPanel.getParent().getSize());
 
 		if (instance.overlayPanel.getParent() != null) {
 			((JLayeredPane) instance.overlayPanel.getParent()).remove(instance.overlayPanel);
@@ -268,7 +268,7 @@ public class DialogManager {
 		gbc.anchor = GridBagConstraints.CENTER;
 		instance.overlayPanel.add(instance.displayPanel, gbc);
 
-		instance.overlayPanel.setSize(parentPanel.getSize());
+		instance.overlayPanel.setSize(parentPanel.getParent().getSize());
 		JLayeredPane layeredPane = parentPanel.getRootPane().getLayeredPane();
 
 		if (instance.overlayPanel.getParent() != null) {
