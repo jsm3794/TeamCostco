@@ -12,6 +12,7 @@ import javax.swing.plaf.FontUIResource;
 import main.java.com.teamcostco.component.Navigator;
 import main.java.com.teamcostco.controller.AmountModify2Controller;
 import main.java.com.teamcostco.controller.HomeTestController;
+import main.java.com.teamcostco.controller.InventorySearchController;
 import main.java.com.teamcostco.controller.LoginController;
 import main.java.com.teamcostco.controller.OrderDetailController;
 import main.java.com.teamcostco.controller.OrderListController;
@@ -57,9 +58,9 @@ public class MainForm {
 		nav.mappingTarget("orderlist", OrderListController.class);
 		nav.mappingTarget("orderdetail", OrderDetailController.class);
 		nav.mappingTarget("registration", ProductRegistrationController.class);
+		nav.mappingTarget("iv", InventorySearchController.class);
 		nav.mappingTarget("warehouseList", WareHouseListController.class);
 		nav.mappingTarget("modification", AmountModify2Controller.class);
-		
 		// Navigator 디자인
 		nav.setPreferredSize(new Dimension(FORM_WIDTH, FORM_HEIGHT));
 		// nav.setBorder(new LineBorder(Color.RED, 1));
