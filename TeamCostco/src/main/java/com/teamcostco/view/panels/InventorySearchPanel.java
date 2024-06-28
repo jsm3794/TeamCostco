@@ -18,13 +18,46 @@ public class InventorySearchPanel extends JPanel {
     private static final long serialVersionUID = 1L;
 
     public JButton searchButton;
-    public JTextField searchField;
+    public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public JButton getSearchButton() {
+		return searchButton;
+	}
+
+	public JTextField getSearchField() {
+		return searchField;
+	}
+
+	public JComboBox<String> getCategoryComboBox() {
+		return categoryComboBox;
+	}
+
+	public JComboBox<String> getCb_CategorizeName() {
+		return cb_CategorizeName;
+	}
+
+	public DefaultTableModel getModel() {
+		return model;
+	}
+
+	public JTable getTable() {
+		return table;
+	}
+
+	public JPlaceholderTextField getTextField() {
+		return textField;
+	}
+
+
+	public JTextField searchField;
     public JComboBox<String> categoryComboBox;
     public JComboBox<String> cb_CategorizeName;
     public DefaultTableModel model;
     public JTable table;
     public JPlaceholderTextField textField;
-    public JTable table_1;
+   
 
     public InventorySearchPanel() {
         setLayout(null);
@@ -51,10 +84,10 @@ public class InventorySearchPanel extends JPanel {
 
         // Create the table with a DefaultTableModel
         model = new DefaultTableModel(new Object[][] {}, new String[] { "구역", "상품명", "수량" });
-        table_1 = new JTable(model);
+        table = new JTable(model);
 
         // Add the table to a scroll pane
-        JScrollPane scrollPane = new JScrollPane(table_1);
+        JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBounds(23, 141, 445, 404);
         add(scrollPane);
 

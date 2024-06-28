@@ -21,6 +21,7 @@ import javax.swing.JButton;
 public class ProductDetailPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
+	private JLabel CategoryLabel;
 	private JTextField textField;
 	private JLabel productCode;
 	private JLabel largeCategory;
@@ -144,40 +145,48 @@ public class ProductDetailPanel extends JPanel {
 	public JTextField getTextField() {
 		return textField;
 	}
-
+	//상품코드
 	public JLabel getProductCode() {
 		return productCode;
 	}
 
-	public JLabel getLargeCategory() {
-		return largeCategory;
-	}
-
+	//상품이름
 	public JLabel getProductName() {
 		return productName;
 	}
-
+	//판매가
 	public JLabel getSellingPrice() {
 		return sellingPrice;
 	}
-
+	//구매가
 	public JLabel getPurchasePrice() {
 		return purchasePrice;
 	}
-
+	//적정재고
 	public JLabel getProperInventory() {
 		return properInventory;
 	}
-
+	//현재재고
 	public JLabel getCurrentInventory() {
 		return currentInventory;
 	}
-
+	//입고날짜
 	public JLabel getWarehousingDate() {
 		return warehousingDate;
 	}
-
-	public JLabel loadingPosition() {
+	//적재위치
+	public JLabel getloadingPosition() {
 		return loadingPosition;
 	}
+	//대분류
+	public JLabel getCategoryLabel() {
+		return CategoryLabel;
+		
+	}
+	
+	public JTextField getBtnAdjustRequest() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
