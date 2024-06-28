@@ -18,9 +18,9 @@ import main.java.com.teamcostco.view.panels.AmountModifyPanel;
 
 public class AmountModifyController extends PanelController<AmountModifyPanel> {
 
-	private AmountModifyModel model;
 	private DatabaseUtil connector;
 	private static int cnt = 0;
+	private int current_inventory;
 	
 	public AmountModifyController() {
 		connector = new DatabaseUtil();
@@ -51,7 +51,7 @@ public class AmountModifyController extends PanelController<AmountModifyPanel> {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				resetFields();
 			}
 		});
 
@@ -67,12 +67,9 @@ public class AmountModifyController extends PanelController<AmountModifyPanel> {
 				String input_pn = view.getProductNameField().getText().trim();
 				String selected_category = (String) view.getCategoryComboBox().getSelectedItem();
 
-				StringBuilder sql = new StringBuilder("SELECT p.product_name, c.categori_name, amount, "
-						+ "unit_price, p.product_id, " + "s.storage_id, warehousing_date " + "FROM product p "
-						+ "INNER JOIN categori c USING (categori_id) "
-						+ "INNER JOIN orderrequest o ON p.product_id = o.product_id "
-						+ "INNER JOIN storage s ON s.product_Id = p.product_Id "
-						+ "INNER JOIN warehousing w ON w.storage_id = s.storage_id ");
+				StringBuilder sql = new StringBuilder("SELECT current_invenetory, active_inventory, selling_price, product_code FROM product "
+						+ "INNER JOIN maincategory USING (main_id)"
+						);
 
 				setSearchInfo(sql, input_pn, selected_category);
 
@@ -101,11 +98,11 @@ public class AmountModifyController extends PanelController<AmountModifyPanel> {
 
 	private void setSearchInfo(StringBuilder sql, String input_pn, String selected_category) {
 		if (!input_pn.isEmpty()) {
-			sql.append("WHERE c.categori_name = ? AND p.product_name LIKE ?");
+			sql.append("WHERE main_name = ? AND product_name LIKE ?");
 			input_pn = '%' + input_pn + '%';
 		}
 
-		sql.append(" ORDER BY product_name ASC, categori_name ASC");
+		sql.append(" ORDER BY product_name ASC, main_name ASC");
 
 		try (
 				Connection conn = connector.getConnection();
@@ -118,13 +115,15 @@ public class AmountModifyController extends PanelController<AmountModifyPanel> {
 			}
 			try (ResultSet rs = pstmt.executeQuery();) {
 				while (rs.next()) {
-					model = new AmountModifyModel(rs);
 					if (!input_pn.isEmpty()) {
-						view.getAmount_txtField().setText(model.getAmount().toString());
-						view.getLocation_txtArea().setText(model.getStorage_id());
-						view.getSellPrice_txtArea().setText(model.getUnit_price().toString());
-						view.getPid_txtArea().setText(model.getProduct_id());
-						view.getWhdate_txtArea().setText(model.getWarehousing_date().toString());
+						String amount = new String(rs.getInt("active_inventory") + "");
+						String sellPrice = rs.getInt("selling_price") + "";
+						String code = rs.getString("product_code");
+						current_inventory = rs.getInt("current_inventory");
+						view.getAmount_txtField().setText(amount);
+						view.getSellPrice_txtArea().setText(sellPrice);
+						view.getPid_txtArea().setText(code);
+						
 					} else {
 						// 상품명 입력하세요 알림창 생성
 						JOptionPane.showMessageDialog(null, "상품명을 입력해주세요", "info", JOptionPane.INFORMATION_MESSAGE);
@@ -144,8 +143,8 @@ public class AmountModifyController extends PanelController<AmountModifyPanel> {
 		String selected_category = (String) view.getCategoryComboBox().getSelectedItem();
 		
 		StringBuilder sql = new StringBuilder( 
-				"UPDATE storage SET amount = ? "
-				+ "WHERE product_id = ? AND storage_id = ?"				
+				"UPDATE product SET active_inventory = ? "
+				+ "WHERE product_id = ?"				
 				);
 		// 상품명 입력 안할시 리턴
 		if (input_pn.isEmpty()) {
@@ -157,19 +156,24 @@ public class AmountModifyController extends PanelController<AmountModifyPanel> {
 		) {
 				conn.setAutoCommit(false);
 				
-				String amount = view.getAmount_txtField().getText();
+				Integer amount = Integer.parseInt(view.getAmount_txtField().getText());
+				if (current_inventory < amount) {
+					JOptionPane.showMessageDialog(null, "보유수량을 초과하는 수량입니다.");
+					return;
+				}
 				
-				pstmt.setInt(1, Integer.parseInt(amount));
+				pstmt.setInt(1, amount);
 				pstmt.setString(2, view.getPid_txtArea().getText());
-				pstmt.setString(3, view.getLocation_txtArea().getText());
 				
 				try {
 					int row = pstmt.executeUpdate();
 					System.out.printf("%d행 업데이트\n", row);
-					conn.setSavepoint("수정" + ++cnt);
+					conn.commit();
+					JOptionPane.showMessageDialog(view, "수정 완료!", "Success", JOptionPane.INFORMATION_MESSAGE);
 				} catch (SQLException e2) {
 					System.out.println("문제가 생겨서 롤백");
 					conn.rollback();
+					 JOptionPane.showMessageDialog(view, "업데이트 실패!", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 				
 				
