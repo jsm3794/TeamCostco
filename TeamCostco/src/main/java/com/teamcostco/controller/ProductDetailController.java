@@ -32,12 +32,15 @@ public class ProductDetailController extends PanelController<ProductDetailPanel>
 		        view = new ProductDetailPanel();
 		        initControl();
 		  
-			
+			//그냥 다른 클래스에서 조인해서 가져오는 방식으로ㅎ
+		        
+		        
 			try (Connection conn = DatabaseUtil.getConnection()) {
 				String str = "SELECT * FROM product WHERE product_code = ?";
 				PreparedStatement pstmt = conn.prepareStatement(str);
 				pstmt.setString(1, product.getProduct_code());
 				ResultSet rs = pstmt.executeQuery();
+				CategoryModel.MainCategory mainCategory = categorymodel.new MainCategory(rs);
 				
 				if (rs.next()) {
 					product = new Product(rs);
@@ -58,7 +61,9 @@ public class ProductDetailController extends PanelController<ProductDetailPanel>
 			view.getSellingPrice().setText(String.valueOf(product.getSelling_price()));
 			view.getProperInventory().setText(String.valueOf(product.getAppropriate_inventory()));
 			view.getCurrentInventory().setText(String.valueOf(product.getCurrent_inventory()));
-			
+		
+		        
+		        
 		// "조정 요청" 버튼에 이벤트 리스너를 추가
 		view.getBtnAdjustRequest().addActionListener(new ActionListener() {
 			@Override

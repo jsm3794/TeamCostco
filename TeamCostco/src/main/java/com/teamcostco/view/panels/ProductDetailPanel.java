@@ -33,9 +33,7 @@ public class ProductDetailPanel extends JPanel {
 	private JLabel warehousingDate;
 	private JLabel loadingPosition;
 
-	/**
-	 * Create the panel.
-	 */
+
 	public ProductDetailPanel() {
 		setBounds(new Rectangle(0, 0, 480, 640));
 		setLayout(null);
@@ -188,5 +186,6 @@ public class ProductDetailPanel extends JPanel {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 }
