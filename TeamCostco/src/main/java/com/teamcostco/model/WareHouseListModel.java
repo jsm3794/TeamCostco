@@ -12,28 +12,28 @@ INNER JOIN smallcategory small ON small.small_id = p.small_id
 WHERE product_name LIKE '%불%' AND main_name = '즉석식품' AND midium_name = '즉석식품' AND small_name = '햄버거';
  */
 public class WareHouseListModel {
-	private String storage_id;
+	private String product_id;
 	private String main_name;
-	private String midium_name;
+	private String medium_name;
 	private String small_name;
 	private String product_name;
 	private Integer current_inventory;
 	
 	public WareHouseListModel(ResultSet rs) throws SQLException {
-		storage_id = rs.getString("storage_id");
+		product_id = rs.getString("product_id");
 		main_name = rs.getString("main_name");
-		midium_name = rs.getString("midium_name");
+		medium_name = rs.getString("medium_name");
 		small_name = rs.getString("small_name");
 		product_name = rs.getString("product_name");
 		current_inventory = rs.getInt("current_inventory");
 	}
 
-	public String getStorage_id() {
-		return storage_id;
+	public String getProduct_id() {
+		return product_id;
 	}
 
-	public void setStorage_id(String storage_id) {
-		this.storage_id = storage_id;
+	public void setProduct_id(String product_id) {
+		this.product_id = product_id;
 	}
 
 	public String getMain_name() {
@@ -44,12 +44,12 @@ public class WareHouseListModel {
 		this.main_name = main_name;
 	}
 
-	public String getMidium_name() {
-		return midium_name;
+	public String getMedium_name() {
+		return medium_name;
 	}
 
-	public void setMidium_name(String midium_name) {
-		this.midium_name = midium_name;
+	public void setMidium_name(String medium_name) {
+		this.medium_name = medium_name;
 	}
 
 	public String getSmall_name() {
@@ -78,8 +78,8 @@ public class WareHouseListModel {
 
 	@Override
 	public String toString() {
-		return "WareHouseListModel [storage_id=" + storage_id + ", main_name=" + main_name + ", midium_name="
-				+ midium_name + ", small_name=" + small_name + ", product_name=" + product_name + ", current_inventory="
+		return "WareHouseListModel [product_id=" + product_id + ", main_name=" + main_name + ", medium_name="
+				+ medium_name + ", small_name=" + small_name + ", product_name=" + product_name + ", current_inventory="
 				+ current_inventory + "]";
 	}
 	
