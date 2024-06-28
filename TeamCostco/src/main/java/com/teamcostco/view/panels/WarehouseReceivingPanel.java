@@ -110,6 +110,10 @@ public class WarehouseReceivingPanel extends JPanel {
 		textField.setColumns(10);
 	}
 
+	public JTextField getTextField() {
+		return textField;
+	}
+
 	private JLabel createLabel(String text, int x, int y, int width, int height) {
 		JLabel label = new JLabel(text);
 		label.setBounds(x, y, width, height);

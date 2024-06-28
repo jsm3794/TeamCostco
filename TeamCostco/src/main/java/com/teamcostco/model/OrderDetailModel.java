@@ -9,7 +9,7 @@ public class OrderDetailModel {
 	private String client; // 거래처
 	private String item_number; // 품번
 	private String product_name; // 품명
-	private String category_name;
+	private String main_name;
 	private int order_quantity; // 발주수량
 	private int quantity_of_wh; // 입고수량
 	private int remaining_capacity; // 잔량
@@ -20,18 +20,18 @@ public class OrderDetailModel {
 		this.client = rs.getString("client_name");
 		this.item_number = rs.getString("product_id");
 		this.product_name = rs.getString("product_name");
-		this.category_name = rs.getString("categori_name");
+		this.main_name = rs.getString("main_name");
 		this.order_quantity = rs.getInt("order_quantity");
 		this.quantity_of_wh = rs.getInt("quantity_of_wh");
 		this.order_date = rs.getDate("request_date");
 	}
 
-	public String getCategory_name() {
-		return category_name;
+	public String getmain_name() {
+		return main_name;
 	}
 
-	public void setCategory_name(String category_name) {
-		this.category_name = category_name;
+	public void setCategory_name(String main_name) {
+		this.main_name = main_name;
 	}
 
 	public String getClient() {
@@ -97,7 +97,7 @@ public class OrderDetailModel {
 	    sb.append("거래처=").append(client).append(lineSeparator);
 	    sb.append("발주번호=").append(item_number).append(lineSeparator);
 	    sb.append("상품명=").append(product_name).append(lineSeparator);
-	    sb.append("카테고리=").append(category_name).append(lineSeparator);
+	    sb.append("카테고리=").append(main_name).append(lineSeparator);
 	    sb.append("발주수량=").append(order_quantity).append(lineSeparator);
 	    sb.append("입고수량=").append(quantity_of_wh).append(lineSeparator);
 	    sb.append("발주일자=").append(order_date);
