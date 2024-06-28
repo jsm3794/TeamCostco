@@ -115,18 +115,20 @@ public class WareHouseListController extends PanelController<WareHouseListPanel>
     }
 
     private void searchProducts() {
-    	String sql = "SELECT "
+    	StringBuilder sql = new StringBuilder(
+    			"SELECT "
     		    + "product_id, "
     		    + "main_name, "
     		    + "medium_name, "
     		    + "small_name, "
     		    + "product_name, "
-    		    + "current_inventory "
+    		    + "current_inventory - active_inventory AS \"inventory_amount\" "
     		    + "FROM product p "
     		    + "INNER JOIN maincategory main ON main.main_id = p.main_id "
-    		    + "INNER JOIN mediumcategory midi ON midi.medium_id = p.medium_id "
+    		    + "INNER JOIN mediumcategory medi ON medi.medium_id = p.medium_id "
     		    + "INNER JOIN smallcategory small ON small.small_id = p.small_id "
-    		    + "WHERE product_name LIKE ? ";
+    		    + "WHERE product_name LIKE ? "
+    			);
 
         List<String> conditions = new ArrayList<>();
         List<Object> parameters = new ArrayList<>();
@@ -135,13 +137,13 @@ public class WareHouseListController extends PanelController<WareHouseListPanel>
 
         String selectedMain = (String) view.getMainCateComboBox().getSelectedItem();
         if (selectedMain != null && !"대분류 전체".equals(selectedMain)) {
-            conditions.add("AND main_name = ?");
+            conditions.add("AND main_name = ? ");
             parameters.add(selectedMain);
         }
 
         String selectedmedium = (String) view.getmediumCateCombo().getSelectedItem();
         if (selectedmedium != null && !"중분류 전체".equals(selectedmedium)) {
-            conditions.add("AND medium_name = ?");
+            conditions.add("AND medium_name = ? ");
             parameters.add(selectedmedium);
         }
 
@@ -152,11 +154,14 @@ public class WareHouseListController extends PanelController<WareHouseListPanel>
         }
 
         for (String condition : conditions) {
-            sql += condition + " ";
+            sql.append(condition);
         }
+        sql.append("ORDER BY product_id");
         
-        try (Connection conn = connector.getConnection();
-        		PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (
+        		Connection conn = connector.getConnection();
+        		PreparedStatement pstmt = conn.prepareStatement(sql.toString())
+        ) {
             for (int i = 0; i < parameters.size(); i++) {
                 pstmt.setObject(i + 1, parameters.get(i));
             }

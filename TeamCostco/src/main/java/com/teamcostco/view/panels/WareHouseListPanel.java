@@ -2,6 +2,8 @@ package main.java.com.teamcostco.view.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 
@@ -12,12 +14,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 import main.java.com.teamcostco.model.ProductTableModel;
+import main.java.com.teamcostco.view.textfields.JPlaceholderTextField;
 import main.utils.Constants;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class WareHouseListPanel extends JPanel {
     JTextField productNameField;
@@ -68,7 +70,7 @@ public class WareHouseListPanel extends JPanel {
         // Create the input panel
         JPanel inputPanel = new JPanel(new GridLayout(2, 2, 10, 10));
 
-        productNameField = new JTextField(15);
+        productNameField = new JPlaceholderTextField("상품명을 입력해주세요");
         inputPanel.add(productNameField);
 
         add(inputPanel, BorderLayout.NORTH);
@@ -96,15 +98,50 @@ public class WareHouseListPanel extends JPanel {
         // Initialize the table model
         tableModel = new ProductTableModel(new ArrayList<>());
         productTable = new JTable(tableModel);
-        add(new JScrollPane(productTable), BorderLayout.CENTER);
-    }
+        productTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // Disable auto resizing
 
-   
+        // Set preferred column widths
+        TableColumnModel columnModel = productTable.getColumnModel();
+        columnModel.getColumn(0).setPreferredWidth(100); // Product ID
+        columnModel.getColumn(1).setPreferredWidth(200); // Product Name
+        columnModel.getColumn(2).setPreferredWidth(150); // Main Category
+        columnModel.getColumn(3).setPreferredWidth(150); // Medium Category
+        columnModel.getColumn(4).setPreferredWidth(150); // Small Category
+        columnModel.getColumn(5).setPreferredWidth(100); // Inventory Quantity
+
+        // Set table font
+        productTable.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
+        productTable.setRowHeight(24);
+
+        // Alternating row colors
+        productTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (row % 2 == 0) {
+                    setBackground(new Color(240, 240, 240));
+                } else {
+                    setBackground(Color.WHITE);
+                }
+                if (isSelected) {
+                    setBackground(new Color(184, 207, 229));
+                }
+                return this;
+            }
+        });
+
+        // Add tooltip to table cells
+        //productTable.setToolTipText("Double click to view details");
+
+        JScrollPane scrollPane = new JScrollPane(productTable);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        add(scrollPane, BorderLayout.CENTER);
+    }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("조정요청");
         frame.getContentPane().add(new WareHouseListPanel());
-        frame.setSize(480, 640);
+        frame.setSize(800, 600); // Adjust the frame size as needed
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }

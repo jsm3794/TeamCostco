@@ -17,7 +17,7 @@ public class WareHouseListModel {
 	private String medium_name;
 	private String small_name;
 	private String product_name;
-	private Integer current_inventory;
+	private Integer inventory_amount;
 	
 	public WareHouseListModel(ResultSet rs) throws SQLException {
 		product_id = rs.getString("product_id");
@@ -25,7 +25,7 @@ public class WareHouseListModel {
 		medium_name = rs.getString("medium_name");
 		small_name = rs.getString("small_name");
 		product_name = rs.getString("product_name");
-		current_inventory = rs.getInt("current_inventory");
+		inventory_amount = rs.getInt("inventory_amount");
 	}
 
 	public String getProduct_id() {
@@ -68,19 +68,19 @@ public class WareHouseListModel {
 		this.product_name = product_name;
 	}
 
-	public Integer getCurrent_inventory() {
-		return current_inventory;
+	public Integer getInventory_amoun() {
+		return inventory_amount;
 	}
 
-	public void setCurrent_inventory(Integer current_inventory) {
-		this.current_inventory = current_inventory;
+	public void setCurrent_inventory(Integer inventory_amount) {
+		this.inventory_amount = inventory_amount;
 	}
 
 	@Override
 	public String toString() {
 		return "WareHouseListModel [product_id=" + product_id + ", main_name=" + main_name + ", medium_name="
-				+ medium_name + ", small_name=" + small_name + ", product_name=" + product_name + ", current_inventory="
-				+ current_inventory + "]";
+				+ medium_name + ", small_name=" + small_name + ", product_name=" + product_name + ", inventory_amount="
+				+ inventory_amount + "]";
 	}
 	
 	

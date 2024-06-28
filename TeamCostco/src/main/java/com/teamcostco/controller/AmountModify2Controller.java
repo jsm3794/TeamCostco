@@ -84,7 +84,13 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
                 DialogManager.showMessageBox(
                     view,
                     "수량을 수정하시겠습니까?",
-                    evt -> updateAmount(),
+                    evt -> {
+						try {
+							updateAmount();
+						} catch (ExeedStorageAmount e1) {							
+							e1.printStackTrace();
+						}
+					},
                     null
                 );
             }
@@ -119,7 +125,7 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
     
     // 대분류 불러옴
     private void setComboBoxValue() {
-        String sql = "SELECT DISTINCT main_name FROM maincategory";
+        String sql = "SELECT main_name FROM maincategory";
 
         try (
             Connection conn = connector.getConnection();
@@ -136,34 +142,37 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
     }
 
     // 재고 수정 + (수정사유반영)
-    private void updateAmount() {
+    private void updateAmount() throws ExeedStorageAmount {
         String input_pn = view.getProductNameField().getText().trim();
         String selected_category = (String) view.getCategoryComboBox().getSelectedItem();
         
-        StringBuilder sql = new StringBuilder( 
-            "UPDATE storage SET amount = ? WHERE product_id = ? AND storage_id = ?"
-        );
+        String sql =
+            "UPDATE product SET active_inventory = ? WHERE product_id = ? ";
+        String amount = view.getAmount_txtField().getText();
         
         if (input_pn.isEmpty()) {
             JOptionPane.showMessageDialog(view, "상품명이 공백입니다.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
+        
+        // 총 보유 수량을 초과시 예외
+        //if (amount > )
+        
         try (
             Connection conn = connector.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(sql.toString());
+            PreparedStatement pstmt = conn.prepareStatement(sql);
         ) {
             conn.setAutoCommit(false);
             
-            String amount = view.getAmount_txtField().getText();
+           
             pstmt.setInt(1, Integer.parseInt(amount));
             pstmt.setString(2, view.getPid_txtArea().getText());
-            pstmt.setString(3, view.getLocation_txtArea().getText());
+            //pstmt.setString(3, view.getLocation_txtArea().getText()); // 적재위치
             
             try {
                 int row = pstmt.executeUpdate();
                 System.out.printf("%d행 업데이트\n", row);
-                conn.setSavepoint("수정" + ++cnt);
+                //conn.setSavepoint("수정" + ++cnt);
                 JOptionPane.showMessageDialog(view, "수정 완료!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 conn.commit();
             } catch (SQLException e2) {
@@ -225,7 +234,7 @@ class NegativeAmount extends Exception {
 
 class ExeedStorageAmount extends Exception {
     public ExeedStorageAmount() {
-        super("창고보관수량을 초과하는 수량입니다.");
+        super("전체 보유 수량을 초과할 수 없습니다.");
     }
 }
 
