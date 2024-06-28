@@ -25,7 +25,7 @@ public class WareHouseListPanel extends JPanel {
     JTable productTable;
     JButton searchButton;
     ProductTableModel tableModel;
-    private JComboBox<String> midiumCateCombo;
+    private JComboBox<String> mediumCateCombo;
     private JComboBox<String> smallCateCombo;
     private JPanel categoryPanel;
 
@@ -49,8 +49,8 @@ public class WareHouseListPanel extends JPanel {
         return mainCateComboBox;
     }
 
-    public JComboBox<String> getMidiumCateCombo() {
-        return midiumCateCombo;
+    public JComboBox<String> getmediumCateCombo() {
+        return mediumCateCombo;
     }
 
     public JComboBox<String> getSmallCateCombo() {
@@ -80,9 +80,9 @@ public class WareHouseListPanel extends JPanel {
         mainCateComboBox = new JComboBox<>();
         categoryPanel.add(mainCateComboBox);
 
-        midiumCateCombo = new JComboBox<>();
-        categoryPanel.add(midiumCateCombo);
-        midiumCateCombo.setEnabled(false);
+        mediumCateCombo = new JComboBox<>();
+        categoryPanel.add(mediumCateCombo);
+        mediumCateCombo.setEnabled(false);
 
         smallCateCombo = new JComboBox<>();
         categoryPanel.add(smallCateCombo);
