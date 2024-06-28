@@ -24,10 +24,12 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 
 import main.java.com.teamcostco.MainForm;
 import main.java.com.teamcostco.model.OrderDetailModel;
 import main.java.com.teamcostco.model.database.DatabaseUtil;
+import main.java.com.teamcostco.model.manager.DialogManager;
 import main.java.com.teamcostco.view.panels.OrderListPanel;
 
 public class OrderListController extends PanelController<OrderListPanel> {
@@ -37,38 +39,27 @@ public class OrderListController extends PanelController<OrderListPanel> {
 	}
 
 	private void initControl() {
-		view.startDateField.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				searchDatabase();
-			}
-		});
-
-		view.endDateField.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				searchDatabase();
-			}
-		});
-
-		view.itemNumberField.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				searchDatabase();
-			}
-		});
-
-		view.supplierField.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				searchDatabase();
-			}
-		});
 
 		view.searchButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				searchDatabase();
+				DialogManager.Context context = DialogManager.showLoadingBox(view);
+				new SwingWorker<Void, Void>() {
+
+					@Override
+					protected Void doInBackground() throws Exception {
+						searchDatabase();
+						return null;
+					}
+
+					@Override
+					protected void done() {
+						context.close();
+						super.done();
+					}
+
+				}.execute();
+
 			}
 		});
 
@@ -84,7 +75,7 @@ public class OrderListController extends PanelController<OrderListPanel> {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					searchDatabase();
+					view.searchButton.doClick();
 				}
 			}
 		};
@@ -103,14 +94,6 @@ public class OrderListController extends PanelController<OrderListPanel> {
 
 		List<OrderDetailModel> filteredData = new ArrayList<>();
 
-		/*
-		 * this.orderRequestId = rs.getInt("ORDER_REQUEST_ID"); this.productCode =
-		 * rs.getString("PRODUCT_CODE"); this.orderEmployeeId =
-		 * rs.getInt("ORDEREMPLOYEE_ID"); this.orderQuantity =
-		 * rs.getInt("ORDER_QUANTITY"); this.requestDate = rs.getDate("REQUEST_DATE");
-		 * this.requestStatus = rs.getString("REQUEST_STATUS"); this.clientName =
-		 * rs.getString("CLIENT_NAME"); this.quantityOfWh = rs.getInt("QUANTITY_OF_WH");
-		 */
 		try (Connection conn = DatabaseUtil.getConnection()) {
 			String sql = "SELECT " + "order_request_id, " + "o.product_code, " + "p.product_name AS product_name, "
 					+ "m.main_name AS main_name, " + "orderemployee_id, " + "order_quantity, " + "request_date, "
@@ -128,6 +111,11 @@ public class OrderListController extends PanelController<OrderListPanel> {
 			}
 			if (!view.supplierField.getText().trim().isEmpty()) {
 				sql += " AND CLIENT_NAME LIKE ?";
+			}
+			if (view.waitingwarehousing.isSelected()) {
+				sql += "AND ORDER_QUANTITY > quantity_of_wh";
+			} else {
+				sql += "AND ORDER_QUANTITY <= quantity_of_wh";
 			}
 
 			try (PreparedStatement pstmt = conn.prepareStatement(sql)) {

@@ -7,12 +7,14 @@ import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import main.utils.Constants;
+import main.utils.CustomNumberFormatter;
 
 public class WarehouseReceivingPanel extends JPanel {
 
@@ -29,7 +31,7 @@ public class WarehouseReceivingPanel extends JPanel {
 	public JLabel productIdLabel;
 	public JLabel order_quantity;
 	public JLabel remaining_capacity;
-	private JTextField textField;
+	public JFormattedTextField textField;
 
 	public WarehouseReceivingPanel() {
 		setLayout(null);
@@ -100,8 +102,10 @@ public class WarehouseReceivingPanel extends JPanel {
 		JLabel receivingQuantityLabel = createLabel("입고수량", 12, 370, 83, 45);
 		stylizeLabel.accept(receivingQuantityLabel);
 
-		textField = new JTextField();
-		textField.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
+		CustomNumberFormatter cnf = CustomNumberFormatter.createFormatter();
+
+		textField = new JFormattedTextField(cnf);
+		textField.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
 		textField.setHorizontalAlignment(SwingConstants.CENTER);
 		textField.setBounds(107, 370, 347, 45);
 		textField.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)),
