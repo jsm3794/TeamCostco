@@ -147,7 +147,7 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
         String selected_category = (String) view.getCategoryComboBox().getSelectedItem();
         
         String sql =
-            "UPDATE product SET active_inventory = ? WHERE product_id = ? AND storage_id = ?";
+            "UPDATE product SET active_inventory = ? WHERE product_id = ? ";
         String amount = view.getAmount_txtField().getText();
         
         if (input_pn.isEmpty()) {
@@ -167,7 +167,7 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
            
             pstmt.setInt(1, Integer.parseInt(amount));
             pstmt.setString(2, view.getPid_txtArea().getText());
-            pstmt.setString(3, view.getLocation_txtArea().getText()); // 적재위치
+            //pstmt.setString(3, view.getLocation_txtArea().getText()); // 적재위치
             
             try {
                 int row = pstmt.executeUpdate();

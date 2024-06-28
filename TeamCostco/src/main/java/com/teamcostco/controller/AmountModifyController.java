@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 
 import main.java.com.teamcostco.model.AmountModifyModel;
 import main.java.com.teamcostco.model.database.DatabaseUtil;
+import main.java.com.teamcostco.model.manager.DialogManager;
 import main.java.com.teamcostco.view.panels.AmountModifyPanel;
 
 // 구버전 입니다 상품검색 후 재고를 수정합니다.
@@ -30,12 +31,18 @@ public class AmountModifyController extends PanelController<AmountModifyPanel> {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int answer = 
-						JOptionPane.showConfirmDialog
-						(null, "수량을 수정하시겠습니까?", "알림", JOptionPane.YES_NO_OPTION);
-				if (answer == JOptionPane.YES_OPTION) {
-					updateAmount();
-				}
+	               DialogManager.showMessageBox(
+	                       view,
+	                       "수량을 수정하시겠습니까?",
+	                       evt -> {
+	   						try {
+	   							updateAmount();
+	   						} catch (ExeedStorageAmount e1) {							
+	   							e1.printStackTrace();
+	   						}
+	   					},
+	                       null
+	                   );
 			}
 		});
 
@@ -75,14 +82,14 @@ public class AmountModifyController extends PanelController<AmountModifyPanel> {
 	}
 
 	private void setComboBoxValue() {
-		String sql = "SELECT DISTINCT categori_name FROM categori";
+		String sql = "SELECT main_name FROM maincategory";
 
 		try (Connection conn = connector.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql);
 				ResultSet rs = pstmt.executeQuery();) {
 
 			while (rs.next()) {
-				String categori_name = rs.getString("categori_name");
+				String categori_name = rs.getString("main_name");
 				view.getCategoryComboBox().addItem(categori_name);
 			}
 
@@ -132,7 +139,7 @@ public class AmountModifyController extends PanelController<AmountModifyPanel> {
 		}
 	}
 
-	private void updateAmount() {
+	private void updateAmount() throws ExeedStorageAmount {
 		String input_pn = view.getProductNameField().getText().trim();
 		String selected_category = (String) view.getCategoryComboBox().getSelectedItem();
 		
@@ -187,3 +194,4 @@ public class AmountModifyController extends PanelController<AmountModifyPanel> {
 	}
 
 }
+
