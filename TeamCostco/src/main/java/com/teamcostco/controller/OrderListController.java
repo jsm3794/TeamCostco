@@ -103,14 +103,6 @@ public class OrderListController extends PanelController<OrderListPanel> {
 
 		List<OrderDetailModel> filteredData = new ArrayList<>();
 
-		/*
-		 * this.orderRequestId = rs.getInt("ORDER_REQUEST_ID"); this.productCode =
-		 * rs.getString("PRODUCT_CODE"); this.orderEmployeeId =
-		 * rs.getInt("ORDEREMPLOYEE_ID"); this.orderQuantity =
-		 * rs.getInt("ORDER_QUANTITY"); this.requestDate = rs.getDate("REQUEST_DATE");
-		 * this.requestStatus = rs.getString("REQUEST_STATUS"); this.clientName =
-		 * rs.getString("CLIENT_NAME"); this.quantityOfWh = rs.getInt("QUANTITY_OF_WH");
-		 */
 		try (Connection conn = DatabaseUtil.getConnection()) {
 			String sql = "SELECT " + "order_request_id, " + "o.product_code, " + "p.product_name AS product_name, "
 					+ "m.main_name AS main_name, " + "orderemployee_id, " + "order_quantity, " + "request_date, "
@@ -129,6 +121,13 @@ public class OrderListController extends PanelController<OrderListPanel> {
 			if (!view.supplierField.getText().trim().isEmpty()) {
 				sql += " AND CLIENT_NAME LIKE ?";
 			}
+			if (view.waitingwarehousing.isSelected()) {
+				sql += "AND ORDER_QUANTITY > quantity_of_wh";
+			} else {
+				sql += "AND ORDER_QUANTITY <= quantity_of_wh";
+			}
+				
+			
 
 			try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 				int paramIndex = 1;

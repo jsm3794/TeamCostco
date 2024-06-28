@@ -27,10 +27,12 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -47,6 +49,10 @@ public class OrderListPanel extends JPanel {
 	public JPanel searchPanel;
 	public JLabel dateLabel;
 	public JPanel datePanel;
+	public ButtonGroup buttonGroup;
+	public JRadioButton waitingwarehousing;
+	public JRadioButton completedwarehousing;
+
 
 	public JLabel supplierLabel;
 	public JButton searchButton;
@@ -70,7 +76,7 @@ public class OrderListPanel extends JPanel {
 		datePanel = new JPanel(new FlowLayout());
 		startDateField = new JTextField(11);
 		startDateField.setHorizontalAlignment(SwingConstants.CENTER);
-		endDateField = new JTextField(11);
+		endDateField = new JTextField(9);
 		endDateField.setHorizontalAlignment(SwingConstants.CENTER);
 		datePanel.add(startDateField);
 		datePanel.add(new JLabel("~"));
@@ -99,11 +105,27 @@ public class OrderListPanel extends JPanel {
 		gbc.gridx = 1;
 		gbc.gridy = 2;
 		searchPanel.add(supplierField, gbc);
+		
+		buttonGroup = new ButtonGroup();
+		
+		waitingwarehousing = new JRadioButton("입고대기");
+		waitingwarehousing.setSelected(true);
+		buttonGroup.add(waitingwarehousing);
+		
+		completedwarehousing = new JRadioButton("입고완료");
+		buttonGroup.add(completedwarehousing);
+		
+		gbc.gridx = 0;
+		gbc.gridy = 3;
+		searchPanel.add(waitingwarehousing, gbc);
+		gbc.gridx = 0;
+		gbc.gridy = 4;
+		searchPanel.add(completedwarehousing, gbc);
 
 		// 검색 버튼
 		searchButton = new JButton("검색");
 		gbc.gridx = 0;
-		gbc.gridy = 3;
+		gbc.gridy = 5;
 		gbc.gridwidth = 2; // 2개의 셀을 차지하도록 설정
 		gbc.anchor = GridBagConstraints.CENTER; // 가운데 정렬
 		gbc.weightx = 1.0; // X 방향으로 전체 공간을 균등하게 차지

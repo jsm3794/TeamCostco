@@ -65,6 +65,11 @@ public class OrderDetailController extends PanelController<OrderDetailPanel> {
             itemPanel.add(valueLabel);
 
             view.dataPanel.add(itemPanel);
+          
+        }
+        
+        if (data.getOrderQuantity() <= data.getQuantityOfWh()) {
+        	view.processButton.setEnabled(false);
         }
     }
 
