@@ -9,6 +9,7 @@ public class OrderDetailModel {
     private int orderRequestId;
     private String productCode;
     private String productName;
+    private String main_name;
     private int orderEmployeeId;
     private int orderQuantity;
     private Date requestDate;
@@ -20,6 +21,7 @@ public class OrderDetailModel {
         this.orderRequestId = rs.getInt("ORDER_REQUEST_ID");
         this.productCode = rs.getString("PRODUCT_CODE");
         this.productName = rs.getString("PRODUCT_NAME");
+        this.main_name = rs.getString("main_name");
         this.orderEmployeeId = rs.getInt("ORDEREMPLOYEE_ID");
         this.orderQuantity = rs.getInt("ORDER_QUANTITY");
         this.requestDate = rs.getDate("REQUEST_DATE");
@@ -29,7 +31,17 @@ public class OrderDetailModel {
     }
 
 
-    public String getProductName() {
+    public String getMain_name() {
+		return main_name;
+	}
+
+
+	public void setMain_name(String main_name) {
+		this.main_name = main_name;
+	}
+
+
+	public String getProductName() {
 		return productName;
 	}
 
@@ -110,6 +122,7 @@ public class OrderDetailModel {
         sb.append("발주요청ID=").append(orderRequestId).append(lineSeparator);
         sb.append("상품코드=").append(productCode).append(lineSeparator);
         sb.append("상품명=").append(productName).append(lineSeparator);
+        sb.append("대분류=").append(main_name).append(lineSeparator);
         sb.append("발주직원ID=").append(orderEmployeeId).append(lineSeparator);
         sb.append("발주수량=").append(orderQuantity).append(lineSeparator);
         sb.append("요청일자=").append(requestDate).append(lineSeparator);
