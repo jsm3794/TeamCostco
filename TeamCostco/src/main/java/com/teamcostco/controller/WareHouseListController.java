@@ -115,18 +115,18 @@ public class WareHouseListController extends PanelController<WareHouseListPanel>
     }
 
     private void searchProducts() {
-        String sql = "SELECT storage_id, "
-                    + "main_name, "
-                    + "medium_name, "
-                    + "small_name, "
-                    + "product_name, "
-                    + "current_inventory "
-                    + "FROM storage s "
-                    + "INNER JOIN product p ON p.product_code = s.product_id "
-                    + "INNER JOIN maincategory main ON main.main_id = p.main_id "
-                    + "INNER JOIN mediumcategory midi ON midi.medium_id = p.medium_id "
-                    + "INNER JOIN smallcategory small ON small.small_id = p.small_id " 
-                    + "WHERE product_name LIKE ? ";
+    	String sql = "SELECT "
+    		    + "product_id, "
+    		    + "main_name, "
+    		    + "medium_name, "
+    		    + "small_name, "
+    		    + "product_name, "
+    		    + "current_inventory "
+    		    + "FROM product p "
+    		    + "INNER JOIN maincategory main ON main.main_id = p.main_id "
+    		    + "INNER JOIN mediumcategory midi ON midi.medium_id = p.medium_id "
+    		    + "INNER JOIN smallcategory small ON small.small_id = p.small_id "
+    		    + "WHERE product_name LIKE ? ";
 
         List<String> conditions = new ArrayList<>();
         List<Object> parameters = new ArrayList<>();
@@ -154,8 +154,9 @@ public class WareHouseListController extends PanelController<WareHouseListPanel>
         for (String condition : conditions) {
             sql += condition + " ";
         }
-
-        try (Connection conn = connector.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        
+        try (Connection conn = connector.getConnection();
+        		PreparedStatement pstmt = conn.prepareStatement(sql)) {
             for (int i = 0; i < parameters.size(); i++) {
                 pstmt.setObject(i + 1, parameters.get(i));
             }

@@ -28,11 +28,11 @@ public class ProductTableModel extends AbstractTableModel {
         WareHouseListModel row = data.get(rowIndex);
         switch (columnIndex) {
             case 0:
-                return row.getStorage_id();
+                return row.getProduct_id();
             case 1:
                 return row.getMain_name();
             case 2:
-                return row.getMidium_name();
+                return row.getMedium_name();
             case 3:
                 return row.getSmall_name();
             case 4:
