@@ -84,9 +84,8 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
                 DialogManager.showMessageBox(
                     view,
                     "수량을 수정하시겠습니까?",
-                    true,
                     evt -> updateAmount(),
-                    evt -> System.out.println("아니오 클릭")
+                    null
                 );
             }
         });

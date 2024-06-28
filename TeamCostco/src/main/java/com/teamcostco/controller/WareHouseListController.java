@@ -38,16 +38,16 @@ public class WareHouseListController extends PanelController<WareHouseListPanel>
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedMain = (String) view.getMainCateComboBox().getSelectedItem();
-                loadMidiumCategories(selectedMain);
+                loadmediumCategories(selectedMain);
             }
         });
 
-        // Add action listener to midium category combo box
-        view.getMidiumCateCombo().addActionListener(new ActionListener() {
+        // Add action listener to medium category combo box
+        view.getmediumCateCombo().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String selectedMidium = (String) view.getMidiumCateCombo().getSelectedItem();
-                loadSmallCategories(selectedMidium);
+                String selectedmedium = (String) view.getmediumCateCombo().getSelectedItem();
+                loadSmallCategories(selectedmedium);
             }
         });
 
@@ -62,10 +62,10 @@ public class WareHouseListController extends PanelController<WareHouseListPanel>
 
     private List<AllCategoryJoin> loadAllCategories() {
         List<AllCategoryJoin> allCategories = new ArrayList<>();
-        String sql = "SELECT main_name, midium_name, small_name "
+        String sql = "SELECT main_name, medium_name, small_name "
                    + "FROM maincategory "
-                   + "INNER JOIN midiumcategory USING (main_id) "
-                   + "INNER JOIN smallcategory USING (midium_id)";
+                   + "INNER JOIN mediumcategory USING (main_id) "
+                   + "INNER JOIN smallcategory USING (medium_id)";
 
         try (
             Connection conn = connector.getConnection();
@@ -81,33 +81,33 @@ public class WareHouseListController extends PanelController<WareHouseListPanel>
         return allCategories;
     }
 
-    private void loadMidiumCategories(String selectedMain) {
-        view.getMidiumCateCombo().removeAllItems();
-        view.getMidiumCateCombo().addItem("중분류 전체");
+    private void loadmediumCategories(String selectedMain) {
+        view.getmediumCateCombo().removeAllItems();
+        view.getmediumCateCombo().addItem("중분류 전체");
 
         if (selectedMain == null || selectedMain.equals("대분류 전체")) {
-            view.getMidiumCateCombo().setEnabled(false);
+            view.getmediumCateCombo().setEnabled(false);
             view.getSmallCateCombo().setEnabled(false);
             return;
         }
 
-        Set<String> midiumCategories = categoryData.getMidiumCategories(selectedMain);
-        for (String midium : midiumCategories) {
-            view.getMidiumCateCombo().addItem(midium);
+        Set<String> mediumCategories = categoryData.getmediumCategories(selectedMain);
+        for (String medium : mediumCategories) {
+            view.getmediumCateCombo().addItem(medium);
         }
-        view.getMidiumCateCombo().setEnabled(true);
+        view.getmediumCateCombo().setEnabled(true);
     }
 
-    private void loadSmallCategories(String selectedMidium) {
+    private void loadSmallCategories(String selectedmedium) {
         view.getSmallCateCombo().removeAllItems();
         view.getSmallCateCombo().addItem("소분류 전체");
 
-        if (selectedMidium == null || selectedMidium.equals("중분류 전체")) {
+        if (selectedmedium == null || selectedmedium.equals("중분류 전체")) {
             view.getSmallCateCombo().setEnabled(false);
             return;
         }
 
-        Set<String> smallCategories = categoryData.getSmallCategories(selectedMidium);
+        Set<String> smallCategories = categoryData.getSmallCategories(selectedmedium);
         for (String small : smallCategories) {
             view.getSmallCateCombo().addItem(small);
         }
@@ -115,18 +115,18 @@ public class WareHouseListController extends PanelController<WareHouseListPanel>
     }
 
     private void searchProducts() {
-        String sql = "SELECT storage_id, "
-                    + "main_name, "
-                    + "midium_name, "
-                    + "small_name, "
-                    + "product_name, "
-                    + "current_inventory "
-                    + "FROM storage s "
-                    + "INNER JOIN product p ON p.product_code = s.product_id "
-                    + "INNER JOIN maincategory main ON main.main_id = p.main_id "
-                    + "INNER JOIN midiumcategory midi ON midi.midium_id = p.medium_id "
-                    + "INNER JOIN smallcategory small ON small.small_id = p.small_id " 
-                    + "WHERE product_name LIKE ? ";
+    	String sql = "SELECT "
+    		    + "product_id, "
+    		    + "main_name, "
+    		    + "medium_name, "
+    		    + "small_name, "
+    		    + "product_name, "
+    		    + "current_inventory "
+    		    + "FROM product p "
+    		    + "INNER JOIN maincategory main ON main.main_id = p.main_id "
+    		    + "INNER JOIN mediumcategory midi ON midi.medium_id = p.medium_id "
+    		    + "INNER JOIN smallcategory small ON small.small_id = p.small_id "
+    		    + "WHERE product_name LIKE ? ";
 
         List<String> conditions = new ArrayList<>();
         List<Object> parameters = new ArrayList<>();
@@ -139,10 +139,10 @@ public class WareHouseListController extends PanelController<WareHouseListPanel>
             parameters.add(selectedMain);
         }
 
-        String selectedMidium = (String) view.getMidiumCateCombo().getSelectedItem();
-        if (selectedMidium != null && !"중분류 전체".equals(selectedMidium)) {
-            conditions.add("AND midium_name = ?");
-            parameters.add(selectedMidium);
+        String selectedmedium = (String) view.getmediumCateCombo().getSelectedItem();
+        if (selectedmedium != null && !"중분류 전체".equals(selectedmedium)) {
+            conditions.add("AND medium_name = ?");
+            parameters.add(selectedmedium);
         }
 
         String selectedSmall = (String) view.getSmallCateCombo().getSelectedItem();
@@ -154,8 +154,9 @@ public class WareHouseListController extends PanelController<WareHouseListPanel>
         for (String condition : conditions) {
             sql += condition + " ";
         }
-
-        try (Connection conn = connector.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        
+        try (Connection conn = connector.getConnection();
+        		PreparedStatement pstmt = conn.prepareStatement(sql)) {
             for (int i = 0; i < parameters.size(); i++) {
                 pstmt.setObject(i + 1, parameters.get(i));
             }

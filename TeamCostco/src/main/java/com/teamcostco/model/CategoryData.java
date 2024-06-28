@@ -7,12 +7,12 @@ import java.util.Set;
 import java.util.List;
 
 public class CategoryData {
-    private Map<String, Set<String>> mainToMidiumMap;
-    private Map<String, Set<String>> midiumToSmallMap;
+    private Map<String, Set<String>> mainTomediumMap;
+    private Map<String, Set<String>> mediumToSmallMap;
 
     public CategoryData(List<AllCategoryJoin> allCategories) {
-        mainToMidiumMap = new HashMap<>();
-        midiumToSmallMap = new HashMap<>();
+        mainTomediumMap = new HashMap<>();
+        mediumToSmallMap = new HashMap<>();
         for (AllCategoryJoin category : allCategories) {
             addCategory(category);
         }
@@ -20,25 +20,25 @@ public class CategoryData {
 
     private void addCategory(AllCategoryJoin category) {
         String mainName = category.getMain_name();
-        String midiumName = category.getMidium_name();
+        String mediumName = category.getmedium_name();
         String smallName = category.getSmall_name();
 
-        mainToMidiumMap.putIfAbsent(mainName, new HashSet<>());
-        mainToMidiumMap.get(mainName).add(midiumName);
+        mainTomediumMap.putIfAbsent(mainName, new HashSet<>());
+        mainTomediumMap.get(mainName).add(mediumName);
 
-        midiumToSmallMap.putIfAbsent(midiumName, new HashSet<>());
-        midiumToSmallMap.get(midiumName).add(smallName);
+        mediumToSmallMap.putIfAbsent(mediumName, new HashSet<>());
+        mediumToSmallMap.get(mediumName).add(smallName);
     }
 
-    public Set<String> getMidiumCategories(String mainName) {
-        return mainToMidiumMap.getOrDefault(mainName, new HashSet<>());
+    public Set<String> getmediumCategories(String mainName) {
+        return mainTomediumMap.getOrDefault(mainName, new HashSet<>());
     }
 
-    public Set<String> getSmallCategories(String midiumName) {
-        return midiumToSmallMap.getOrDefault(midiumName, new HashSet<>());
+    public Set<String> getSmallCategories(String mediumName) {
+        return mediumToSmallMap.getOrDefault(mediumName, new HashSet<>());
     }
 
     public Set<String> getMainCategories() {
-        return mainToMidiumMap.keySet();
+        return mainTomediumMap.keySet();
     }
 }

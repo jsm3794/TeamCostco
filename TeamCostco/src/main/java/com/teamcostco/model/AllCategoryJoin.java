@@ -4,21 +4,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /*
- * "SELECT main_name, midium_name, small_name "
+ * "SELECT main_name, medium_name, small_name "
                    + "FROM maincategory "
-                   + "INNER JOIN midiumcategory USING (main_id) "
-                   + "INNER JOIN smallcategory USING (midium_id)";
+                   + "INNER JOIN mediumcategory USING (main_id) "
+                   + "INNER JOIN smallcategory USING (medium_id)";
 
  */
 
 public class AllCategoryJoin {
 	String main_name;
-	String midium_name;
+	String medium_name;
 	String small_name;
 	
 	public AllCategoryJoin(ResultSet rs) throws SQLException {
 		main_name = rs.getString("main_name");		
-		midium_name = rs.getString("midium_name");		
+		medium_name = rs.getString("medium_name");		
 		small_name = rs.getString("small_name");
 		
 	}
@@ -31,12 +31,12 @@ public class AllCategoryJoin {
 		this.main_name = main_name;
 	}
 
-	public String getMidium_name() {
-		return midium_name;
+	public String getmedium_name() {
+		return medium_name;
 	}
 
-	public void setMidium_name(String midium_name) {
-		this.midium_name = midium_name;
+	public void setmedium_name(String medium_name) {
+		this.medium_name = medium_name;
 	}
 
 	public String getSmall_name() {
@@ -49,7 +49,7 @@ public class AllCategoryJoin {
 
 	@Override
 	public String toString() {
-		return "AllCategoryJoin [main_name=" + main_name + ", midium_name=" + midium_name + ", small_name=" + small_name
+		return "AllCategoryJoin [main_name=" + main_name + ", medium_name=" + medium_name + ", small_name=" + small_name
 				+ "]";
 	}
 

@@ -30,7 +30,6 @@ import main.java.com.teamcostco.model.database.DatabaseUtil;
 import main.java.com.teamcostco.view.panels.OrderListPanel;
 
 public class OrderListController extends PanelController<OrderListPanel> {
-	
 
     public OrderListController() {
         initControl();
