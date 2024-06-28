@@ -183,7 +183,7 @@ public class OrderListController extends PanelController<OrderListPanel> {
 		entryPanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				MainForm.nav.push("orderdetail", true, data);
+				MainForm.nav.push("orderHistoryDetail", true, data);
 			}
 		});
 		return entryPanel;
