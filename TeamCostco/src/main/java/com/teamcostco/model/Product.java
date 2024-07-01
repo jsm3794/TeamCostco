@@ -4,20 +4,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Product {
-   private String product_id;
+   private int product_id;
    private String product_name;
    private String main_id;
    private String product_code;
    private String medium_id;
    private String small_id;
-   private int purchase_price;
-   private int selling_price;
+   private double purchase_price;
+   private double selling_price;
    private int appropriate_inventory;
    private int current_inventory;
    private int active_inventory;
    
    public Product(ResultSet rs) throws SQLException {
-	    this.product_id = rs.getString("product_id");
+	    this.product_id = rs.getInt("product_id");
 	    this.product_name = rs.getString("product_name");  // product_name을 ResultSet에서 가져옵니다.
 	    this.main_id = rs.getString("main_id");  // main_id를 ResultSet에서 가져옵니다.
 	    this.product_code = rs.getString("product_code"); // product_code를 ResultSet에서 가져옵니다.
@@ -43,10 +43,10 @@ public void setActive_inventory(int active_inventory) {
 }
 
 
-public String getProduct_id() {
+public int getProduct_id() {
       return product_id;
    }
-   public void setProduct_id(String product_id) {
+   public void setProduct_id(int product_id) {
       this.product_id = product_id;
    }
    public String getProduct_name() {
@@ -79,16 +79,16 @@ public String getProduct_id() {
    public void setSmall_id(String small_id) {
       this.small_id = small_id;
    }
-   public int getPurchase_price() {
+   public double getPurchase_price() {
       return purchase_price;
    }
-   public void setPurchase_price(int purchase_price) {
+   public void setPurchase_price(double purchase_price) {
       this.purchase_price = purchase_price;
    }
-   public int getSelling_price() {
+   public double getSelling_price() {
       return selling_price;
    }
-   public void setSelling_price(int selling_price) {
+   public void setSelling_price(double selling_price) {
       this.selling_price = selling_price;
    }
    public int getAppropriate_inventory() {

@@ -1,191 +1,166 @@
 package main.java.com.teamcostco.view.panels;
 
 import javax.swing.*;
-import main.java.com.teamcostco.model.database.DatabaseUtil;
-import main.java.com.teamcostco.model.Product;
-import java.awt.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import javax.swing.JPanel;
-import java.awt.Rectangle;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-
 import main.utils.Constants;
-
-import javax.swing.JTextField;
-import javax.swing.JButton;
+import java.awt.*;
 
 public class ProductDetailPanel extends JPanel {
 
-	private static final long serialVersionUID = 1L;
-	private JLabel CategoryLabel;
-	private JTextField textField;
-	private JLabel productCode;
-	private JLabel largeCategory;
-	private JLabel productName;
-	private JLabel sellingPrice;
-	private JLabel purchasePrice;
-	private JLabel properInventory;
-	private JLabel currentInventory;
-	private JLabel warehousingDate;
-	private JLabel loadingPosition;
+    private static final long serialVersionUID = 1L;
+    private JLabel CategoryLabel;
+    private JTextField textField;
+    private JButton btnAdjustRequest;
+    private JLabel mainName;
+    private JLabel productName;
+    private JLabel productCode;
+    private JLabel purchase_price;
+    private JLabel selling_price;
+    private JLabel appropriate_inventory;
+    private JLabel current_inventory;
+    private JLabel dateOf_Receipt;
+    private JLabel main_id;
 
+    public ProductDetailPanel() {
+        setBounds(new Rectangle(0, 0, 480, 640));
+        setLayout(null);
 
-	public ProductDetailPanel() {
-		setBounds(new Rectangle(0, 0, 480, 640));
-		setLayout(null);
+        JLabel CodeLabel = new JLabel("상품코드");
+        CodeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        CodeLabel.setBounds(12, 44, 78, 28);
+        add(CodeLabel);
 
-		JLabel CodeLabel = new JLabel("상품코드");
-		CodeLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		CodeLabel.setBounds(12, 44, 78, 28);
-		add(CodeLabel);
+        CategoryLabel = new JLabel("대분류");
+        CategoryLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        CategoryLabel.setBounds(12, 82, 78, 28);
+        add(CategoryLabel);
 
-		JLabel CategoryLabel = new JLabel("대분류");
-		CategoryLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		CategoryLabel.setBounds(12, 82, 78, 28);
-		add(CategoryLabel);
+        JLabel nameLabel = new JLabel("상품명");
+        nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        nameLabel.setBounds(12, 120, 78, 28);
+        add(nameLabel);
 
-		JLabel nameLabel = new JLabel("상품명");
-		nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		nameLabel.setBounds(12, 120, 78, 28);
-		add(nameLabel);
+        JLabel sellingLabel = new JLabel("판매가");
+        sellingLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        sellingLabel.setBounds(243, 173, 225, 28);
+        add(sellingLabel);
 
-		productCode = new JLabel("상품코드 보여질 예정");
-		productCode.setHorizontalAlignment(SwingConstants.CENTER);
-		productCode.setBounds(102, 44, 366, 28);
-		add(productCode);
+        JLabel purchaseLabel = new JLabel("매입가");
+        purchaseLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        purchaseLabel.setBounds(12, 173, 225, 28);
+        add(purchaseLabel);
 
-		largeCategory = new JLabel("대분류 보여질 예정");
-		largeCategory.setHorizontalAlignment(SwingConstants.CENTER);
-		largeCategory.setBounds(102, 82, 366, 28);
-		add(largeCategory);
+        JLabel properInventoryLabel = new JLabel("적정재고");
+        properInventoryLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        properInventoryLabel.setBounds(12, 257, 225, 28);
+        add(properInventoryLabel);
 
-		productName = new JLabel("상품명 보여질 예정");
-		productName.setHorizontalAlignment(SwingConstants.CENTER);
-		productName.setBounds(102, 120, 366, 28);
-		add(productName);
+        JLabel currentInventoryLabel = new JLabel("현재재고");
+        currentInventoryLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        currentInventoryLabel.setBounds(243, 257, 225, 28);
+        add(currentInventoryLabel);
 
-		JLabel sellingLabel = new JLabel("판매가");
-		sellingLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		sellingLabel.setBounds(243, 173, 225, 28);
-		add(sellingLabel);
+        JLabel warehousingDateLabel = new JLabel("입고날짜");
+        warehousingDateLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        warehousingDateLabel.setBounds(12, 341, 78, 28);
+        add(warehousingDateLabel);
 
-		JLabel purchaseLabel = new JLabel("매입가");
-		purchaseLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		purchaseLabel.setBounds(12, 173, 225, 28);
-		add(purchaseLabel);
+        JLabel positionLabel = new JLabel("적재위치");
+        positionLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        positionLabel.setBounds(12, 385, 78, 28);
+        add(positionLabel);
 
-		sellingPrice = new JLabel("판매가 보여질 예정");
-		sellingPrice.setHorizontalAlignment(SwingConstants.CENTER);
-		sellingPrice.setBounds(12, 211, 225, 28);
-		add(sellingPrice);
+        textField = new JTextField();
+        textField.setBounds(12, 437, 456, 128);
+        add(textField);
+        textField.setColumns(10);
 
-		purchasePrice = new JLabel("매입가 보여질 예정");
-		purchasePrice.setHorizontalAlignment(SwingConstants.CENTER);
-		purchasePrice.setBounds(243, 211, 225, 28);
-		add(purchasePrice);
+        btnAdjustRequest = new JButton("조정요청");
+        btnAdjustRequest.setBounds(12, 575, 456, 55);
+        btnAdjustRequest.setBackground(Constants.BUTTON_BACKGROUND_COLOR);
+        add(btnAdjustRequest);
 
-		JLabel properInventoryLabel = new JLabel("적정재고");
-		properInventoryLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		properInventoryLabel.setBounds(12, 257, 225, 28);
-		add(properInventoryLabel);
+        mainName = new JLabel();
+        mainName.setBounds(130, 89, 247, 28);
+        add(mainName);
 
-		JLabel currentInventoryLabel = new JLabel("현재재고");
-		currentInventoryLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		currentInventoryLabel.setBounds(243, 257, 225, 28);
-		add(currentInventoryLabel);
+        productCode = new JLabel();
+        productCode.setBounds(130, 44, 247, 28);
+        add(productCode);
 
-		properInventory = new JLabel("적정재고 보여질 예정");
-		properInventory.setHorizontalAlignment(SwingConstants.CENTER);
-		properInventory.setBounds(12, 295, 225, 28);
-		add(properInventory);
+        purchase_price = new JLabel();
+        purchase_price.setBounds(68, 201, 115, 36);
+        add(purchase_price);
 
-		currentInventory = new JLabel("현재재고 보여질 예정");
-		currentInventory.setHorizontalAlignment(SwingConstants.CENTER);
-		currentInventory.setBounds(243, 295, 225, 28);
-		add(currentInventory);
+        selling_price = new JLabel();
+        selling_price.setBounds(295, 201, 115, 36);
+        add(selling_price);
 
-		JLabel warehousingDateLabel = new JLabel("입고날짜");
-		warehousingDateLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		warehousingDateLabel.setBounds(12, 341, 78, 28);
-		add(warehousingDateLabel);
+        appropriate_inventory = new JLabel();
+        appropriate_inventory.setBounds(68, 282, 115, 36);
+        add(appropriate_inventory);
 
-		warehousingDate = new JLabel("입고날짜 보여질 예정");
-		warehousingDate.setHorizontalAlignment(SwingConstants.CENTER);
-		warehousingDate.setBounds(102, 341, 366, 28);
-		add(warehousingDate);
+        current_inventory = new JLabel();
+        current_inventory.setBounds(295, 282, 115, 36);
+        add(current_inventory);
 
-		JLabel positionLabel = new JLabel("적재위치");
-		positionLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		positionLabel.setBounds(12, 385, 78, 28);
-		add(positionLabel);
+        dateOf_Receipt = new JLabel();
+        dateOf_Receipt.setBounds(130, 341, 233, 28);
+        add(dateOf_Receipt);
 
-		loadingPosition = new JLabel("적재위치 보여질 예정");
-		loadingPosition.setHorizontalAlignment(SwingConstants.CENTER);
-		loadingPosition.setBounds(102, 385, 366, 28);
-		add(loadingPosition);
+        main_id = new JLabel();
+        main_id.setBounds(130, 385, 233, 28);
+        add(main_id);
+    }
 
-		textField = new JTextField();
-		textField.setBounds(12, 437, 456, 128);
-		add(textField);
-		textField.setColumns(10);
+    public JTextField getTextField() {
+        return textField;
+    }
 
-		JButton btnNewButton = new JButton("조정요청");
-		btnNewButton.setBounds(12, 575, 456, 55);
-		btnNewButton.setBackground(Constants.BUTTON_BACKGROUND_COLOR);
-		add(btnNewButton);
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
 
-	}
+    public JLabel getCategoryLabel() {
+        return CategoryLabel;
+    }
 
-	public JTextField getTextField() {
-		return textField;
-	}
-	//상품코드
-	public JLabel getProductCode() {
-		return productCode;
-	}
+    public JLabel getMainName() {
+        return mainName;
+    }
+    
+    public JLabel getProductName() {
+        return mainName;
+    }
 
-	//상품이름
-	public JLabel getProductName() {
-		return productName;
-	}
-	//판매가
-	public JLabel getSellingPrice() {
-		return sellingPrice;
-	}
-	//구매가
-	public JLabel getPurchasePrice() {
-		return purchasePrice;
-	}
-	//적정재고
-	public JLabel getProperInventory() {
-		return properInventory;
-	}
-	//현재재고
-	public JLabel getCurrentInventory() {
-		return currentInventory;
-	}
-	//입고날짜
-	public JLabel getWarehousingDate() {
-		return warehousingDate;
-	}
-	//적재위치
-	public JLabel getloadingPosition() {
-		return loadingPosition;
-	}
-	//대분류
-	public JLabel getCategoryLabel() {
-		return CategoryLabel;
-		
-	}
-	
-	public JTextField getBtnAdjustRequest() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public JLabel getProductCode() {
+        return productCode;
+    }
 
+    public JLabel getPurchase_price() {
+        return purchase_price;
+    }
 
+    public JLabel getSelling_price() {
+        return selling_price;
+    }
+
+    public JLabel getAppropriate_inventory() {
+        return appropriate_inventory;
+    }
+
+    public JLabel getCurrent_inventory() {
+        return current_inventory;
+    }
+
+    public JLabel getDateOf_Receipt() {
+        return dateOf_Receipt;
+    }
+
+    public JLabel getMain_id() {
+        return main_id;
+    }
+
+    public JButton getBtnAdjustRequest() {
+        return btnAdjustRequest; // 버튼 반환
+    }
 }
