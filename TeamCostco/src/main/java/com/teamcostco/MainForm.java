@@ -73,7 +73,7 @@ public class MainForm {
 		nav.mappingTarget("productCheck", ProductInspectionController.class); // 제품검수
 		nav.mappingTarget("warehousereceiving", WareHouseReceivingController.class); // 입고처리
 		nav.mappingTarget("setting", SettingsController.class); // 환경설정
-		nav.mappingTarget("editaccount", EditAccountController.class); // 환경설정
+		nav.mappingTarget("editaccount", EditAccountController.class); // 회원정보수정
 
 		// Navigator 디자인
 		nav.setPreferredSize(new Dimension(FORM_WIDTH, FORM_HEIGHT));
