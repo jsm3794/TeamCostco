@@ -8,9 +8,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JComboBox;
 import javax.swing.table.DefaultTableModel;
+
 import main.java.com.teamcostco.MainForm;
+import main.java.com.teamcostco.model.Product;
 import main.java.com.teamcostco.model.database.DatabaseUtil;
 import main.java.com.teamcostco.view.panels.InventorySearchPanel;
 
@@ -19,8 +24,6 @@ public class InventorySearchController extends PanelController<InventorySearchPa
 	private InventorySearchPanel inventorySearchPanel;
 
 	public InventorySearchController() {
-		inventorySearchPanel = new InventorySearchPanel();
-		view = inventorySearchPanel;
 
 		// 카테고리 콤보 박스에 데이터 로딩
 		initializeCategoryComboBox(view.categoryComboBox);
@@ -42,7 +45,7 @@ public class InventorySearchController extends PanelController<InventorySearchPa
 
 		// 검색 버튼 클릭 시 DB에서 데이터를 가져와 테이블에 표시
 		view.searchButton.addActionListener(e -> {
-			String searchKeyword = view.textField.getText();
+			String searchKeyword = view.searchField.getText();
 			String selectedCategory = (String) view.cb_CategorizeName.getSelectedItem();
 			String categoryKind = (String) view.categoryComboBox.getSelectedItem();
 			loadData(view.model, searchKeyword, categoryKind, selectedCategory);
@@ -52,9 +55,19 @@ public class InventorySearchController extends PanelController<InventorySearchPa
 
 	private void initializeCategoryComboBox(JComboBox<String> comboBox) {
 		comboBox.removeAllItems();
+		comboBox.addItem("전체");
 		comboBox.addItem("대분류");
 		comboBox.addItem("중분류");
 		comboBox.addItem("소분류");
+
+		comboBox.addItemListener(item -> {
+			System.out.println(item.getItem());
+			if (item.getItem().equals("전체")) {
+				view.cb_CategorizeName.setEnabled(false);
+			} else {
+				view.cb_CategorizeName.setEnabled(true);
+			}
+		});
 	}
 
 	private void loadMainCategories(JComboBox<String> comboBox) {
@@ -101,50 +114,54 @@ public class InventorySearchController extends PanelController<InventorySearchPa
 
 	private void loadData(DefaultTableModel tableModel, String searchKeyword, String categoryKind,
 			String categoryName) {
-		String joinSql;
-		String joinSql2;
-		switch (categoryKind) {
-		case "대분류":
-			joinSql = "JOIN maincategory m ON p.main_id = m.main_id ";
-			joinSql2 = "AND m.main_name LIKE ?";
-			break;
-		case "중분류":
-			joinSql = "JOIN mediumcategory mc ON p.medium_id = mc.medium_id ";
-			joinSql2 = "AND mc.medium_name LIKE ?";
-			break;
-		case "소분류":
-			joinSql = "JOIN smallcategory s ON p.small_id = s.small_id ";
-			joinSql2 = "AND s.small_name LIKE ?";
-			break;
-		default:
-			joinSql = "";
-			joinSql2 = "";
+		String joinSql = "";
+		String whereClause = "WHERE p.product_name LIKE ? ";
+		List<String> params = new ArrayList<>();
+		params.add("%" + searchKeyword + "%");
+
+		// "전체" 카테고리일 경우 추가 조건 없이 모든 상품 검색
+		if (!categoryKind.equals("전체")) {
+			switch (categoryKind) {
+			case "대분류":
+				joinSql = "JOIN maincategory m ON p.main_id = m.main_id ";
+				whereClause += "AND m.main_name LIKE ? ";
+				params.add("%" + categoryName + "%");
+				break;
+			case "중분류":
+				joinSql = "JOIN maincategory m ON p.main_id = m.main_id "
+						+ "JOIN mediumcategory mc ON p.medium_id = mc.medium_id ";
+				whereClause += "AND mc.medium_name LIKE ? ";
+				params.add("%" + categoryName + "%");
+				break;
+			case "소분류":
+				joinSql = "JOIN maincategory m ON p.main_id = m.main_id "
+						+ "JOIN smallcategory s ON p.small_id = s.small_id ";
+				whereClause += "AND s.small_name LIKE ? ";
+				params.add("%" + categoryName + "%");
+				break;
+			}
 		}
 
-		String sql = "SELECT p.product_id, p.product_name, main_name, p.current_inventory, p.selling_price "
-				+ "FROM product p " + joinSql + "WHERE p.product_name LIKE ? " + joinSql2;
+		String sql = "SELECT p.product_id, p.product_name AS product_name, p.product_code AS product_code, p.main_id AS main_id, "
+				+ "p.current_inventory AS current_inventory, p.selling_price " + "FROM product p " + joinSql
+				+ whereClause;
+
 		try (Connection connection = DatabaseUtil.getConnection();
 				PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
-			if (!joinSql.isEmpty()) {
-				pstmt.setString(1, "%" + searchKeyword + "%");
-			}
-
-			if (!joinSql2.isEmpty()) {
-				pstmt.setString(2, "%" + categoryName + "%");
+			for (int i = 0; i < params.size(); i++) {
+				pstmt.setString(i + 1, params.get(i));
 			}
 
 			try (ResultSet rs = pstmt.executeQuery()) {
 				tableModel.setRowCount(0);
 				while (rs.next()) {
-					String productId = rs.getString("product_id");
+					String locationId = rs.getString("main_id");
 					String productName = rs.getString("product_name");
-					String smallName = rs.getString("main_name");
 					int currentInventory = rs.getInt("current_inventory");
-					double sellingPrice = rs.getDouble("selling_price");
-					
-					tableModel
-							.addRow(new Object[] { productId, productName, smallName, currentInventory, sellingPrice });
+					String productCode = rs.getString("product_code");
+
+					tableModel.addRow(new Object[] { locationId, productCode, productName, currentInventory });
 				}
 			}
 		} catch (SQLException e) {
@@ -153,34 +170,30 @@ public class InventorySearchController extends PanelController<InventorySearchPa
 	}
 
 	public void bindTableAction() {
-		view.table.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				int row = view.table.rowAtPoint(e.getPoint());
-				if (row >= 0) {
-					String productId = (String) view.table.getValueAt(row, 0);
-					loadProductDetails(productId);
-				}
-			}
-		});
+	    view.table.addMouseListener(new MouseAdapter() {
+	        @Override
+	        public void mouseClicked(MouseEvent e) {
+	            if (e.getClickCount() == 2) {  // 더블 클릭 확인
+	                int row = view.table.rowAtPoint(e.getPoint());
+	                if (row >= 0) {
+	                    String productCode = (String) view.table.getValueAt(row, 1);  // 인덱스를 1로 가정 (상품코드 컬럼)
+	                    loadProductDetails(productCode);
+	                }
+	            }
+	        }
+	    });
 	}
-
-	private void loadProductDetails(String productId) {
+	
+	private void loadProductDetails(String product_code) {
 		try (Connection connection = DatabaseUtil.getConnection();
-				PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM product WHERE product_id = ?")) {
+				PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM product WHERE product_code = ?")) {
 
-			pstmt.setString(1, productId);
+			pstmt.setString(1, product_code);
 			try (ResultSet rs = pstmt.executeQuery()) {
 				if (rs.next()) {
-					String productName = rs.getString("product_name");
-					String productCode = rs.getString("product_code");
-					double purchasePrice = rs.getDouble("purchase_price");
-					double sellingPrice = rs.getDouble("selling_price");
-					int appropriateInventory = rs.getInt("appropriate_inventory");
-					int currentInventory = rs.getInt("current_inventory");
-
-					// 상품 상세 정보를 다이얼로그 또는 다른 방법으로 표시
-					// 예: DialogManager.showProductDetails(productId, productName, productCode,
-					// purchasePrice, sellingPrice, appropriateInventory, currentInventory);
+					Product product = new Product(rs);
+					// ProductDetailController로 이동
+					MainForm.nav.push("productdetail", true, product);
 				}
 			}
 		} catch (SQLException e) {
