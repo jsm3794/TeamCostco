@@ -1,5 +1,6 @@
 package main.java.com.teamcostco.view.panels;
 
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -20,6 +21,14 @@ import javax.swing.table.TableColumnModel;
 import main.java.com.teamcostco.model.ProductTableModel;
 import main.java.com.teamcostco.view.textfields.JPlaceholderTextField;
 import main.utils.Constants;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.SwingConstants;
+import javax.swing.BoxLayout;
+import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 
 public class WareHouseListPanel extends JPanel {
     JTextField productNameField;
@@ -68,32 +77,39 @@ public class WareHouseListPanel extends JPanel {
         setLayout(new BorderLayout());
 
         // Create the input panel
-        JPanel inputPanel = new JPanel(new GridLayout(2, 2, 10, 10));
-
-        productNameField = new JPlaceholderTextField("상품명을 입력해주세요");
-        inputPanel.add(productNameField);
+        JPanel inputPanel = new JPanel();
 
         add(inputPanel, BorderLayout.NORTH);
-
-        categoryPanel = new JPanel();
-        inputPanel.add(categoryPanel);
-        categoryPanel.setLayout(new GridLayout(3, 1, 5, 5));
-
-        mainCateComboBox = new JComboBox<>();
-        categoryPanel.add(mainCateComboBox);
-
-        mediumCateCombo = new JComboBox<>();
-        categoryPanel.add(mediumCateCombo);
-        mediumCateCombo.setEnabled(false);
-
-        smallCateCombo = new JComboBox<>();
-        categoryPanel.add(smallCateCombo);
-        smallCateCombo.setEnabled(false);
-
-        searchButton = new JButton("Search");
-        searchButton.setBackground(Constants.BUTTON_BACKGROUND_COLOR);
-        searchButton.setForeground(Constants.BUTTON_FOREGROUND_COLOR);
-        inputPanel.add(searchButton);
+                inputPanel.setLayout(new GridLayout(2, 2, 10, 10));
+        
+                productNameField = new JPlaceholderTextField("상품명을 입력해주세요");
+                productNameField.setHorizontalAlignment(SwingConstants.CENTER);
+                productNameField.setFont(new Font("맑은 고딕 Semilight", Font.PLAIN, 15));
+                inputPanel.add(productNameField);
+        
+                categoryPanel = new JPanel();
+                inputPanel.add(categoryPanel);
+                categoryPanel.setLayout(new GridLayout(3, 1, 5, 5));
+                
+                        mainCateComboBox = new JComboBox<>();
+                        categoryPanel.add(mainCateComboBox);
+                        
+                                mediumCateCombo = new JComboBox<>();
+                                categoryPanel.add(mediumCateCombo);
+                                mediumCateCombo.setEnabled(false);
+                                
+                                        smallCateCombo = new JComboBox<>();
+                                        categoryPanel.add(smallCateCombo);
+                                        smallCateCombo.setEnabled(false);
+        
+                searchButton = new JButton("Search");
+                searchButton.addActionListener(new ActionListener() {
+                	public void actionPerformed(ActionEvent e) {
+                	}
+                });
+                searchButton.setBackground(Constants.BUTTON_BACKGROUND_COLOR);
+                searchButton.setForeground(Constants.BUTTON_FOREGROUND_COLOR);
+                inputPanel.add(searchButton);
 
         // Initialize the table model
         tableModel = new ProductTableModel(new ArrayList<>());

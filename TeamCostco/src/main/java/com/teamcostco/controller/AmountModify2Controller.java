@@ -20,38 +20,33 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
 
     private AmountModifyModel model;
     private DatabaseUtil connector;
-    private static int cnt = 0;
-    
+
     public AmountModify2Controller() {
         connector = new DatabaseUtil();
         initComponents();
-        
+
         // + 버튼 기능 
         view.getPlusButton().addActionListener(new ActionListener() {
-            
             @Override
             public void actionPerformed(ActionEvent e) {
                 plusAmount();
-                
             }
         });
-        
+
         // - 버튼 기능
         view.getMinusButton().addActionListener(new ActionListener() {
-            
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     minusAmount();
                 } catch (NegativeAmount e1) {
                     JOptionPane.showMessageDialog(null, e1.getMessage());
-                }                
+                }
             }
         });
-        
+
         // 수량칸은 숫자키만 입력되도록함 (나머지 키는 허용안함)
         view.getAmount_txtField().addKeyListener(new KeyListener() {
-            
             @Override
             public void keyTyped(KeyEvent e) {
                 try {
@@ -64,33 +59,32 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
                     JOptionPane.showMessageDialog(view, ex.getMessage(), "Invalid Input", JOptionPane.WARNING_MESSAGE);
                 }
             }
-            
+
             @Override
             public void keyReleased(KeyEvent e) {
                 // No action required on key release
             }
-            
+
             @Override
             public void keyPressed(KeyEvent e) {
                 // No action required on key press
             }
         });
-        
+
         // (수량 수정)
         view.getModifyButton().addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 DialogManager.showMessageBox(
                     view,
                     "수량을 수정하시겠습니까?",
                     evt -> {
-						try {
-							updateAmount();
-						} catch (ExeedStorageAmount e1) {							
-							e1.printStackTrace();
-						}
-					},
+                        try {
+                            updateAmount();
+                        } catch (ExeedStorageAmount e1) {
+                            JOptionPane.showMessageDialog(view, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    },
                     null
                 );
             }
@@ -98,7 +92,6 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
 
         // 취소버튼
         view.getCancelButton().addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 getDetailInfo();
@@ -122,16 +115,13 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
         view.getPid_txtArea().setText("PRID00000000000000000000(예시)");
         view.getLocation_txtArea().setText("A-01(예시)");
     }
-    
+
     // 대분류 불러옴
     private void setComboBoxValue() {
         String sql = "SELECT main_name FROM maincategory";
-
-        try (
-            Connection conn = connector.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            ResultSet rs = pstmt.executeQuery();
-        ) {
+        try (Connection conn = connector.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
                 String categori_name = rs.getString("main_name");
                 view.getCategoryComboBox().addItem(categori_name);
@@ -145,34 +135,23 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
     private void updateAmount() throws ExeedStorageAmount {
         String input_pn = view.getProductNameField().getText().trim();
         String selected_category = (String) view.getCategoryComboBox().getSelectedItem();
-        
-        String sql =
-            "UPDATE product SET active_inventory = ? WHERE product_id = ? ";
         String amount = view.getAmount_txtField().getText();
-        
+
         if (input_pn.isEmpty()) {
             JOptionPane.showMessageDialog(view, "상품명이 공백입니다.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
-        // 총 보유 수량을 초과시 예외
-        //if (amount > )
-        
-        try (
-            Connection conn = connector.getConnection();
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-        ) {
+
+        String sql = "UPDATE product SET active_inventory = ? WHERE product_id = ?";
+        try (Connection conn = connector.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             conn.setAutoCommit(false);
-            
-           
             pstmt.setInt(1, Integer.parseInt(amount));
             pstmt.setString(2, view.getPid_txtArea().getText());
-            //pstmt.setString(3, view.getLocation_txtArea().getText()); // 적재위치
-            
+
             try {
                 int row = pstmt.executeUpdate();
                 System.out.printf("%d행 업데이트\n", row);
-                //conn.setSavepoint("수정" + ++cnt);
                 JOptionPane.showMessageDialog(view, "수정 완료!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 conn.commit();
             } catch (SQLException e2) {
@@ -187,23 +166,18 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
 
     private void plusAmount() {
         String amount = view.getAmount_txtField().getText();
-        Integer change = Integer.parseInt(amount) + 1;
-        amount = change.toString();
-        
-        view.getAmount_txtField().setText(amount);
+        int change = Integer.parseInt(amount) + 1;
+        view.getAmount_txtField().setText(String.valueOf(change));
     }
 
     private void minusAmount() throws NegativeAmount {
         String amount = view.getAmount_txtField().getText();
-        Integer change = Integer.parseInt(amount);
+        int change = Integer.parseInt(amount);
         if (change - 1 < 0) {
             throw new NegativeAmount();
         } else {
-            --change;
+            view.getAmount_txtField().setText(String.valueOf(change - 1));
         }
-        amount = change.toString();
-        
-        view.getAmount_txtField().setText(amount);
     }
 
     public void resetFields() {
@@ -216,30 +190,28 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
         view.getLocation_txtArea().setText("");
         view.getMr_comboBox().setSelectedIndex(0);
     }
-    
+
     @Override
     public String toString() {
         return "재고수정";
     }
 
-}
-
-// 예외
-// 수량이 음수
-class NegativeAmount extends Exception {
-    public NegativeAmount() {
-        super("수량이 음수입니다.");
+    // 예외 클래스 정의
+    private class NegativeAmount extends Exception {
+        public NegativeAmount() {
+            super("수량이 음수입니다.");
+        }
     }
-}
 
-class ExeedStorageAmount extends Exception {
-    public ExeedStorageAmount() {
-        super("전체 보유 수량을 초과할 수 없습니다.");
+    private class ExeedStorageAmount extends Exception {
+        public ExeedStorageAmount() {
+            super("전체 보유 수량을 초과할 수 없습니다.");
+        }
     }
-}
 
-class NonNumericValueException extends Exception {
-    public NonNumericValueException() {
-        super("숫자만 입력 가능합니다.");
+    private class NonNumericValueException extends Exception {
+        public NonNumericValueException() {
+            super("숫자만 입력 가능합니다.");
+        }
     }
 }
