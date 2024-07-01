@@ -9,6 +9,7 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
+import main.java.com.teamcostco.MainForm;
 import main.java.com.teamcostco.model.CategoryModel;
 import main.java.com.teamcostco.model.Product;
 import main.java.com.teamcostco.model.database.DatabaseUtil;
@@ -90,7 +91,7 @@ public class ProductDetailController extends PanelController<ProductDetailPanel>
     }
 
     private void adjustRequest() {
-        
+    	MainForm.nav.push("inventoryUpdate", true, product);
     }
 
     @Override

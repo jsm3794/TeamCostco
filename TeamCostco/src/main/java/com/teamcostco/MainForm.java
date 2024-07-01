@@ -13,20 +13,19 @@ import main.java.com.teamcostco.component.Navigator;
 import main.java.com.teamcostco.controller.AmountModify2Controller;
 import main.java.com.teamcostco.controller.EditAccountController;
 import main.java.com.teamcostco.controller.HomeTestController;
+import main.java.com.teamcostco.controller.InventoryMovementController;
 import main.java.com.teamcostco.controller.InventorySearchController;
 import main.java.com.teamcostco.controller.LoginController;
 import main.java.com.teamcostco.controller.OrderDetailController;
 import main.java.com.teamcostco.controller.OrderListController;
-import main.java.com.teamcostco.controller.PanelController;
+import main.java.com.teamcostco.controller.OrderRequestController;
+import main.java.com.teamcostco.controller.ProductDetailController;
 import main.java.com.teamcostco.controller.ProductInspectionController;
 import main.java.com.teamcostco.controller.ProductRegistrationController;
 import main.java.com.teamcostco.controller.SettingsController;
 import main.java.com.teamcostco.controller.SignTestController;
 import main.java.com.teamcostco.controller.WareHouseListController;
 import main.java.com.teamcostco.controller.WareHouseReceivingController;
-import main.java.com.teamcostco.model.manager.AutoLogoutManager;
-import main.java.com.teamcostco.model.manager.DialogManager;
-import main.utils.TCPReceiver;
 
 public class MainForm {
 
@@ -69,12 +68,16 @@ public class MainForm {
 		nav.mappingTarget("productEntry", ProductRegistrationController.class); // 상품등록
 		nav.mappingTarget("inventorySearch", InventorySearchController.class); // 재고조회
 		nav.mappingTarget("storageList", WareHouseListController.class); // 창고목록
+		nav.mappingTarget("warehousereceiving", WareHouseReceivingController.class); // 입고
 		nav.mappingTarget("inventoryUpdate", AmountModify2Controller.class);
 		nav.mappingTarget("productCheck", ProductInspectionController.class); // 제품검수
-		nav.mappingTarget("warehousereceiving", WareHouseReceivingController.class); // 입고처리
-		nav.mappingTarget("setting", SettingsController.class); // 환경설정
+		nav.mappingTarget("inventoryMovement", InventoryMovementController.class); // 재고처리
+		nav.mappingTarget("pdaSetting", SettingsController.class); // 환경설정
+		nav.mappingTarget("orderRequest", OrderRequestController.class); // 발주요청
+		nav.mappingTarget("productdetail", ProductDetailController.class); // 상품상세조회
 		nav.mappingTarget("editaccount", EditAccountController.class); // 회원정보수정
-
+		
+		
 		// Navigator 디자인
 		nav.setPreferredSize(new Dimension(FORM_WIDTH, FORM_HEIGHT));
 

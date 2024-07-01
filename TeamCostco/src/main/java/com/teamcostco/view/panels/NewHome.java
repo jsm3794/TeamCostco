@@ -102,6 +102,7 @@ public JLabel timeLabel;
 		pdaSetting.setBackground(new Color(6, 127, 196));
 		pdaSetting.setForeground(new Color(255, 255, 255));
 		pdaSetting.setBounds(12, 570, 225, 60);
+		pdaSetting.setBackground(new Color(196, 127, 6));
 		add(pdaSetting);
 		
 		ProductRegistrationBtn = new JButton("상품등록");

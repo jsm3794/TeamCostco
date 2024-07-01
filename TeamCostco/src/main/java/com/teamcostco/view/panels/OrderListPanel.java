@@ -51,8 +51,15 @@ public class OrderListPanel extends JPanel {
         setupSearchPanel();
         setupResultPanel();
 
+        // 검색 결과를 담을 JScrollPane 생성
+        JScrollPane scrollPane = new JScrollPane(resultPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); // 수직 스크롤바 항상 표시
+        scrollPane.getVerticalScrollBar().setUnitIncrement(35); // 스크롤 속도 조절
+
+        // 검색 패널을 BorderLayout의 NORTH에 추가
         add(searchPanel, BorderLayout.NORTH);
-        add(new JScrollPane(resultPanel), BorderLayout.CENTER);
+        // 스크롤 패널을 BorderLayout의 CENTER에 추가
+        add(scrollPane, BorderLayout.CENTER);
     }
 
     private void setupSearchPanel() {

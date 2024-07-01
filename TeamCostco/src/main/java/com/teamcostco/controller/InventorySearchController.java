@@ -143,7 +143,7 @@ public class InventorySearchController extends PanelController<InventorySearchPa
 		}
 
 		String sql = "SELECT p.product_id, p.product_name AS product_name, p.product_code AS product_code, p.main_id AS main_id, "
-				+ "p.current_inventory AS current_inventory, p.selling_price " + "FROM product p " + joinSql
+				+ "p.current_inventory AS current_inventory, p.active_inventory AS active_inventory, p.selling_price " + "FROM product p " + joinSql
 				+ whereClause;
 
 		try (Connection connection = DatabaseUtil.getConnection();
@@ -159,9 +159,11 @@ public class InventorySearchController extends PanelController<InventorySearchPa
 					String locationId = rs.getString("main_id");
 					String productName = rs.getString("product_name");
 					int currentInventory = rs.getInt("current_inventory");
+					int activeInventory = rs.getInt("active_inventory");
 					String productCode = rs.getString("product_code");
+					
 
-					tableModel.addRow(new Object[] { locationId, productCode, productName, currentInventory });
+					tableModel.addRow(new Object[] { locationId, productCode, productName, currentInventory, activeInventory });
 				}
 			}
 		} catch (SQLException e) {

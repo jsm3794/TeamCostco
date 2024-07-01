@@ -3,12 +3,16 @@ package main.java.com.teamcostco.component;
 import java.awt.BorderLayout;
 import java.lang.reflect.Constructor;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import main.java.com.teamcostco.controller.PanelController;
 
@@ -68,12 +72,28 @@ public class Navigator extends JPanel {
 	 * @param route     이동할 라우트
 	 * @param useTopNav 상단 네비게이터 사용 여부
 	 * @param params    컨트롤러 생성에 필요한 파라미터들
+	 * @return CompletableFuture<Void> 네비게이션 완료 후 실행될 Future
 	 */
-	public void navigateTo(String route, boolean useTopNav, Object... params) {
-		if (!panelStack.isEmpty()) {
-			pop();
-		}
-		push(route, useTopNav, params);
+	public CompletableFuture<Void> navigateTo(String route, boolean useTopNav, Object... params) {
+	    CompletableFuture<Void> future = new CompletableFuture<>();
+
+	    SwingUtilities.invokeLater(() -> {
+	        try {
+	            if (!panelStack.isEmpty()) {
+	                pop();
+	            }
+	            push(route, useTopNav, params).thenRun(() -> {
+	                future.complete(null);
+	            }).exceptionally(ex -> {
+	                future.completeExceptionally(ex);
+	                return null;
+	            });
+	        } catch (Exception e) {
+	            future.completeExceptionally(e);
+	        }
+	    });
+
+	    return future;
 	}
 
 	/**
@@ -105,27 +125,45 @@ public class Navigator extends JPanel {
 	 * @param route     라우트
 	 * @param useTopNav 상단 네비게이터 사용 여부
 	 * @param params    컨트롤러 생성에 필요한 파라미터들
+	 * @return CompletableFuture<Void> 패널 추가 완료 후 실행될 Future
 	 */
-	public void push(String route, boolean useTopNav, Object... params) {
-		PanelControllerPair pair = getPanelInstance(route, params);
-		if (pair == null)
-			return;
+	public CompletableFuture<Void> push(String route, boolean useTopNav, Object... params) {
+	    CompletableFuture<Void> future = new CompletableFuture<>();
 
-		JPanel panel = pair.getPanel();
-		PanelController<?> controller = pair.getController();
+	    SwingUtilities.invokeLater(() -> {
+	        try {
+	            PanelControllerPair pair = getPanelInstance(route, params);
+	            if (pair == null) {
+	                future.completeExceptionally(new RuntimeException("Failed to create panel instance"));
+	                return;
+	            }
 
-		if (useTopNav && panel != null) {
-			topNav = new TopNavigator(controller.toString());
-			topNav.setClickListener(e -> SwingUtilities.invokeLater(() -> {
-				pop();
-				if (panelStack.isEmpty())
-					navigateToHome();
-			}));
-			panel = addTopNav(panel, topNav);
-		}
+	            JPanel panel = pair.getPanel();
+	            PanelController<?> controller = pair.getController();
 
-		panelStack.push(new PanelControllerPair(panel, controller));
-		updateView();
+	            if (useTopNav && panel != null) {
+	                topNav = new TopNavigator(controller.toString());
+	                topNav.setClickListener(e -> SwingUtilities.invokeLater(() -> {
+	                    pop();
+	                    if (panelStack.isEmpty())
+	                        navigateToHome();
+	                }));
+	                panel = addTopNav(panel, topNav);
+	            }
+
+	            panelStack.push(new PanelControllerPair(panel, controller));
+	            updateView();
+	            
+	            // 100밀리초 지연 후 future 완료
+	            Timer timer = new Timer(1, e -> future.complete(null));
+	            timer.setRepeats(false);
+	            timer.start();
+	        } catch (Exception e) {
+	            future.completeExceptionally(e);
+	        }
+	    });
+
+	    return future;
 	}
 
 	/**
@@ -140,11 +178,58 @@ public class Navigator extends JPanel {
 	/**
 	 * 이전 컨트롤러 반환
 	 * 
-	 * @return 이전 컨트롤러
+	 * @return 이전 컨트롤러, 없으면 null
 	 */
 	public PanelController<?> getPrev() {
-		return panelStack.size() > 1 ? panelStack.stream().skip(panelStack.size() - 2).findFirst().get().getController()
-				: null;
+		if (panelStack.size() < 2) {
+			return null;
+		}
+		Iterator<PanelControllerPair> iterator = panelStack.iterator();
+		iterator.next(); // 현재 top 요소를 건너뛰기
+		return iterator.next().getController(); // 그 다음 요소(이전 컨트롤러) 반환
+	}
+
+	/**
+	 * 특정 클래스의 가장 최근 컨트롤러를 찾습니다.
+	 * 
+	 * @param clazz 찾고자 하는 컨트롤러의 클래스
+	 * @return 찾은 컨트롤러, 없으면 null
+	 */
+	public PanelController<?> findLastControllerByClass(Class<?> clazz) {
+		for (PanelControllerPair pair : panelStack) {
+			if (clazz.isInstance(pair.getController())) {
+				return pair.getController();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 특정 클래스의 가장 처음 컨트롤러를 찾습니다.
+	 * 
+	 * @param clazz 찾고자 하는 컨트롤러의 클래스
+	 * @return 찾은 컨트롤러, 없으면 null
+	 */
+	public PanelController<?> findFirstControllerByClass(Class<?> clazz) {
+		for (PanelControllerPair pair : new ArrayList<>(panelStack)) {
+			if (clazz.isInstance(pair.getController())) {
+				return pair.getController();
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 특정 인덱스의 컨트롤러를 찾습니다. 0은 가장 최근에 추가된 컨트롤러입니다.
+	 * 
+	 * @param index 찾고자 하는 컨트롤러의 인덱스
+	 * @return 찾은 컨트롤러, 인덱스가 범위를 벗어나면 null
+	 */
+	public PanelController<?> getControllerAtIndex(int index) {
+		if (index < 0 || index >= panelStack.size()) {
+			return null;
+		}
+		return new ArrayList<>(panelStack).get(panelStack.size() - 1 - index).getController();
 	}
 
 	/**
