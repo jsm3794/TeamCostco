@@ -12,10 +12,8 @@ import javax.swing.SwingUtilities;
 
 import main.java.com.teamcostco.controller.PanelController;
 
-
 /**
- * 네비게이션 기능을 구현한 클래스
- * JPanel을 상속받아 UI컴포넌트로 사용 가능
+ * 네비게이션 기능을 구현한 클래스 JPanel을 상속받아 UI컴포넌트로 사용 가능
  */
 public class Navigator extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -28,8 +26,8 @@ public class Navigator extends JPanel {
 	private final String homeRoute;
 
 	/**
-     * @param homeRoute 홈 라우트 문자열
-     */
+	 * @param homeRoute 홈 라우트 문자열
+	 */
 	public Navigator(String homeRoute) {
 		setLayout(new BorderLayout());
 		mappings = new HashMap<>();
@@ -38,10 +36,11 @@ public class Navigator extends JPanel {
 	}
 
 	/**
-     * 라우트와 패널 컨트롤러 클래스를 매핑
-     * @param route 라우트 문자열
-     * @param panelClass 패널 컨트롤러 클래스
-     */
+	 * 라우트와 패널 컨트롤러 클래스를 매핑
+	 * 
+	 * @param route      라우트 문자열
+	 * @param panelClass 패널 컨트롤러 클래스
+	 */
 	public void mappingTarget(String route, Class<? extends PanelController<? extends JPanel>> panelClass) {
 		mappings.put(route, panelClass);
 	}
@@ -63,12 +62,13 @@ public class Navigator extends JPanel {
 		navigateTo(homeRoute, false);
 	}
 
-	 /**
-     * 특정 라우트로 이동
-     * @param route 이동할 라우트
-     * @param useTopNav 상단 네비게이터 사용 여부
-     * @param params 컨트롤러 생성에 필요한 파라미터들
-     */
+	/**
+	 * 특정 라우트로 이동
+	 * 
+	 * @param route     이동할 라우트
+	 * @param useTopNav 상단 네비게이터 사용 여부
+	 * @param params    컨트롤러 생성에 필요한 파라미터들
+	 */
 	public void navigateTo(String route, boolean useTopNav, Object... params) {
 		if (!panelStack.isEmpty()) {
 			pop();
@@ -77,9 +77,10 @@ public class Navigator extends JPanel {
 	}
 
 	/**
-     * 최상위 패널 제거
-     * @return 제거된 패널의 컨트롤러
-     */
+	 * 최상위 패널 제거
+	 * 
+	 * @return 제거된 패널의 컨트롤러
+	 */
 	public PanelController<?> pop() {
 		if (!panelStack.isEmpty()) {
 			PanelControllerPair pair = panelStack.pop();
@@ -90,12 +91,21 @@ public class Navigator extends JPanel {
 		return null;
 	}
 
+	public void popAll() {
+		while (!panelStack.isEmpty()) {
+			PanelControllerPair pair = panelStack.pop();
+			pair.getPanel().removeAll();
+		}
+		updateView();
+	}
+
 	/**
-     * 새 패널 추가
-     * @param route 라우트
-     * @param useTopNav 상단 네비게이터 사용 여부
-     * @param params 컨트롤러 생성에 필요한 파라미터들
-     */
+	 * 새 패널 추가
+	 * 
+	 * @param route     라우트
+	 * @param useTopNav 상단 네비게이터 사용 여부
+	 * @param params    컨트롤러 생성에 필요한 파라미터들
+	 */
 	public void push(String route, boolean useTopNav, Object... params) {
 		PanelControllerPair pair = getPanelInstance(route, params);
 		if (pair == null)
@@ -118,29 +128,32 @@ public class Navigator extends JPanel {
 		updateView();
 	}
 
-	 /**
-     * 현재 컨트롤러 반환
-     * @return 현재 컨트롤러
-     */
+	/**
+	 * 현재 컨트롤러 반환
+	 * 
+	 * @return 현재 컨트롤러
+	 */
 	public PanelController<?> getCurrent() {
 		return panelStack.isEmpty() ? null : panelStack.peek().getController();
 	}
 
 	/**
-     * 이전 컨트롤러 반환
-     * @return 이전 컨트롤러
-     */
+	 * 이전 컨트롤러 반환
+	 * 
+	 * @return 이전 컨트롤러
+	 */
 	public PanelController<?> getPrev() {
 		return panelStack.size() > 1 ? panelStack.stream().skip(panelStack.size() - 2).findFirst().get().getController()
 				: null;
 	}
 
 	/**
-     * 패널 인스턴스 생성
-     * @param route 라우트
-     * @param params 컨트롤러 생성에 필요한 파라미터들
-     * @return 생성된 패널과 컨트롤러 쌍
-     */
+	 * 패널 인스턴스 생성
+	 * 
+	 * @param route  라우트
+	 * @param params 컨트롤러 생성에 필요한 파라미터들
+	 * @return 생성된 패널과 컨트롤러 쌍
+	 */
 	private PanelControllerPair getPanelInstance(String route, Object... params) {
 		Class<? extends PanelController<? extends JPanel>> controllerClass = mappings.get(route);
 		if (controllerClass == null) {
@@ -157,12 +170,13 @@ public class Navigator extends JPanel {
 	}
 
 	/**
-     * 컨트롤러 생성
-     * @param controllerClass 컨트롤러 클래스
-     * @param params 생성자 파라미터들
-     * @return 생성된 컨트롤러
-     * @throws ReflectiveOperationException 리플렉션 관련 예외
-     */
+	 * 컨트롤러 생성
+	 * 
+	 * @param controllerClass 컨트롤러 클래스
+	 * @param params          생성자 파라미터들
+	 * @return 생성된 컨트롤러
+	 * @throws ReflectiveOperationException 리플렉션 관련 예외
+	 */
 	private PanelController<? extends JPanel> createController(
 			Class<? extends PanelController<? extends JPanel>> controllerClass, Object... params)
 			throws ReflectiveOperationException {
@@ -180,11 +194,12 @@ public class Navigator extends JPanel {
 	}
 
 	/**
-     * 생성자 호환성 확인
-     * @param constructor 확인할 생성자
-     * @param params 파라미터들
-     * @return 호환 여부
-     */
+	 * 생성자 호환성 확인
+	 * 
+	 * @param constructor 확인할 생성자
+	 * @param params      파라미터들
+	 * @return 호환 여부
+	 */
 	private boolean isCompatibleConstructor(Constructor<?> constructor, Object[] params) {
 		Class<?>[] paramTypes = constructor.getParameterTypes();
 		for (int i = 0; i < params.length; i++) {
@@ -195,12 +210,13 @@ public class Navigator extends JPanel {
 		return true;
 	}
 
-	 /**
-     * 상단 네비게이터 추가
-     * @param panel 원본 패널
-     * @param topNav 추가할 상단 네비게이터
-     * @return 상단 네비게이터가 추가된 새 패널
-     */
+	/**
+	 * 상단 네비게이터 추가
+	 * 
+	 * @param panel  원본 패널
+	 * @param topNav 추가할 상단 네비게이터
+	 * @return 상단 네비게이터가 추가된 새 패널
+	 */
 	private JPanel addTopNav(JPanel panel, TopNavigator topNav) {
 		JPanel mergedPanel = new JPanel(new BorderLayout());
 		mergedPanel.add(topNav, BorderLayout.NORTH);
