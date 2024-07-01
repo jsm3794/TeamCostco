@@ -32,7 +32,7 @@ public class OrderDetailPanel extends JPanel {
 		// 데이터 표시 패널 설정
 		dataPanel = new JPanel();
 		dataPanel.setLayout(new GridLayout(0, 1));
-		dataPanel.setBorder(new LineBorder(Color.BLACK, 1));
+		dataPanel.setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
 		add(dataPanel, BorderLayout.CENTER);
 
 		// 하단 패널 설정

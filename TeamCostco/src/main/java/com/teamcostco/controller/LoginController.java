@@ -3,7 +3,7 @@ package main.java.com.teamcostco.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import main.java.com.teamcostco.MainForm;
@@ -50,6 +50,15 @@ public class LoginController extends PanelController<LoginPanel> {
 
 			}
 		});
+
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run() {
+				view.idField.requestFocusInWindow();
+			}
+		});
+
 	}
 
 	public void signComponents() {

@@ -10,58 +10,57 @@ import javax.swing.Timer;
 import main.java.com.teamcostco.MainForm;
 import main.java.com.teamcostco.model.HomeModel;
 import main.java.com.teamcostco.model.manager.AuthManager;
-import main.java.com.teamcostco.view.panels.HomeTestPanel;
 import main.java.com.teamcostco.view.panels.NewHome;
 
 public class HomeTestController extends PanelController<NewHome> {
-	
+
 	private Timer timer;
-	
-	
+
 	public HomeTestController() {
-		
+		view.setVisible(false);
+
 		SwingUtilities.invokeLater(() -> {
 			if (AuthManager.getInstance().isLoggedIn()) {
+				startTimer();
+				inventorySeach();
+				inventoryMovement();
+				productCheck();
+				orderHistory();
+				storageList();
+				inventoryUpdate();
+				pdaSetting();
+				productEntry();
+				orderRequest();
+				view.setVisible(true);
 
 			} else {
 				MainForm.nav.navigateTo("login", false);
 			}
 		});
-		
-		startTimer();
-		inventorySeach();
-		inventoryMovement();
-		productCheck();
-		orderHistory();
-		storageList();
-		inventoryUpdate();
-		pdaSetting();
-		productEntry();
-		orderRequest();
-		
+
 	}
-	
+
 	public void inventorySeach() {
-		
-		view.getInventorySeachBtn().addActionListener(new ActionListener() {	
+
+		view.getInventorySeachBtn().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				MainForm.nav.push("inventorySearch", true);
 			}
 		});
 	}
-	
+
 	public void inventoryMovement() {
-		
+
 		view.getMaterialDispatchBtn().addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				MainForm.nav.push("inventoryMovement", true);
 			}
 		});
 	}
-	
+
 	public void productCheck() {
 
 		view.getProductInspectionBtn().addActionListener(new ActionListener() {
@@ -72,7 +71,7 @@ public class HomeTestController extends PanelController<NewHome> {
 			}
 		});
 	}
-	
+
 	public void orderHistory() {
 
 		view.getOrderListBtn().addActionListener(new ActionListener() {
@@ -83,7 +82,7 @@ public class HomeTestController extends PanelController<NewHome> {
 			}
 		});
 	}
-	
+
 	public void storageList() {
 
 		view.getWareHouseListBtn().addActionListener(new ActionListener() {
@@ -94,7 +93,7 @@ public class HomeTestController extends PanelController<NewHome> {
 			}
 		});
 	}
-	
+
 	public void inventoryUpdate() {
 
 		view.getInventorymodificationBtn().addActionListener(new ActionListener() {
@@ -105,7 +104,7 @@ public class HomeTestController extends PanelController<NewHome> {
 			}
 		});
 	}
-	
+
 	public void orderRequest() {
 
 		view.getOrderRequestBtn().addActionListener(new ActionListener() {
@@ -116,7 +115,7 @@ public class HomeTestController extends PanelController<NewHome> {
 			}
 		});
 	}
-	
+
 	public void pdaSetting() {
 
 		view.getReceivingProcessBtn().addActionListener(new ActionListener() {
@@ -127,32 +126,30 @@ public class HomeTestController extends PanelController<NewHome> {
 			}
 		});
 	}
-	
+
 	public void productEntry() {
-		
+
 		view.getProductRegistrationBtn().addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				MainForm.nav.push("productEntry", true);
-				
+
 			}
 		});
 	}
-	
 
 	public void startTimer() {
 		timer = new Timer(1000, e -> updateTime());
 		timer.start();
 	}
-	
+
 	private void updateTime() {
 		LocalDateTime now = LocalDateTime.now();
 		if (view != null) {
 			view.updateTime(HomeModel.DATE_FORMATTER.format(now));
 		}
 	}
-	
 
 	// 페이지 이름을 반환하는 메서드
 	@Override

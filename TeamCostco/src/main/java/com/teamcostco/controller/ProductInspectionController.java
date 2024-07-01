@@ -140,9 +140,9 @@ public class ProductInspectionController extends PanelController<ProductInspecti
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Product product = new Product();
-                    product.setProductcode(rs.getString("PRODUCT_CODE"));
-                    product.setMainid(rs.getString("MAIN_NAME"));
-                    product.setProductName(rs.getString("PRODUCT_NAME"));
+                    product.setProduct_code(rs.getString("PRODUCT_CODE"));
+                    product.setMain_id(rs.getString("MAIN_NAME"));
+                    product.setProduct_name(rs.getString("PRODUCT_NAME"));
                     products.add(product); // 제품 리스트에 추가
                 }
             }
@@ -165,9 +165,9 @@ public class ProductInspectionController extends PanelController<ProductInspecti
         for (Product product : products) {
             view.tableModel.addRow(new Object[] { 
                 false, // 검수 확인 체크박스 기본값 false
-                product.getProductcode(), 
-                product.getMainid(), 
-                product.getProductName() 
+                product.getProduct_code(), 
+                product.getMain_id(), 
+                product.getProduct_name() 
             });
         }
     }

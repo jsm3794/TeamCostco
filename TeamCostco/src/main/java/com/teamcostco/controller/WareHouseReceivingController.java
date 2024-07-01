@@ -1,62 +1,122 @@
 package main.java.com.teamcostco.controller;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.LocalDate;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 import main.java.com.teamcostco.MainForm;
 import main.java.com.teamcostco.dao.OrderDetailDAO;
 import main.java.com.teamcostco.model.OrderDetailModel;
 import main.java.com.teamcostco.model.database.DatabaseUtil;
 import main.java.com.teamcostco.model.manager.DialogManager;
-import main.java.com.teamcostco.view.panels.WarehouseReceivingPanel;
+import main.java.com.teamcostco.view.panels.WareHouseReceivingPanel;
 
-public class WareHouseReceivingController extends PanelController<WarehouseReceivingPanel> {
+public class WareHouseReceivingController extends PanelController<WareHouseReceivingPanel> {
 
 	public OrderDetailModel data;
 
 	public WareHouseReceivingController(OrderDetailModel data) {
 		this.data = data;
-		initComponents();
+		initControl();
 	}
 
-	private void initComponents() {
-		// 잔량이 0이면 버튼 비활성화
+	private void initControl() {
+		String[] lines = data.toString().split("\n");
+		view.dataPanel.setLayout(new BoxLayout(view.dataPanel, BoxLayout.Y_AXIS));
 
-		view.currentDateLabel.setText(getCurrentDate());
-		view.productIdLabel.setText(data.getProductCode());
-		view.categoryLabel.setText(data.getMain_name());
-		view.productNameLabel.setText(data.getProductName());
-		int remainingQuantity = data.getOrderQuantity() - data.getQuantityOfWh();
-		if (remainingQuantity <= 0) {
-			view.saveButton.setEnabled(false);
-			view.getTextField().setEditable(false);
+		// 첫 번째 아이템 전에 상단 마진 추가
+		view.dataPanel.add(Box.createVerticalStrut(5));
+
+		for (String line : lines) {
+			JPanel itemPanel = new JPanel();
+			itemPanel.setBackground(Color.WHITE);
+			itemPanel.setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
+			itemPanel.setPreferredSize(new Dimension(390, 50)); // 너비를 약간 줄임
+			itemPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+			itemPanel.setLayout(new GridLayout(1, 2));
+
+			String[] keyValue = line.split("=", 2);
+			JLabel keyLabel = new JLabel(keyValue[0]);
+			keyLabel.setBorder(new EmptyBorder(5, 10, 5, 10));
+			keyLabel.setOpaque(true);
+			keyLabel.setBackground(new Color(240, 240, 240));
+
+			itemPanel.add(keyLabel);
+
+			if (keyValue[0].equals("입고수량")) {
+				view.receivingQuantityField = new JTextField();
+				view.receivingQuantityField.setBorder(new EmptyBorder(5, 10, 5, 10));
+				view.receivingQuantityField.setHorizontalAlignment(JTextField.CENTER);
+				view.receivingQuantityField.setForeground(Color.BLUE);
+				view.receivingQuantityField.setFont(view.receivingQuantityField.getFont().deriveFont(Font.BOLD));
+				itemPanel.add(view.receivingQuantityField);
+			} else {
+				JLabel valueLabel = new JLabel(keyValue[1]);
+				valueLabel.setBorder(new EmptyBorder(5, 10, 5, 10));
+				valueLabel.setHorizontalAlignment(JLabel.CENTER);
+				itemPanel.add(valueLabel);
+			}
+
+			JPanel wrapperPanel = new JPanel();
+			wrapperPanel.setLayout(new BoxLayout(wrapperPanel, BoxLayout.X_AXIS));
+			wrapperPanel.add(Box.createHorizontalStrut(5)); // 왼쪽 마진
+			wrapperPanel.add(itemPanel);
+			wrapperPanel.add(Box.createHorizontalStrut(5)); // 오른쪽 마진
+			wrapperPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60)); // 높이를 약간 늘림
+
+			view.dataPanel.add(wrapperPanel);
+			view.dataPanel.add(Box.createVerticalStrut(5)); // 아이템 간 세로 간격
 		}
 
-		view.remaining_capacity.setText(String.valueOf(remainingQuantity));
-		view.order_quantity.setText(String.valueOf(data.getOrderQuantity()));
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				view.receivingQuantityField.setText(String.valueOf(data.getRemainremainingQuantity()));
+				view.receivingQuantityField.requestFocusInWindow();
+				view.receivingQuantityField.selectAll();
+
+			}
+		});
+
+		int remainingQuantity = data.getRemainremainingQuantity();
+		if (remainingQuantity <= 0) {
+			view.saveButton.setEnabled(false);
+			view.getReceivingQuantityField().setEditable(false);
+		}
+
 		view.saveButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				if (view.getTextField().getText().isEmpty()) {
+
+				if (view.getReceivingQuantityField().getText().isEmpty()) {
 					DialogManager.showMessageBox(view, "수량확인필요", null);
 					return;
 				}
-				
-				int receivingQuantity = Integer.parseInt(view.getTextField().getText());
-				
-				
-				if (receivingQuantity > remainingQuantity ||
-					receivingQuantity == 0) {
+
+				int receivingQuantity = Integer.parseInt(view.getReceivingQuantityField().getText());
+
+				if (receivingQuantity > remainingQuantity || receivingQuantity == 0) {
 					DialogManager.showMessageBox(view, "수량확인필요", null);
 					return;
 				}
-				
+
 				String alertMsg = String.format("발주번호: %s<br>상품명: %s<br>수량: %d개<br>입고처리하시겠습니까?",
 						data.getOrderRequestId(), data.getProductName(), receivingQuantity);
 				DialogManager.showMessageBox(view, alertMsg, evt -> {
@@ -88,9 +148,21 @@ public class WareHouseReceivingController extends PanelController<WarehouseRecei
 
 					// 입고처리 후 발주상세조회창 업데이트
 
-					MainForm.nav.pop();
-					MainForm.nav.navigateTo("orderHistoryDetail", true,
-							OrderDetailDAO.getOrderDetailModel(data.getOrderRequestId()));
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							MainForm.nav.pop();
+							((OrderListController) MainForm.nav.getPrev()).searchDatabase();
+							MainForm.nav
+									.navigateTo("orderHistoryDetail", true,
+											OrderDetailDAO.getOrderDetailModel(data.getOrderRequestId()))
+									.thenRun(() -> {
+										DialogManager.showMessageBox(MainForm.nav.getCurrent().getPanel(), "입고처리되었습니다.",
+												null);
+									});
+
+						}
+					});
 
 				}, null);
 
@@ -99,12 +171,10 @@ public class WareHouseReceivingController extends PanelController<WarehouseRecei
 
 	}
 
-	public static String getCurrentDate() {
-		LocalDate now = LocalDate.now();
-		int year = now.getYear();
-		int month = now.getMonthValue();
-		int day = now.getDayOfMonth();
-		return year + "년 " + month + "월 " + day + "일";
+	private void saveReceivingQuantity() {
+		String receivingQuantity = view.receivingQuantityField.getText();
+		System.out.println("입고수량 저장: " + receivingQuantity);
+		MainForm.nav.pop();
 	}
 
 	@Override

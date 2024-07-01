@@ -86,7 +86,7 @@ public class OrderListController extends PanelController<OrderListPanel> {
 		view.supplierField.addKeyListener(enterListener);
 	}
 
-	private void searchDatabase() {
+	public void searchDatabase() {
 		view.resultPanel.removeAll();
 
 		LocalDate startDate = parseDate(view.startDateField.getText());
@@ -176,7 +176,7 @@ public class OrderListController extends PanelController<OrderListPanel> {
 			entryPanel.add(label);
 		}
 
-		entryPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		entryPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 		entryPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, entryPanel.getPreferredSize().height));
 		entryPanel.setPreferredSize(new Dimension(460, entryPanel.getPreferredSize().height));
 

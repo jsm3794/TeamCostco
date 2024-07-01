@@ -52,8 +52,8 @@ public class ProductDetailPanel extends JPanel {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(5, 5, 5, 5);
 
-		String[] labels = { "상품 ID:", "상품코드:", "상품명:", "대분류:", "중분류:", "소분류:", "매입가:", "판매가:", "적정재고:", "현재재고:",
-				"활성재고:" };
+		String[] labels = { "상품 ID:", "상품코드:", "상품명:", "대분류:", "중분류:", "소분류:", "매입가:", "판매가:", "적정수량:", "대기수량:",
+				"활성수량:" };
 		JLabel[] valueLabels = { productIdLabel, productCodeLabel, productNameLabel, mainIdLabel, mediumIdLabel,
 				smallIdLabel, purchasePriceLabel, sellingPriceLabel, appropriateInventoryLabel, currentInventoryLabel,
 				activeInventoryLabel };

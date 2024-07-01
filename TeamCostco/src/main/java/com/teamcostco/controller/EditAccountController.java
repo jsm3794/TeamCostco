@@ -70,7 +70,7 @@ public class EditAccountController extends PanelController<EditAccountPanel> {
     private void showSuccessMessage() {
         DialogManager.showMessageBox(view, "회원 정보가 업데이트되었습니다.", e -> {
             MainForm.nav.pop();
-            MainForm.nav.navigateTo("setting", true);
+            MainForm.nav.navigateTo("pdaSetting", true);
         });
     }
 

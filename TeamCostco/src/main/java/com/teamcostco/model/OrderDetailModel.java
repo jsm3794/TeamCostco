@@ -29,6 +29,10 @@ public class OrderDetailModel {
         this.clientName = rs.getString("CLIENT_NAME");
         this.quantityOfWh = rs.getInt("QUANTITY_OF_WH");
     }
+    
+    public int getRemainremainingQuantity() {
+    	return getOrderQuantity() - getQuantityOfWh();
+    }
 
 
     public String getMain_name() {
@@ -124,11 +128,12 @@ public class OrderDetailModel {
         sb.append("상품명=").append(productName).append(lineSeparator);
         sb.append("대분류=").append(main_name).append(lineSeparator);
         sb.append("발주직원ID=").append(orderEmployeeId).append(lineSeparator);
-        sb.append("발주수량=").append(orderQuantity).append(lineSeparator);
         sb.append("요청일자=").append(requestDate).append(lineSeparator);
         sb.append("요청상태=").append(requestStatus).append(lineSeparator);
         sb.append("거래처이름=").append(clientName).append(lineSeparator);
-        sb.append("입고수량=").append(quantityOfWh);
+        sb.append("발주수량=").append(orderQuantity).append(lineSeparator);
+        sb.append("입고수량=").append(quantityOfWh).append(lineSeparator);
+        sb.append("잔량=").append(getRemainremainingQuantity());
         return sb.toString();
     }
 }

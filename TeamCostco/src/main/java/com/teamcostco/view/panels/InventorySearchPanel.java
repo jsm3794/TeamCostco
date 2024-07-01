@@ -107,7 +107,7 @@ public class InventorySearchPanel extends JPanel {
 
 		
 		// 테이블 생성 및 CENTER에 추가 부분을 다음과 같이 수정합니다
-		model = new DefaultTableModel(new Object[][] {}, new String[] { "구역", "상품코드", "상품명", "수량" }) {
+		model = new DefaultTableModel(new Object[][] {}, new String[] { "구역", "상품코드", "상품명", "대기", "활성" }) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
 				return false;
@@ -127,7 +127,7 @@ public class InventorySearchPanel extends JPanel {
 		int totalWidth = table.getPreferredSize().width;
 
 		// 각 컬럼의 너비를 퍼센트로 설정
-		int[] percentages = { 10, 30, 50, 10 }; // 각 컬럼의 퍼센트 (총합 100%)
+		int[] percentages = { 10, 30, 40, 10, 10 }; // 각 컬럼의 퍼센트 (총합 100%)
 		for (int i = 0; i < table.getColumnModel().getColumnCount(); i++) {
 			TableColumn column = table.getColumnModel().getColumn(i);
 			int width = totalWidth * percentages[i] / 100;
