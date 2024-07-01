@@ -1,126 +1,141 @@
 package main.java.com.teamcostco.view.panels;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+import java.awt.*;
 
 public class OrderListPanel extends JPanel {
 
-	public JTextField startDateField;
-	public JTextField endDateField;
-	public JTextField itemNumberField;
-	public JTextField supplierField;
-	
-	public JPanel resultPanel;
-	public JPanel searchPanel;
-	public JLabel dateLabel;
-	public JPanel datePanel;
+    public JTextField startDateField;
+    public JTextField endDateField;
+    public JTextField itemNumberField;
+    public JTextField supplierField;
+    
+    public JPanel resultPanel;
+    public JPanel searchPanel;
+    public JLabel dateLabel;
+    public JPanel datePanel;
+    public ButtonGroup buttonGroup;
+    public JRadioButton waitingwarehousing;
+    public JRadioButton completedwarehousing;
 
-	public JLabel supplierLabel;
-	public JButton searchButton;
+    public JLabel supplierLabel;
+    public JButton searchButton;
 
-	public OrderListPanel() {
-		// 패널 설정
-		setLayout(new BorderLayout());
+    public OrderListPanel() {
+        setLayout(new BorderLayout());
+        initializeComponents();
+        setupLayout();
+    }
 
-		// 검색 조건 패널
-		searchPanel = new JPanel(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.insets = new Insets(5, 5, 5, 5); // 간격 설정
+    private void initializeComponents() {
+        startDateField = new JTextField(11);
+        endDateField = new JTextField(11);
+        itemNumberField = new JTextField(10);
+        supplierField = new JTextField(10);
 
-		// 발주 일자
-		dateLabel = new JLabel("발주일자");
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		searchPanel.add(dateLabel, gbc);
+        resultPanel = new JPanel();
+        searchPanel = new JPanel(new GridBagLayout());
+        datePanel = new JPanel(new FlowLayout());
 
-		datePanel = new JPanel(new FlowLayout());
-		startDateField = new JTextField(11);
-		startDateField.setHorizontalAlignment(SwingConstants.CENTER);
-		endDateField = new JTextField(11);
-		endDateField.setHorizontalAlignment(SwingConstants.CENTER);
-		datePanel.add(startDateField);
-		datePanel.add(new JLabel("~"));
-		datePanel.add(endDateField);
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		searchPanel.add(datePanel, gbc);
+        dateLabel = new JLabel("발주일자");
+        supplierLabel = new JLabel("거래처명");
 
-		// 품번
-		JLabel itemNumberLabel = new JLabel("품번");
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		searchPanel.add(itemNumberLabel, gbc);
-		itemNumberField = new JTextField(10);
-		gbc.gridx = 1;
-		gbc.gridy = 1;
-		searchPanel.add(itemNumberField, gbc);
+        buttonGroup = new ButtonGroup();
+        waitingwarehousing = new JRadioButton("입고대기");
+        completedwarehousing = new JRadioButton("입고완료");
 
-		// 거래처
-		JLabel supplierLabel = new JLabel("거래처");
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		searchPanel.add(supplierLabel, gbc);
-		supplierField = new JTextField(10);
+        searchButton = new JButton("검색");
+    }
 
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		searchPanel.add(supplierField, gbc);
+    private void setupLayout() {
+        setupSearchPanel();
+        setupResultPanel();
 
-		// 검색 버튼
-		searchButton = new JButton("검색");
-		gbc.gridx = 0;
-		gbc.gridy = 3;
-		gbc.gridwidth = 2; // 2개의 셀을 차지하도록 설정
-		gbc.anchor = GridBagConstraints.CENTER; // 가운데 정렬
-		gbc.weightx = 1.0; // X 방향으로 전체 공간을 균등하게 차지
-		searchPanel.add(searchButton, gbc);
-		searchButton.setBackground(new Color(6, 127, 196));
-		searchButton.setForeground(new Color(255, 255, 255));
+        add(searchPanel, BorderLayout.NORTH);
+        add(new JScrollPane(resultPanel), BorderLayout.CENTER);
+    }
 
-		// 결과 패널
-		resultPanel = new JPanel();
-		resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.Y_AXIS));
-		JScrollPane scrollPane = new JScrollPane(resultPanel);
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+    private void setupSearchPanel() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
 
-		// 패널에 패널 추가
-		add(searchPanel, BorderLayout.NORTH);
-		add(scrollPane, BorderLayout.CENTER);
-	}
+        addToSearchPanel(dateLabel, gbc, 0, 0);
+        setupDatePanel();
+        addToSearchPanel(datePanel, gbc, 1, 0);
 
+        addToSearchPanel(new JLabel("품번"), gbc, 0, 1);
+        addToSearchPanel(itemNumberField, gbc, 1, 1);
+
+        addToSearchPanel(supplierLabel, gbc, 0, 2);
+        addToSearchPanel(supplierField, gbc, 1, 2);
+
+        setupRadioButtons(gbc);
+        setupSearchButton(gbc);
+    }
+
+    private void setupDatePanel() {
+        datePanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(0, 0, 0, 0);
+
+        gbc.weightx = 0.5;
+        gbc.gridx = 0;
+        startDateField.setHorizontalAlignment(SwingConstants.CENTER);
+        datePanel.add(startDateField, gbc);
+
+        gbc.weightx = 0;
+        gbc.gridx = 1;
+        datePanel.add(new JLabel("~"), gbc);
+
+        gbc.weightx = 0.5;
+        gbc.gridx = 2;
+        endDateField.setHorizontalAlignment(SwingConstants.CENTER);
+        datePanel.add(endDateField, gbc);
+    }
+
+    private void setupRadioButtons(GridBagConstraints gbc) {
+        // 라디오 버튼을 위한 새 패널 생성 (오른쪽 정렬)
+        JPanel radioPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        
+        waitingwarehousing.setSelected(true);
+        buttonGroup.add(waitingwarehousing);
+        buttonGroup.add(completedwarehousing);
+
+        // 라디오 버튼을 새 패널에 추가
+        radioPanel.add(waitingwarehousing);
+        radioPanel.add(completedwarehousing);
+
+        // 라디오 패널을 위한 GridBagConstraints 수정
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.EAST;  // 오른쪽 정렬
+        gbc.fill = GridBagConstraints.HORIZONTAL;  // 수평으로 채우기
+        gbc.weightx = 1.0;  // 수평 여유 공간 모두 사용
+
+        searchPanel.add(radioPanel, gbc);
+    }
+
+    private void setupSearchButton(GridBagConstraints gbc) {
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.weightx = 1.0;
+        searchPanel.add(searchButton, gbc);
+        searchButton.setBackground(new Color(6, 127, 196));
+        searchButton.setForeground(Color.WHITE);
+    }
+
+    private void addToSearchPanel(Component component, GridBagConstraints gbc, int x, int y) {
+        gbc.gridx = x;
+        gbc.gridy = y;
+        searchPanel.add(component, gbc);
+    }
+
+    private void setupResultPanel() {
+        resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.Y_AXIS));
+    }
 }

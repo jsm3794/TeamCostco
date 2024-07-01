@@ -4,12 +4,15 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+import main.java.com.teamcostco.MainForm;
 import main.java.com.teamcostco.model.OrderDetailModel;
 import main.java.com.teamcostco.view.panels.OrderDetailPanel;
 
@@ -19,10 +22,24 @@ public class OrderDetailController extends PanelController<OrderDetailPanel> {
 
     public OrderDetailController(OrderDetailModel data) {
         this.data = data;
-        initControl(data);
+        initControl();
     }
 
-    private void initControl(OrderDetailModel data) {
+    
+    
+    private void initControl() {
+    	
+    		view.processButton.addActionListener(new ActionListener() {
+
+    			@Override
+    			public void actionPerformed(ActionEvent e) {
+    				MainForm.nav.push("warehousereceiving", true, data);
+    			}
+    			
+    		});
+    		
+    	
+    	
         String[] lines = data.toString().split("\n");
 
         view.dataPanel.setLayout(new GridLayout(lines.length, 1, 10, 10)); // 세로로 레이블 정렬, 간격 설정
@@ -48,6 +65,11 @@ public class OrderDetailController extends PanelController<OrderDetailPanel> {
             itemPanel.add(valueLabel);
 
             view.dataPanel.add(itemPanel);
+          
+        }
+        
+        if (data.getOrderQuantity() <= data.getQuantityOfWh()) {
+        	view.processButton.setEnabled(false);
         }
     }
 

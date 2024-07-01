@@ -1,6 +1,7 @@
 package main.java.com.teamcostco.controller;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -23,10 +24,12 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 
 import main.java.com.teamcostco.MainForm;
 import main.java.com.teamcostco.model.OrderDetailModel;
 import main.java.com.teamcostco.model.database.DatabaseUtil;
+import main.java.com.teamcostco.model.manager.DialogManager;
 import main.java.com.teamcostco.view.panels.OrderListPanel;
 
 public class OrderListController extends PanelController<OrderListPanel> {
@@ -37,45 +40,29 @@ public class OrderListController extends PanelController<OrderListPanel> {
 
 	private void initControl() {
 
-		view.startDateField.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				searchDatabase();
-			}
-		});
-
-		view.endDateField.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				searchDatabase();
-			}
-		});
-
-		// 수량
-		view.itemNumberField.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				searchDatabase();
-			}
-		});
-
-		// 거래처
-		view.supplierField.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				searchDatabase();
-			}
-		});
-
-		// 검색 버튼 동작
 		view.searchButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				searchDatabase();
+				DialogManager.Context context = DialogManager.showLoadingBox(view);
+				new SwingWorker<Void, Void>() {
+
+					@Override
+					protected Void doInBackground() throws Exception {
+						searchDatabase();
+						return null;
+					}
+
+					@Override
+					protected void done() {
+						context.close();
+						super.done();
+					}
+
+				}.execute();
+
 			}
 		});
 
-		// 엔터 키로 검색 동작 설정
 		KeyListener enterListener = new KeyListener() {
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -88,7 +75,7 @@ public class OrderListController extends PanelController<OrderListPanel> {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					searchDatabase();
+					view.searchButton.doClick();
 				}
 			}
 		};
@@ -97,36 +84,40 @@ public class OrderListController extends PanelController<OrderListPanel> {
 		view.endDateField.addKeyListener(enterListener);
 		view.itemNumberField.addKeyListener(enterListener);
 		view.supplierField.addKeyListener(enterListener);
-
 	}
 
 	private void searchDatabase() {
-		view.resultPanel.removeAll(); // 기존 결과 제거
+		view.resultPanel.removeAll();
 
-		// 입력된 일자 파싱
 		LocalDate startDate = parseDate(view.startDateField.getText());
 		LocalDate endDate = parseDate(view.endDateField.getText());
 
 		List<OrderDetailModel> filteredData = new ArrayList<>();
-		
+
 		try (Connection conn = DatabaseUtil.getConnection()) {
-			String sql = "SELECT * FROM orderrequest WHERE 1=1";
+			String sql = "SELECT " + "order_request_id, " + "o.product_code, " + "p.product_name AS product_name, "
+					+ "m.main_name AS main_name, " + "orderemployee_id, " + "order_quantity, " + "request_date, "
+					+ "request_status, " + "client_name, " + "quantity_of_wh " + "FROM ORDERREQUEST o "
+					+ "INNER JOIN product p ON p.product_code = o.product_code "
+					+ "INNER JOIN maincategory m ON p.main_id = m.main_id " + "WHERE 1=1 ";
 			if (startDate != null) {
-				sql += " AND request_date >= ?";
+				sql += " AND REQUEST_DATE >= ?";
 			}
 			if (endDate != null) {
-				sql += " AND request_date <= ?";
+				sql += " AND REQUEST_DATE <= ?";
 			}
 			if (!view.itemNumberField.getText().trim().isEmpty()) {
-				// 부분 일치 검색을 위해 % 기호 추가
-				sql += " AND product_id LIKE ?";
+				sql += " AND PRODUCT_CODE LIKE ?";
 			}
 			if (!view.supplierField.getText().trim().isEmpty()) {
-				// 부분 일치 검색을 위해 % 기호 추가
-				sql += " AND client_name LIKE ?";
+				sql += " AND CLIENT_NAME LIKE ?";
+			}
+			if (view.waitingwarehousing.isSelected()) {
+				sql += "AND ORDER_QUANTITY > quantity_of_wh";
+			} else {
+				sql += "AND ORDER_QUANTITY <= quantity_of_wh";
 			}
 
-			// PreparedStatement 설정 부분에서 문자열 앞뒤로 % 기호 추가
 			try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 				int paramIndex = 1;
 				if (startDate != null) {
@@ -136,20 +127,16 @@ public class OrderListController extends PanelController<OrderListPanel> {
 					pstmt.setDate(paramIndex++, java.sql.Date.valueOf(endDate));
 				}
 				if (!view.itemNumberField.getText().trim().isEmpty()) {
-					// 사용자 입력값에서 공백 제거하고 % 기호 추가
 					pstmt.setString(paramIndex++, "%" + view.itemNumberField.getText().trim() + "%");
 				}
 				if (!view.supplierField.getText().trim().isEmpty()) {
-					// 사용자 입력값에서 공백 제거하고 % 기호 추가
 					pstmt.setString(paramIndex++, "%" + view.supplierField.getText().trim() + "%");
 				}
-				// 나머지 코드는 동일하게 유지
-				
+
 				try (ResultSet rs = pstmt.executeQuery()) {
 					while (rs.next()) {
 						filteredData.add(new OrderDetailModel(rs));
 					}
-
 				}
 			}
 		} catch (SQLException e) {
@@ -163,7 +150,6 @@ public class OrderListController extends PanelController<OrderListPanel> {
 			}
 		}
 
-		// 결과 패널 업데이트
 		view.resultPanel.revalidate();
 		view.resultPanel.repaint();
 	}
@@ -171,10 +157,24 @@ public class OrderListController extends PanelController<OrderListPanel> {
 	private JPanel createEntryPanel(OrderDetailModel data) {
 		JPanel entryPanel = new JPanel();
 		entryPanel.setLayout(new BoxLayout(entryPanel, BoxLayout.Y_AXIS));
-		
-		entryPanel.add(new JLabel("거래처: " + data.getClient()));
-		entryPanel.add(new JLabel("발주번호: " + data.getItem_number()));
-		entryPanel.add(new JLabel("상품명: " + data.getProduct_name()));
+
+		// 폰트 크기 설정
+		Font labelFont = new Font("맑은 고딕", Font.PLAIN, 16); // 폰트 크기를 14로 설정
+
+		// 라벨 생성 및 설정
+		JLabel requestDateLabel = new JLabel("요청일자: " + data.getRequestDate());
+		JLabel orderRequestIdLabel = new JLabel("발주요청ID: " + data.getOrderRequestId());
+		JLabel clientLabel = new JLabel("거래처: " + data.getClientName());
+		JLabel productNameLabel = new JLabel("상품명: " + data.getProductName());
+		JLabel orderQuantityLabel = new JLabel("발주수량: " + data.getOrderQuantity());
+
+		JLabel[] labels = { requestDateLabel, orderRequestIdLabel, productNameLabel, orderQuantityLabel, clientLabel };
+
+		for (JLabel label : labels) {
+			label.setFont(labelFont);
+			label.setAlignmentX(Component.LEFT_ALIGNMENT); // 왼쪽 정렬
+			entryPanel.add(label);
+		}
 
 		entryPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		entryPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, entryPanel.getPreferredSize().height));
@@ -183,9 +183,10 @@ public class OrderListController extends PanelController<OrderListPanel> {
 		entryPanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				MainForm.nav.push("orderdetail", true, data);
+				MainForm.nav.push("orderHistoryDetail", true, data);
 			}
 		});
+
 		return entryPanel;
 	}
 
@@ -194,7 +195,7 @@ public class OrderListController extends PanelController<OrderListPanel> {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 			return LocalDate.parse(dateStr, formatter);
 		} catch (DateTimeParseException e) {
-			return null; // 날짜 파싱에 실패하면 null 반환
+			return null;
 		}
 	}
 
@@ -202,5 +203,4 @@ public class OrderListController extends PanelController<OrderListPanel> {
 	public String toString() {
 		return "발주목록";
 	}
-
 }

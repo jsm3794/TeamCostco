@@ -24,6 +24,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -145,7 +146,7 @@ public class DialogManager {
 		instance.overlayPanel.add(instance.displayPanel, gbc);
 
 		JLayeredPane layeredPane = parentPanel.getRootPane().getLayeredPane();
-		instance.overlayPanel.setSize(parentPanel.getSize());
+		instance.overlayPanel.setSize(parentPanel.getParent().getSize());
 
 		if (instance.overlayPanel.getParent() != null) {
 			((JLayeredPane) instance.overlayPanel.getParent()).remove(instance.overlayPanel);
@@ -285,7 +286,7 @@ public class DialogManager {
 		gbc.anchor = GridBagConstraints.CENTER;
 		instance.overlayPanel.add(instance.displayPanel, gbc);
 
-		instance.overlayPanel.setSize(parentPanel.getSize());
+		instance.overlayPanel.setSize(parentPanel.getParent().getSize());
 		JLayeredPane layeredPane = parentPanel.getRootPane().getLayeredPane();
 
 		if (instance.overlayPanel.getParent() != null) {

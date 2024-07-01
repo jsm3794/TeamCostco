@@ -22,20 +22,22 @@ public class HomeTestController extends PanelController<NewHome> {
 		
 		SwingUtilities.invokeLater(() -> {
 			if (AuthManager.getInstance().isLoggedIn()) {
-				startTimer();
-				inventorySeach();
-				materialDispatch();
-				productInspection();
-				orderList();
-				wareHouseList();
-				inventorymodification();
-				stockAccumulation();
-				receivingProcess();
-				productRegistration();
+
 			} else {
 				MainForm.nav.navigateTo("login", false);
 			}
 		});
+		
+		startTimer();
+		inventorySeach();
+		inventoryMovement();
+		productCheck();
+		orderHistory();
+		storageList();
+		inventoryUpdate();
+		inventoryPlacement();
+		productReceiving();
+		productEntry();
 		
 	}
 	
@@ -44,95 +46,95 @@ public class HomeTestController extends PanelController<NewHome> {
 		view.getInventorySeachBtn().addActionListener(new ActionListener() {	
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainForm.nav.push("sign", true);
+				MainForm.nav.push("inventorySearch", true);
 			}
 		});
 	}
 	
-	public void materialDispatch() {
+	public void inventoryMovement() {
 		
 		view.getMaterialDispatchBtn().addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainForm.nav.push("sign", true);
+				MainForm.nav.push("inventoryMovement", true);
 			}
 		});
 	}
 	
-	public void productInspection() {
+	public void productCheck() {
 
 		view.getProductInspectionBtn().addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainForm.nav.push("sign", true);
+				MainForm.nav.push("productCheck", true);
 			}
 		});
 	}
 	
-	public void orderList() {
+	public void orderHistory() {
 
 		view.getOrderListBtn().addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainForm.nav.push("sign", true);
+				MainForm.nav.push("orderHistory", true);
 			}
 		});
 	}
 	
-	public void wareHouseList() {
+	public void storageList() {
 
 		view.getWareHouseListBtn().addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainForm.nav.push("sign", true);
+				MainForm.nav.push("storageList", true);
 			}
 		});
 	}
 	
-	public void inventorymodification() {
+	public void inventoryUpdate() {
 
 		view.getInventorymodificationBtn().addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainForm.nav.push("sign", true);
+				MainForm.nav.push("inventoryUpdate", true);
 			}
 		});
 	}
 	
-	public void stockAccumulation() {
+	public void inventoryPlacement() {
 
 		view.getStockAccumulationBtn().addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainForm.nav.push("sign", true);
+				MainForm.nav.push("inventoryPlacement", true);
 			}
 		});
 	}
 	
-	public void receivingProcess() {
+	public void productReceiving() {
 
 		view.getReceivingProcessBtn().addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainForm.nav.push("sign", true);
+				MainForm.nav.push("productReceiving", true);
 			}
 		});
 	}
 	
-	public void productRegistration() {
+	public void productEntry() {
 		
 		view.getProductRegistrationBtn().addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainForm.nav.push("registration", true);
+				MainForm.nav.push("productEntry", true);
 				
 			}
 		});
