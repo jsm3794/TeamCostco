@@ -6,161 +6,177 @@ import java.awt.*;
 
 public class ProductDetailPanel extends JPanel {
 
-    private static final long serialVersionUID = 1L;
-    private JLabel CategoryLabel;
-    private JTextField textField;
-    private JButton btnAdjustRequest;
-    private JLabel mainName;
-    private JLabel productName;
-    private JLabel productCode;
-    private JLabel purchase_price;
-    private JLabel selling_price;
-    private JLabel appropriate_inventory;
-    private JLabel current_inventory;
-    private JLabel dateOf_Receipt;
-    private JLabel main_id;
+	private static final long serialVersionUID = 1L;
 
-    public ProductDetailPanel() {
-        setBounds(new Rectangle(0, 0, 480, 640));
-        setLayout(null);
+	private JLabel productIdLabel, productCodeLabel, productNameLabel, mainIdLabel, mediumIdLabel, smallIdLabel;
+	private JLabel purchasePriceLabel, sellingPriceLabel, appropriateInventoryLabel, currentInventoryLabel,
+			activeInventoryLabel;
 
-        JLabel CodeLabel = new JLabel("상품코드");
-        CodeLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        CodeLabel.setBounds(12, 44, 78, 28);
-        add(CodeLabel);
+	private JTextField adjustmentTextField;
+	private JButton btnAdjustRequest;
 
-        CategoryLabel = new JLabel("대분류");
-        CategoryLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        CategoryLabel.setBounds(12, 82, 78, 28);
-        add(CategoryLabel);
+	public ProductDetailPanel() {
+		setLayout(new BorderLayout());
+		setBounds(new Rectangle(0, 0, 480, 640));
 
-        JLabel nameLabel = new JLabel("상품명");
-        nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        nameLabel.setBounds(12, 120, 78, 28);
-        add(nameLabel);
+		initializeLabels(); // 라벨 초기화 메소드 호출
 
-        JLabel sellingLabel = new JLabel("판매가");
-        sellingLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        sellingLabel.setBounds(243, 173, 225, 28);
-        add(sellingLabel);
+		JPanel infoPanel = createInfoPanel();
+		JScrollPane scrollPane = new JScrollPane(infoPanel);
+		scrollPane.setBorder(BorderFactory.createEmptyBorder());
 
-        JLabel purchaseLabel = new JLabel("매입가");
-        purchaseLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        purchaseLabel.setBounds(12, 173, 225, 28);
-        add(purchaseLabel);
+		JPanel adjustmentPanel = createAdjustmentPanel();
 
-        JLabel properInventoryLabel = new JLabel("적정재고");
-        properInventoryLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        properInventoryLabel.setBounds(12, 257, 225, 28);
-        add(properInventoryLabel);
+		add(scrollPane, BorderLayout.CENTER);
+		add(adjustmentPanel, BorderLayout.SOUTH);
+	}
 
-        JLabel currentInventoryLabel = new JLabel("현재재고");
-        currentInventoryLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        currentInventoryLabel.setBounds(243, 257, 225, 28);
-        add(currentInventoryLabel);
+	private void initializeLabels() {
+		productIdLabel = new JLabel();
+		productCodeLabel = new JLabel();
+		productNameLabel = new JLabel();
+		mainIdLabel = new JLabel();
+		mediumIdLabel = new JLabel();
+		smallIdLabel = new JLabel();
+		purchasePriceLabel = new JLabel();
+		sellingPriceLabel = new JLabel();
+		appropriateInventoryLabel = new JLabel();
+		currentInventoryLabel = new JLabel();
+		activeInventoryLabel = new JLabel();
+	}
 
-        JLabel warehousingDateLabel = new JLabel("입고날짜");
-        warehousingDateLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        warehousingDateLabel.setBounds(12, 341, 78, 28);
-        add(warehousingDateLabel);
+	private JPanel createInfoPanel() {
+		JPanel panel = new JPanel(new GridBagLayout());
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.insets = new Insets(5, 5, 5, 5);
 
-        JLabel positionLabel = new JLabel("적재위치");
-        positionLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        positionLabel.setBounds(12, 385, 78, 28);
-        add(positionLabel);
+		String[] labels = { "상품 ID:", "상품코드:", "상품명:", "대분류:", "중분류:", "소분류:", "매입가:", "판매가:", "적정재고:", "현재재고:",
+				"활성재고:" };
+		JLabel[] valueLabels = { productIdLabel, productCodeLabel, productNameLabel, mainIdLabel, mediumIdLabel,
+				smallIdLabel, purchasePriceLabel, sellingPriceLabel, appropriateInventoryLabel, currentInventoryLabel,
+				activeInventoryLabel };
 
-        textField = new JTextField();
-        textField.setBounds(12, 437, 456, 128);
-        add(textField);
-        textField.setColumns(10);
+		for (int i = 0; i < labels.length; i++) {
+			gbc.gridy = i;
 
-        btnAdjustRequest = new JButton("조정요청");
-        btnAdjustRequest.setBounds(12, 575, 456, 55);
-        btnAdjustRequest.setBackground(Constants.BUTTON_BACKGROUND_COLOR);
-        add(btnAdjustRequest);
+			gbc.gridx = 0;
+			gbc.weightx = 0.3;
+			panel.add(new JLabel(labels[i]), gbc);
 
-        mainName = new JLabel();
-        mainName.setBounds(130, 89, 247, 28);
-        add(mainName);
+			gbc.gridx = 1;
+			gbc.weightx = 0.7;
+			valueLabels[i].setBorder(
+					BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY),
+							BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+			panel.add(valueLabels[i], gbc);
+		}
 
-        productCode = new JLabel();
-        productCode.setBounds(130, 44, 247, 28);
-        add(productCode);
+		return panel;
+	}
 
-        purchase_price = new JLabel();
-        purchase_price.setBounds(68, 201, 115, 36);
-        add(purchase_price);
+	private JPanel createAdjustmentPanel() {
+	    JPanel panel = new JPanel(new GridBagLayout());
+	    panel.setBorder(BorderFactory.createCompoundBorder(
+	        BorderFactory.createMatteBorder(1, 0, 0, 0, Color.GRAY),
+	        BorderFactory.createEmptyBorder(10, 10, 10, 10)
+	    ));
 
-        selling_price = new JLabel();
-        selling_price.setBounds(295, 201, 115, 36);
-        add(selling_price);
+	    GridBagConstraints gbc = new GridBagConstraints();
+	    gbc.fill = GridBagConstraints.HORIZONTAL;
+	    gbc.insets = new Insets(5, 5, 5, 5);
 
-        appropriate_inventory = new JLabel();
-        appropriate_inventory.setBounds(68, 282, 115, 36);
-        add(appropriate_inventory);
+	    gbc.gridx = 0;
+	    gbc.gridy = 0;
+	    gbc.gridwidth = 1;  // 전체 너비를 사용하도록 변경
+	    gbc.weightx = 1.0;  // 수평 방향으로 모든 여유 공간을 사용
 
-        current_inventory = new JLabel();
-        current_inventory.setBounds(295, 282, 115, 36);
-        add(current_inventory);
+	    btnAdjustRequest = new JButton("조정요청");
+	    btnAdjustRequest.setBackground(Constants.BUTTON_BACKGROUND_COLOR);
+	    btnAdjustRequest.setForeground(Constants.BUTTON_FOREGROUND_COLOR);
+	    btnAdjustRequest.setPreferredSize(new Dimension(0, 40));  // 버튼의 높이를 40픽셀로 설정
+	    panel.add(btnAdjustRequest, gbc);
 
-        dateOf_Receipt = new JLabel();
-        dateOf_Receipt.setBounds(130, 341, 233, 28);
-        add(dateOf_Receipt);
+	    return panel;
+	}
 
-        main_id = new JLabel();
-        main_id.setBounds(130, 385, 233, 28);
-        add(main_id);
-    }
+	private JPanel createPanel() {
+		JPanel panel = new JPanel(new GridBagLayout());
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		return panel;
+	}
 
-    public JTextField getTextField() {
-        return textField;
-    }
+	private void addLabel(JPanel panel, String labelText) {
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.EAST;
+		gbc.insets = new Insets(5, 5, 5, 5);
+		gbc.gridx = 0;
+		gbc.gridy = panel.getComponentCount();
+		panel.add(new JLabel(labelText), gbc);
+	}
 
-    public static long getSerialversionuid() {
-        return serialVersionUID;
-    }
+	private void addValueLabel(JPanel panel, JLabel label) {
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.insets = new Insets(5, 5, 5, 5);
+		gbc.gridx = 0;
+		gbc.gridy = panel.getComponentCount();
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.weightx = 1.0;
+		panel.add(label, gbc);
+	}
 
-    public JLabel getCategoryLabel() {
-        return CategoryLabel;
-    }
+	// Getter 메소드들
+	public JTextField getAdjustmentTextField() {
+		return adjustmentTextField;
+	}
 
-    public JLabel getMainName() {
-        return mainName;
-    }
-    
-    public JLabel getProductName() {
-        return mainName;
-    }
+	public JButton getBtnAdjustRequest() {
+		return btnAdjustRequest;
+	}
 
-    public JLabel getProductCode() {
-        return productCode;
-    }
+	public JLabel getProductIdLabel() {
+		return productIdLabel;
+	}
 
-    public JLabel getPurchase_price() {
-        return purchase_price;
-    }
+	public JLabel getProductCodeLabel() {
+		return productCodeLabel;
+	}
 
-    public JLabel getSelling_price() {
-        return selling_price;
-    }
+	public JLabel getProductNameLabel() {
+		return productNameLabel;
+	}
 
-    public JLabel getAppropriate_inventory() {
-        return appropriate_inventory;
-    }
+	public JLabel getMainIdLabel() {
+		return mainIdLabel;
+	}
 
-    public JLabel getCurrent_inventory() {
-        return current_inventory;
-    }
+	public JLabel getMediumIdLabel() {
+		return mediumIdLabel;
+	}
 
-    public JLabel getDateOf_Receipt() {
-        return dateOf_Receipt;
-    }
+	public JLabel getSmallIdLabel() {
+		return smallIdLabel;
+	}
 
-    public JLabel getMain_id() {
-        return main_id;
-    }
+	public JLabel getPurchasePriceLabel() {
+		return purchasePriceLabel;
+	}
 
-    public JButton getBtnAdjustRequest() {
-        return btnAdjustRequest; // 버튼 반환
-    }
+	public JLabel getSellingPriceLabel() {
+		return sellingPriceLabel;
+	}
+
+	public JLabel getAppropriateInventoryLabel() {
+		return appropriateInventoryLabel;
+	}
+
+	public JLabel getCurrentInventoryLabel() {
+		return currentInventoryLabel;
+	}
+
+	public JLabel getActiveInventoryLabel() {
+		return activeInventoryLabel;
+	}
 }
