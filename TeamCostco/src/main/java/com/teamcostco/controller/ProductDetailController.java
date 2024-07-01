@@ -51,7 +51,7 @@ public class ProductDetailController extends PanelController<ProductDetailPanel>
 			}
 		}
 			
-		private void initControl() {
+		public void initControl() {
 		
 			// 뷰에 데이터를 표시
 			view.getProductCode().setText(product.getProduct_code());

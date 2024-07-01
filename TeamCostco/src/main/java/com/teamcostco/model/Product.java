@@ -14,6 +14,7 @@ public class Product {
    private int selling_price;
    private int appropriate_inventory;
    private int current_inventory;
+   private int active_inventory;
    
    public Product(ResultSet rs) throws SQLException {
 	    this.product_id = rs.getString("product_id");
@@ -26,10 +27,23 @@ public class Product {
 	    this.selling_price = rs.getInt("selling_price");  // selling_price를 ResultSet에서 가져옵니다.
 	    this.appropriate_inventory = rs.getInt("appropriate_inventory");  // appropriate_inventory를 ResultSet에서 가져옵니다.
 	    this.current_inventory = rs.getInt("current_inventory");  // current_inventory를 ResultSet에서 가져옵니다.
+	    this.active_inventory = rs.getInt("active_inventory");
 	}
    
    
-   public String getProduct_id() {
+   public Product() {}
+
+public int getActive_inventory() {
+	return active_inventory;
+}
+
+
+public void setActive_inventory(int active_inventory) {
+	this.active_inventory = active_inventory;
+}
+
+
+public String getProduct_id() {
       return product_id;
    }
    public void setProduct_id(String product_id) {

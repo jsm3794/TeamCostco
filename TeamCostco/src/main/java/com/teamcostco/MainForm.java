@@ -15,6 +15,7 @@ import main.java.com.teamcostco.controller.InventorySearchController;
 import main.java.com.teamcostco.controller.LoginController;
 import main.java.com.teamcostco.controller.OrderDetailController;
 import main.java.com.teamcostco.controller.OrderListController;
+import main.java.com.teamcostco.controller.ProductDetailController;
 import main.java.com.teamcostco.controller.ProductRegistrationController;
 import main.java.com.teamcostco.controller.SignTestController;
 
@@ -57,13 +58,14 @@ public class MainForm {
 		nav.mappingTarget("orderdetail", OrderDetailController.class);
 		nav.mappingTarget("registration", ProductRegistrationController.class);
 		nav.mappingTarget("iv", InventorySearchController.class);
+		nav.mappingTarget("pd", ProductDetailController.class);
 
 		// Navigator 디자인
 		nav.setPreferredSize(new Dimension(FORM_WIDTH, FORM_HEIGHT));
 		// nav.setBorder(new LineBorder(Color.RED, 1));
 
 		// 기본 페이지로 이동
-		nav.navigateTo("iv", false);
+		nav.navigateTo("pd", false);
 	}
 	
 	private static void setupUISettings() {
