@@ -25,8 +25,8 @@ public JLabel timeLabel;
 	private JButton OrderListBtn; // 발주내역
 	private JButton WareHouseListBtn; // 창고목록
 	private JButton InventorymodificationBtn; // 재고수정
-	private JButton StockAccumulationBtn; // 재고적치
-	private JButton ReceivingProcessBtn; // 입고처리
+	private JButton orderRequestBtn; // 재고적치
+	private JButton pdaSetting; // 입고처리
 	private JButton ProductRegistrationBtn; // 상품등록
 	
 	/**
@@ -90,29 +90,28 @@ public JLabel timeLabel;
 		InventorymodificationBtn.setBounds(243, 360, 225, 60);
 		add(InventorymodificationBtn);
 		
-		StockAccumulationBtn = new JButton("재고적치");
-		StockAccumulationBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
-		StockAccumulationBtn.setBackground(new Color(6, 127, 196));
-		StockAccumulationBtn.setForeground(new Color(255, 255, 255));
-		StockAccumulationBtn.setBounds(243, 430, 225, 60);
-		add(StockAccumulationBtn);
+		orderRequestBtn = new JButton("발주요청");
+		orderRequestBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
+		orderRequestBtn.setBackground(new Color(6, 127, 196));
+		orderRequestBtn.setForeground(new Color(255, 255, 255));
+		orderRequestBtn.setBounds(243, 500, 225, 60);
+		add(orderRequestBtn);
 		
-		ReceivingProcessBtn = new JButton("입고처리");
-		ReceivingProcessBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
-		ReceivingProcessBtn.setBackground(new Color(6, 127, 196));
-		ReceivingProcessBtn.setForeground(new Color(255, 255, 255));
-		ReceivingProcessBtn.setBounds(243, 500, 225, 60);
-		add(ReceivingProcessBtn);
+		pdaSetting = new JButton("환경설정");
+		pdaSetting.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
+		pdaSetting.setBackground(new Color(6, 127, 196));
+		pdaSetting.setForeground(new Color(255, 255, 255));
+		pdaSetting.setBounds(12, 570, 225, 60);
+		add(pdaSetting);
 		
 		ProductRegistrationBtn = new JButton("상품등록");
 		ProductRegistrationBtn.setForeground(Color.WHITE);
 		ProductRegistrationBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
 		ProductRegistrationBtn.setBackground(new Color(6, 127, 196));
-		ProductRegistrationBtn.setBounds(12, 570, 225, 60);
+		ProductRegistrationBtn.setBounds(243, 430, 225, 60);
 		add(ProductRegistrationBtn);
 		
 		JPanel panel = new JPanel();
-		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
 		panel.setBounds(12, 164, 456, 114);
 		add(panel);
 		
@@ -156,12 +155,12 @@ public JLabel timeLabel;
 		return InventorymodificationBtn;
 	}
 
-	public JButton getStockAccumulationBtn() {
-		return StockAccumulationBtn;
+	public JButton getOrderRequestBtn() {
+		return orderRequestBtn;
 	}
 
 	public JButton getReceivingProcessBtn() {
-		return ReceivingProcessBtn;
+		return pdaSetting;
 	}
 	
 	public JButton getProductRegistrationBtn() {
