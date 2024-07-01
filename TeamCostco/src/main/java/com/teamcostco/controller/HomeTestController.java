@@ -35,9 +35,9 @@ public class HomeTestController extends PanelController<NewHome> {
 		orderHistory();
 		storageList();
 		inventoryUpdate();
-		inventoryPlacement();
-		productReceiving();
+		pdaSetting();
 		productEntry();
+		orderRequest();
 		
 	}
 	
@@ -106,24 +106,24 @@ public class HomeTestController extends PanelController<NewHome> {
 		});
 	}
 	
-	public void inventoryPlacement() {
+	public void orderRequest() {
 
-		view.getStockAccumulationBtn().addActionListener(new ActionListener() {
+		view.getOrderRequestBtn().addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainForm.nav.push("inventoryPlacement", true);
+				MainForm.nav.push("orderRequest", true);
 			}
 		});
 	}
 	
-	public void productReceiving() {
+	public void pdaSetting() {
 
 		view.getReceivingProcessBtn().addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainForm.nav.push("productReceiving", true);
+				MainForm.nav.push("pdaSetting", true);
 			}
 		});
 	}
