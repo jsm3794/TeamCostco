@@ -23,7 +23,7 @@ public JLabel timeLabel;
 	private JButton MaterialDispatchBtn; // 재고이동
 	private JButton ProductInspectionBtn; // 제품검수
 	private JButton OrderListBtn; // 발주내역
-	private JButton WareHouseListBtn; // 창고목록
+	private JButton defectiveInventoryBtn; // 불량재고
 	private JButton orderRequestBtn; // 재고적치
 	private JButton pdaSetting; // 입고처리
 	private JButton ProductRegistrationBtn; // 상품등록
@@ -58,7 +58,7 @@ public JLabel timeLabel;
 		MaterialDispatchBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
 		MaterialDispatchBtn.setBackground(new Color(6, 127, 196));
 		MaterialDispatchBtn.setForeground(new Color(255, 255, 255));
-		MaterialDispatchBtn.setBounds(12, 400, 225, 60);
+		MaterialDispatchBtn.setBounds(243, 330, 225, 60);
 		add(MaterialDispatchBtn);
 		
 		ProductInspectionBtn = new JButton("제품검수");
@@ -72,21 +72,21 @@ public JLabel timeLabel;
 		OrderListBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
 		OrderListBtn.setBackground(new Color(6, 127, 196));
 		OrderListBtn.setForeground(new Color(255, 255, 255));
-		OrderListBtn.setBounds(12, 540, 225, 60);
+		OrderListBtn.setBounds(12, 400, 225, 60);
 		add(OrderListBtn);
 		
-		WareHouseListBtn = new JButton("창고목록");
-		WareHouseListBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
-		WareHouseListBtn.setBackground(new Color(6, 127, 196));
-		WareHouseListBtn.setForeground(new Color(255, 255, 255));
-		WareHouseListBtn.setBounds(243, 330, 225, 60);
-		add(WareHouseListBtn);
+		defectiveInventoryBtn = new JButton("불량재고");
+		defectiveInventoryBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
+		defectiveInventoryBtn.setBackground(new Color(6, 127, 196));
+		defectiveInventoryBtn.setForeground(new Color(255, 255, 255));
+		defectiveInventoryBtn.setBounds(12, 540, 225, 60);
+		add(defectiveInventoryBtn);
 		
 		orderRequestBtn = new JButton("발주요청");
 		orderRequestBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
 		orderRequestBtn.setBackground(new Color(6, 127, 196));
 		orderRequestBtn.setForeground(new Color(255, 255, 255));
-		orderRequestBtn.setBounds(243, 470, 225, 60);
+		orderRequestBtn.setBounds(243, 400, 225, 60);
 		add(orderRequestBtn);
 		
 		pdaSetting = new JButton("환경설정");
@@ -101,7 +101,7 @@ public JLabel timeLabel;
 		ProductRegistrationBtn.setForeground(Color.WHITE);
 		ProductRegistrationBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 18));
 		ProductRegistrationBtn.setBackground(new Color(6, 127, 196));
-		ProductRegistrationBtn.setBounds(243, 400, 225, 60);
+		ProductRegistrationBtn.setBounds(243, 470, 225, 60);
 		add(ProductRegistrationBtn);
 		
 		JPanel panel = new JPanel();
@@ -140,8 +140,8 @@ public JLabel timeLabel;
 		return OrderListBtn;
 	}
 
-	public JButton getWareHouseListBtn() {
-		return WareHouseListBtn;
+	public JButton getDefectiveInventoryBtn() {
+		return defectiveInventoryBtn;
 	}
 
 	public JButton getOrderRequestBtn() {
