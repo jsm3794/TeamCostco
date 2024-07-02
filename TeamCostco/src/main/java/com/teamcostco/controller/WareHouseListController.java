@@ -16,6 +16,7 @@ import main.java.com.teamcostco.model.WareHouseListModel;
 import main.java.com.teamcostco.model.database.DatabaseUtil;
 import main.java.com.teamcostco.view.panels.WareHouseListPanel;
 
+
 public class WareHouseListController extends PanelController<WareHouseListPanel> {
     private DatabaseUtil connector;
     private CategoryData categoryData;

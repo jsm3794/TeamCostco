@@ -43,3 +43,6 @@ public class WareHouseListModel {
         return "WareHouseListModel [product_name=" + product_name + ", disposal_method=" + disposal_method + ", defect_amount=" + defect_amount + "]";
     }
 }
+
+
+

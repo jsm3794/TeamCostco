@@ -41,6 +41,8 @@ public class ProductTableModel extends AbstractTableModel {
         return columnNames[column];
     }
 
+    
+    
     public void setData(List<WareHouseListModel> data) {
         this.data = data;
         fireTableDataChanged();

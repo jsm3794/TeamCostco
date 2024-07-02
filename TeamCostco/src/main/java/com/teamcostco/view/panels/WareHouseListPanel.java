@@ -55,6 +55,8 @@ public class WareHouseListPanel extends JPanel {
     public ProductTableModel getTableModel() {
         return tableModel;
     }
+    
+    
 
     public JComboBox<String> getMainCateComboBox() {
         return mainCateComboBox;
