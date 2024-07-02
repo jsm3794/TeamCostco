@@ -1,13 +1,11 @@
 package main.java.com.teamcostco.model;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.table.AbstractTableModel;
 
 public class ProductTableModel extends AbstractTableModel {
     private List<WareHouseListModel> data;
-    private String[] columnNames = {"상품번호", "제품명", "창고수량", "대분류", "중분류", "소분류"};
+    private String[] columnNames = {"제품명", "불량사유", "불량개수"};
 
     public ProductTableModel(List<WareHouseListModel> data) {
         this.data = data;
@@ -28,17 +26,11 @@ public class ProductTableModel extends AbstractTableModel {
         WareHouseListModel row = data.get(rowIndex);
         switch (columnIndex) {
             case 0:
-                return row.getProduct_id();
+                return row.getProduct_name();
             case 1:
-            	return row.getProduct_name();
+                return row.getDisposal_method();
             case 2:
-            	return row.getInventory_amoun();
-            case 3:
-                return row.getMain_name();
-            case 4:
-                return row.getMedium_name();
-            case 5:
-                return row.getSmall_name();
+                return row.getDefect_amount();
             default:
                 return null;
         }

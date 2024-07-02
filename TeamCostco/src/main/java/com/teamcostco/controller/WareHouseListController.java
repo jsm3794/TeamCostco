@@ -55,9 +55,67 @@ public class WareHouseListController extends PanelController<WareHouseListPanel>
         view.getSearchButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                searchProducts();
+                searchDefectiveProducts();
             }
         });
+    }
+    
+    private void searchDefectiveProducts() {
+        StringBuilder sql = new StringBuilder(
+                "SELECT DISTINCT product_name, disposal_method, defect_amount " +
+                "FROM defectproduct " +
+                "INNER JOIN product USING (product_code) " +
+                "INNER JOIN maincategory main ON main.main_id = product.main_id " +
+                "INNER JOIN mediumcategory medi ON main.main_id = medi.main_id " +
+                "INNER JOIN smallcategory small ON medi.medium_id = small.medium_id " +
+                "WHERE 1=1 "
+        );
+
+        List<Object> parameters = new ArrayList<>();
+
+        String productName = view.getProductNameField().getText();
+        if (productName != null && !productName.trim().isEmpty()) {
+            sql.append("AND product_name LIKE ? ");
+            parameters.add("%" + productName.trim() + "%");
+        }
+
+        String selectedMain = (String) view.getMainCateComboBox().getSelectedItem();
+        if (selectedMain != null && !"대분류 전체".equals(selectedMain)) {
+            sql.append("AND main_name = ? ");
+            parameters.add(selectedMain);
+        }
+
+        String selectedMedium = (String) view.getmediumCateCombo().getSelectedItem();
+        if (selectedMedium != null && !"중분류 전체".equals(selectedMedium)) {
+            sql.append("AND medium_name = ? ");
+            parameters.add(selectedMedium);
+        }
+
+        String selectedSmall = (String) view.getSmallCateCombo().getSelectedItem();
+        if (selectedSmall != null && !"소분류 전체".equals(selectedSmall)) {
+            sql.append("AND small_name = ? ");
+            parameters.add(selectedSmall);
+        }
+
+        sql.append("ORDER BY disposal_method DESC");
+
+        try (
+                Connection conn = connector.getConnection();
+                PreparedStatement pstmt = conn.prepareStatement(sql.toString())
+        ) {
+            for (int i = 0; i < parameters.size(); i++) {
+                pstmt.setObject(i + 1, parameters.get(i));
+            }
+            try (ResultSet rs = pstmt.executeQuery()) {
+                List<WareHouseListModel> results = new ArrayList<>();
+                while (rs.next()) {
+                    results.add(new WareHouseListModel(rs));
+                }
+                view.getTableModel().setData(results);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private List<AllCategoryJoin> loadAllCategories() {

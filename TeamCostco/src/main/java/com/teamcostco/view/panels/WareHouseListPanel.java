@@ -121,9 +121,8 @@ public class WareHouseListPanel extends JPanel {
         columnModel.getColumn(0).setPreferredWidth(100); // Product ID
         columnModel.getColumn(1).setPreferredWidth(200); // Product Name
         columnModel.getColumn(2).setPreferredWidth(150); // Main Category
-        columnModel.getColumn(3).setPreferredWidth(150); // Medium Category
-        columnModel.getColumn(4).setPreferredWidth(150); // Small Category
-        columnModel.getColumn(5).setPreferredWidth(100); // Inventory Quantity
+
+       
 
         // Set table font
         productTable.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
@@ -157,7 +156,7 @@ public class WareHouseListPanel extends JPanel {
     public static void main(String[] args) {
         JFrame frame = new JFrame("조정요청");
         frame.getContentPane().add(new WareHouseListPanel());
-        frame.setSize(800, 600); // Adjust the frame size as needed
+        frame.setSize(480,640); // Adjust the frame size as needed
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
