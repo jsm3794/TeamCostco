@@ -1,19 +1,14 @@
 package main.java.com.teamcostco.view.panels;
 
 import javax.swing.*;
-
 import main.utils.Constants;
-
 import java.awt.*;
 import java.time.LocalDate;
 
 public class OrderRequestPanel extends JPanel {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private JPanel resultPanel;
+    private static final long serialVersionUID = 1L;
+    private JPanel resultPanel;
     private JButton requestBtn;
 
     public OrderRequestPanel() {
@@ -24,12 +19,12 @@ public class OrderRequestPanel extends JPanel {
 
         resultPanel = new JPanel();
         resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.Y_AXIS));
-        resultPanel.setBounds(12, 89, 456, 410);
         
-        // 추가된 JScrollPane
+        // 스크롤팬 생성
         JScrollPane scrollPane = new JScrollPane(resultPanel);
         scrollPane.setBounds(12, 89, 456, 410);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         add(scrollPane);
 
@@ -45,9 +40,7 @@ public class OrderRequestPanel extends JPanel {
         dateLabel.setHorizontalAlignment(SwingConstants.CENTER);
         dateLabel.setBounds(12, 18, 456, 52);
         add(dateLabel);
-
     }
-
 
     public JPanel getResultPanel() {
         return resultPanel;
@@ -61,4 +54,3 @@ public class OrderRequestPanel extends JPanel {
         return LocalDate.now();
     }
 }
-
