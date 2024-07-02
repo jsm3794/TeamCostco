@@ -27,7 +27,6 @@ public class HomeTestController extends PanelController<NewHome> {
 				productCheck();
 				orderHistory();
 				storageList();
-				inventoryUpdate();
 				pdaSetting();
 				productEntry();
 				orderRequest();
@@ -90,17 +89,6 @@ public class HomeTestController extends PanelController<NewHome> {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				MainForm.nav.push("storageList", true);
-			}
-		});
-	}
-
-	public void inventoryUpdate() {
-
-		view.getInventorymodificationBtn().addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				MainForm.nav.push("inventoryUpdate", true);
 			}
 		});
 	}
