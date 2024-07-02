@@ -6,7 +6,9 @@ import java.awt.event.KeyListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
 import main.java.com.teamcostco.MainForm;
 import main.java.com.teamcostco.dao.DefectProductDAO;
@@ -14,6 +16,7 @@ import main.java.com.teamcostco.dao.ProductDAO;
 import main.java.com.teamcostco.model.Product;
 import main.java.com.teamcostco.model.database.DatabaseUtil;
 import main.java.com.teamcostco.model.manager.DialogManager;
+import main.java.com.teamcostco.model.manager.DialogManager.Context;
 import main.java.com.teamcostco.view.panels.AmountModifyPanel2;
 
 public class AmountModify2Controller extends PanelController<AmountModifyPanel2> {
@@ -132,24 +135,40 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
 	}
 
 	private void handleSuccessfulUpdate(int defectAmount) {
-		String adjustment = view.getAdjustmentReasonComboBox().getSelectedItem().toString().split(" ")[0];
-		DefectProductDAO.insertDefectProduct(adjustment, String.valueOf(model.getProduct_code()), defectAmount);
 
 		SwingUtilities.invokeLater(() -> {
+			Context context = DialogManager.showLoadingBox(view);
 
-			MainForm.nav.pop();
-			InventorySearchController isc = (InventorySearchController) MainForm.nav
-					.findLastControllerByClass(InventorySearchController.class);
-			isc.search();
+			new SwingWorker<Void, Void>() {
 
-			MainForm.nav.navigateTo("productdetail", true, ProductDAO.getProductByCode(model.getProduct_code()))
-					.thenRun(() -> {
+				@Override
+				protected Void doInBackground() throws Exception {
+					MainForm.nav.stopUpdate();
+					String adjustment = view.getAdjustmentReasonComboBox().getSelectedItem().toString().split(" ")[0];
 
+					DefectProductDAO.insertDefectProduct(adjustment, String.valueOf(model.getProduct_code()),
+							defectAmount);
+					InventorySearchController isc = (InventorySearchController) MainForm.nav
+							.findLastControllerByClass(InventorySearchController.class);
+					isc.search();
+
+					MainForm.nav.navigateTo("productdetail", true, ProductDAO.getProductByCode(model.getProduct_code()))
+							.thenRun(() -> {
+								context.close();
+							});
+					MainForm.nav.resumeUpdate();
+					return null;
+				}
+
+				@Override
+				protected void done() {
+					SwingUtilities.invokeLater(() -> {
 						DialogManager.showMessageBox(MainForm.nav.getCurrent().getPanel(), "수정요청이 성공적으로 처리되었습니다.",
 								null);
-
 					});
+				}
 
+			}.execute();
 		});
 
 	}
