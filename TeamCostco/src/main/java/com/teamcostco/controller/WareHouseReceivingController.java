@@ -145,6 +145,22 @@ public class WareHouseReceivingController extends PanelController<WareHouseRecei
 					} catch (SQLException e1) {
 						e1.printStackTrace();
 					}
+					
+					// 입고상태 업데이트
+					// 입고 상태 업데이트
+					String updateStatusSql = "UPDATE orderrequest SET request_status = CASE " +
+					    "WHEN quantity_of_wh = order_quantity THEN '입고완료' " +
+					    "WHEN quantity_of_wh > 0 THEN '입고중' " +
+					    "ELSE request_status END " +
+					    "WHERE order_request_id = ?";
+
+					try (Connection conn = DatabaseUtil.getConnection();
+					     PreparedStatement pstmt = conn.prepareStatement(updateStatusSql)) {
+					    pstmt.setInt(1, data.getOrderRequestId());
+					    pstmt.executeUpdate();
+					} catch (SQLException e1) {
+					    e1.printStackTrace();
+					}
 
 					// 입고처리 후 발주상세조회창 업데이트
 
