@@ -30,6 +30,7 @@ public class HomeTestController extends PanelController<NewHome> {
 				pdaSetting();
 				productEntry();
 				orderRequest();
+				houseMap();
 				view.setVisible(true);
 
 			} else {
@@ -88,7 +89,7 @@ public class HomeTestController extends PanelController<NewHome> {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainForm.nav.push("defectiveInventory", true);
+				MainForm.nav.push("storageList", true);
 			}
 		});
 	}
