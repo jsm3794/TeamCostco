@@ -14,48 +14,33 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import main.java.com.teamcostco.model.ProductTableModel;
+import main.java.com.teamcostco.view.textfields.JPlaceholderTextField;
 import main.utils.Constants;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
 
 public class WareHouseListPanel extends JPanel {
-    JTextField productNameField;
-    JComboBox<String> mainCateComboBox;
-    JTable productTable;
-    JButton searchButton;
-    ProductTableModel tableModel;
-    private JComboBox<String> mediumCateCombo;
-    private JComboBox<String> smallCateCombo;
-    private JPanel categoryPanel;
-
-    public JTextField getProductNameField() {
-        return productNameField;
+    private JTextField productNameField;
+    private JTable productTable;
+    private JButton searchButton;
+    private ProductTableModel tableModel;  
+    private JComboBox<String> disposalComboBox;
+    private String[] disposalMethodItem = {
+    		"DAM001 - 파손 (Damage)"
+    				+ "DEF002 - 결함 (Defective)"
+    				+ "EXP003- 유통기한 경과 (Expired)"
+    				+ "MIS004 - 잘못된 사양 (Mismatched Specification)"
+    				+ "CON005 - 오염 (Contaminated)"
+    };
+    
+    
+    // 불량사유 배열에 값을 추가합니다.
+    public void addDmItem(String item) {
+    	
     }
-
-    public JTable getProductTable() {
-        return productTable;
-    }
-
-    public JButton getSearchButton() {
-        return searchButton;
-    }
-
-    public ProductTableModel getTableModel() {
-        return tableModel;
-    }
-
-    public JComboBox<String> getMainCateComboBox() {
-        return mainCateComboBox;
-    }
-
-    public JComboBox<String> getmediumCateCombo() {
-        return mediumCateCombo;
-    }
-
-    public JComboBox<String> getSmallCateCombo() {
-        return smallCateCombo;
-    }
+    
 
     public WareHouseListPanel() {
         setBackground(new Color(255, 255, 255));
@@ -68,25 +53,14 @@ public class WareHouseListPanel extends JPanel {
         // Create the input panel
         JPanel inputPanel = new JPanel(new GridLayout(2, 2, 10, 10));
 
-        productNameField = new JTextField(15);
+        productNameField = new JPlaceholderTextField("상품명 입력");
         inputPanel.add(productNameField);
 
         add(inputPanel, BorderLayout.NORTH);
-
-        categoryPanel = new JPanel();
-        inputPanel.add(categoryPanel);
-        categoryPanel.setLayout(new GridLayout(3, 1, 5, 5));
-
-        mainCateComboBox = new JComboBox<>();
-        categoryPanel.add(mainCateComboBox);
-
-        mediumCateCombo = new JComboBox<>();
-        categoryPanel.add(mediumCateCombo);
-        mediumCateCombo.setEnabled(false);
-
-        smallCateCombo = new JComboBox<>();
-        categoryPanel.add(smallCateCombo);
-        smallCateCombo.setEnabled(false);
+        
+        disposalComboBox = new JComboBox<String>(disposalMethodItem);
+        disposalComboBox.setFont(new Font("맑은 고딕", Font.PLAIN, 15));
+        inputPanel.add(disposalComboBox);
 
         searchButton = new JButton("Search");
         searchButton.setBackground(Constants.BUTTON_BACKGROUND_COLOR);
