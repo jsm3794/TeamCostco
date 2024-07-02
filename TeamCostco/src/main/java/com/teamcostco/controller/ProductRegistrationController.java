@@ -89,7 +89,9 @@ public class ProductRegistrationController extends PanelController<ProductRegist
 		view.getInitializationBtn().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainForm.nav.navigateTo("registration", true);
+				MainForm.nav.stopUpdate();
+				
+				MainForm.nav.navigateTo("productEntry", true).thenRun(() -> {MainForm.nav.resumeUpdate();});
 			}
 		});
 
@@ -172,7 +174,7 @@ public class ProductRegistrationController extends PanelController<ProductRegist
 				}
 
 				// INSERT 쿼리 실행
-				String sql = "INSERT INTO product VALUES(?, 'PRID' || LPAD(?, 8, '0'), ?, ?, ?, ?, ?, ?, 0, 0)";
+				String sql = "INSERT INTO product VALUES(?, 'PRID' || LPAD(?, 8, '0'), ?, ?, ?, ?, ?, ?, 0, 0, 0)";
 				try (Connection con = DatabaseUtil.getConnection();
 						PreparedStatement pstmt = con.prepareStatement(sql)) {
 
