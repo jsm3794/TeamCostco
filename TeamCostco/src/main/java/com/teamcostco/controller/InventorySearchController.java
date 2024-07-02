@@ -15,6 +15,7 @@ import javax.swing.JComboBox;
 import javax.swing.table.DefaultTableModel;
 
 import main.java.com.teamcostco.MainForm;
+import main.java.com.teamcostco.dao.ProductDAO;
 import main.java.com.teamcostco.model.Product;
 import main.java.com.teamcostco.model.database.DatabaseUtil;
 import main.java.com.teamcostco.view.panels.InventorySearchPanel;
@@ -45,12 +46,16 @@ public class InventorySearchController extends PanelController<InventorySearchPa
 
 		// 검색 버튼 클릭 시 DB에서 데이터를 가져와 테이블에 표시
 		view.searchButton.addActionListener(e -> {
-			String searchKeyword = view.searchField.getText();
-			String selectedCategory = (String) view.cb_CategorizeName.getSelectedItem();
-			String categoryKind = (String) view.categoryComboBox.getSelectedItem();
-			loadData(view.model, searchKeyword, categoryKind, selectedCategory);
-			bindTableAction();
+			search();
 		});
+	}
+
+	public void search() {
+		String searchKeyword = view.searchField.getText();
+		String selectedCategory = (String) view.cb_CategorizeName.getSelectedItem();
+		String categoryKind = (String) view.categoryComboBox.getSelectedItem();
+		loadData(view.model, searchKeyword, categoryKind, selectedCategory);
+		bindTableAction();
 	}
 
 	private void initializeCategoryComboBox(JComboBox<String> comboBox) {
@@ -143,8 +148,8 @@ public class InventorySearchController extends PanelController<InventorySearchPa
 		}
 
 		String sql = "SELECT p.product_id, p.product_name AS product_name, p.product_code AS product_code, p.main_id AS main_id, "
-				+ "p.current_inventory AS current_inventory, p.active_inventory AS active_inventory, p.selling_price " + "FROM product p " + joinSql
-				+ whereClause;
+				+ "p.current_inventory AS current_inventory, p.active_inventory AS active_inventory, p.selling_price "
+				+ "FROM product p " + joinSql + whereClause;
 
 		try (Connection connection = DatabaseUtil.getConnection();
 				PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -161,9 +166,9 @@ public class InventorySearchController extends PanelController<InventorySearchPa
 					int currentInventory = rs.getInt("current_inventory");
 					int activeInventory = rs.getInt("active_inventory");
 					String productCode = rs.getString("product_code");
-					
 
-					tableModel.addRow(new Object[] { locationId, productCode, productName, currentInventory, activeInventory });
+					tableModel.addRow(
+							new Object[] { locationId, productCode, productName, currentInventory, activeInventory });
 				}
 			}
 		} catch (SQLException e) {
@@ -172,35 +177,18 @@ public class InventorySearchController extends PanelController<InventorySearchPa
 	}
 
 	public void bindTableAction() {
-	    view.table.addMouseListener(new MouseAdapter() {
-	        @Override
-	        public void mouseClicked(MouseEvent e) {
-	            if (e.getClickCount() == 2) {  // 더블 클릭 확인
-	                int row = view.table.rowAtPoint(e.getPoint());
-	                if (row >= 0) {
-	                    String productCode = (String) view.table.getValueAt(row, 1);  // 인덱스를 1로 가정 (상품코드 컬럼)
-	                    loadProductDetails(productCode);
-	                }
-	            }
-	        }
-	    });
-	}
-	
-	private void loadProductDetails(String product_code) {
-		try (Connection connection = DatabaseUtil.getConnection();
-				PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM product WHERE product_code = ?")) {
-
-			pstmt.setString(1, product_code);
-			try (ResultSet rs = pstmt.executeQuery()) {
-				if (rs.next()) {
-					Product product = new Product(rs);
-					// ProductDetailController로 이동
-					MainForm.nav.push("productdetail", true, product);
+		view.table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) { // 더블 클릭 확인
+					int row = view.table.rowAtPoint(e.getPoint());
+					if (row >= 0) {
+						String productCode = (String) view.table.getValueAt(row, 1); // 인덱스를 1로 가정 (상품코드 컬럼)
+						MainForm.nav.push("productdetail", true, ProductDAO.getProductByCode(productCode));
+					}
 				}
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		});
 	}
 
 	@Override

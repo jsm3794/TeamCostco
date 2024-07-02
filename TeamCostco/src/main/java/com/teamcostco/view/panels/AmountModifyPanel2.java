@@ -28,15 +28,14 @@ public class AmountModifyPanel2 extends JPanel {
 	private JLabel productIdLabel, productCodeLabel, productNameLabel, mainIdLabel, mediumIdLabel, smallIdLabel;
 	private JLabel purchasePriceLabel, sellingPriceLabel, appropriateInventoryLabel, currentInventoryLabel,
 			activeInventoryLabel;
-	
-	private JTextField activeInventoryTextField; // 새로운 멤버 변수
+
+	private JTextField defectAmountField;
 
 	private JComboBox<String> adjustmentReasonComboBox;
 	private JButton btnAdjustRequest;
 
-	private static String[] modification_reason = new String[] { 
-			"DAM001 - 파손 (Damage)", "DEF002 - 결함 (Defective)",
-			"EXP003- 유통기한 경과 (Expired)", "MIS004 - 잘못된 사양 (Mismatched Specification)", "CON005 - 오염 (Contaminated)",};
+	private static String[] modification_reason = new String[] { "DAM001 - 파손 (Damage)", "DEF002 - 결함 (Defective)",
+			"EXP003 - 유통기한 경과 (Expired)", "MIS004 - 잘못된 사양 (Mismatched Specification)", "CON005 - 오염 (Contaminated)", };
 
 	public AmountModifyPanel2() {
 		setLayout(new BorderLayout());
@@ -55,17 +54,17 @@ public class AmountModifyPanel2 extends JPanel {
 	}
 
 	private void initializeLabels() {
-	    productIdLabel = new JLabel();
-	    productCodeLabel = new JLabel();
-	    productNameLabel = new JLabel();
-	    mainIdLabel = new JLabel();
-	    mediumIdLabel = new JLabel();
-	    smallIdLabel = new JLabel();
-	    purchasePriceLabel = new JLabel();
-	    sellingPriceLabel = new JLabel();
-	    appropriateInventoryLabel = new JLabel();
-	    currentInventoryLabel = new JLabel(); // amountTextField를 currentInventoryLabel로 변경
-	    activeInventoryTextField = new JTextField(); // 새로운 텍스트필드
+		productIdLabel = new JLabel();
+		productCodeLabel = new JLabel();
+		productNameLabel = new JLabel();
+		mainIdLabel = new JLabel();
+		mediumIdLabel = new JLabel();
+		smallIdLabel = new JLabel();
+		purchasePriceLabel = new JLabel();
+		sellingPriceLabel = new JLabel();
+		appropriateInventoryLabel = new JLabel();
+		currentInventoryLabel = new JLabel();
+		activeInventoryLabel = new JLabel();
 	}
 
 	private JPanel createInfoPanel() {
@@ -73,13 +72,13 @@ public class AmountModifyPanel2 extends JPanel {
 		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.insets = new Insets(5, 5, 5, 5);
+		gbc.insets = new Insets(4, 4, 3, 4);
 
 		String[] labels = { "상품 ID:", "상품코드:", "상품명:", "대분류:", "중분류:", "소분류:", "매입가:", "판매가:", "적정수량:", "대기수량:",
 				"활성수량:" };
-		 JComponent[] valueComponents = { productIdLabel, productCodeLabel, productNameLabel, mainIdLabel, mediumIdLabel,
-		            smallIdLabel, purchasePriceLabel, sellingPriceLabel, appropriateInventoryLabel, currentInventoryLabel,
-		            activeInventoryTextField };
+		JComponent[] valueComponents = { productIdLabel, productCodeLabel, productNameLabel, mainIdLabel, mediumIdLabel,
+				smallIdLabel, purchasePriceLabel, sellingPriceLabel, appropriateInventoryLabel, currentInventoryLabel,
+				activeInventoryLabel };
 
 		for (int i = 0; i < labels.length; i++) {
 			gbc.gridy = i;
@@ -96,10 +95,6 @@ public class AmountModifyPanel2 extends JPanel {
 							BorderFactory.createEmptyBorder(2, 2, 2, 2)));
 			panel.add(component, gbc);
 
-			// 수정 불가능한 컴포넌트 설정
-			if (!(component instanceof JComboBox) && !(component instanceof JTextField)) {
-				component.setEnabled(false);
-			}
 		}
 
 		return panel;
@@ -114,28 +109,53 @@ public class AmountModifyPanel2 extends JPanel {
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.insets = new Insets(5, 5, 5, 5);
 
+		// 조정사유
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.weightx = 0.3;
-		panel.add(new JLabel("조정사유:"), gbc);
+		gbc.weightx = 0;
+		gbc.anchor = GridBagConstraints.WEST;
+		JLabel adjustmentReasonLabel = new JLabel("조정사유:");
+		adjustmentReasonLabel.setPreferredSize(new Dimension(80, 25));
+		panel.add(adjustmentReasonLabel, gbc);
 
 		gbc.gridx = 1;
-		gbc.weightx = 0.7;
+		gbc.weightx = 1;
 		adjustmentReasonComboBox = new JComboBox<>(modification_reason);
 		panel.add(adjustmentReasonComboBox, gbc);
 
+		// 차감수량
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.gridwidth = 2;
-		gbc.weightx = 1.0;
+		gbc.weightx = 0;
+		JLabel deductionAmountLabel = new JLabel("차감수량:");
+		deductionAmountLabel.setPreferredSize(new Dimension(80, 25));
+		panel.add(deductionAmountLabel, gbc);
 
+		gbc.gridx = 1;
+		gbc.weightx = 1;
+		defectAmountField = new JTextField();
+		panel.add(defectAmountField, gbc);
+
+		// 조정요청 버튼
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		gbc.gridwidth = 2;
+		gbc.weightx = 1;
 		btnAdjustRequest = new JButton("조정요청");
 		btnAdjustRequest.setBackground(Constants.BUTTON_BACKGROUND_COLOR);
 		btnAdjustRequest.setForeground(Constants.BUTTON_FOREGROUND_COLOR);
-		btnAdjustRequest.setPreferredSize(new Dimension(0, 40));
+		btnAdjustRequest.setPreferredSize(new Dimension(0, 25));
 		panel.add(btnAdjustRequest, gbc);
 
 		return panel;
+	}
+
+	public JTextField getDefectAmountField() {
+		return defectAmountField;
+	}
+
+	public void setDefectAmountField(JTextField deductionAmountField) {
+		this.defectAmountField = deductionAmountField;
 	}
 
 	public JLabel getProductIdLabel() {
@@ -226,14 +246,6 @@ public class AmountModifyPanel2 extends JPanel {
 		this.activeInventoryLabel = activeInventoryLabel;
 	}
 
-	public JTextField getActiveInventoryTextField() {
-		return activeInventoryTextField;
-	}
-
-	public void setActiveInventoryTextField(JTextField activeInventoryTextField) {
-		this.activeInventoryTextField = activeInventoryTextField;
-	}
-
 	public JComboBox<String> getAdjustmentReasonComboBox() {
 		return adjustmentReasonComboBox;
 	}
@@ -261,7 +273,5 @@ public class AmountModifyPanel2 extends JPanel {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-
-	
 
 }
