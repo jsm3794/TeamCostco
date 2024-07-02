@@ -88,7 +88,7 @@ public class WareHouseListPanel extends JPanel {
 
         // Input panel
         JPanel inputPanel = new JPanel();
-        inputPanel.setBackground(new Color(255, 255, 255));
+        inputPanel.setBackground(new Color(240, 240, 240));
         inputPanel.setLayout(new BorderLayout(5, 5));
 
         productNameField = new JPlaceholderTextField("상품명을 입력해주세요");
@@ -115,7 +115,7 @@ public class WareHouseListPanel extends JPanel {
 
         // Category panel
         JPanel categoryPanel = new JPanel();
-        categoryPanel.setBackground(new Color(255, 255, 255));
+        categoryPanel.setBackground(new Color(240, 240, 240));
         categoryPanel.setLayout(new GridLayout(3, 1, 5, 5));
 
         mainCateComboBox = new JComboBox<>();
