@@ -11,11 +11,11 @@ import main.java.com.teamcostco.model.database.DatabaseUtil;
 
 public class DefectProductDAO {
 
-	public static boolean insertDefectProduct(String disposal_method, String product_code, int amount) {
+	public static boolean insertDefectProduct(String disposal_id, String product_code, int amount) {
 		String sql = "INSERT INTO defectproduct VALUES (0, ?, ?, ?, sysdate)";
 
 		try (Connection conn = DatabaseUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql);) {
-			pstmt.setString(1, disposal_method);
+			pstmt.setString(1, disposal_id);
 			pstmt.setString(2, product_code);
 			pstmt.setInt(3, amount);
 
