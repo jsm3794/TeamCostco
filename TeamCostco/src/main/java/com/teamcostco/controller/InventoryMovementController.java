@@ -26,11 +26,14 @@ public class InventoryMovementController extends PanelController<InventoryMoveme
 	}
 	
 	private void loadInitialProductData() {
+		
+		view.getComboBoxSmallCategory().removeAllItems();
+		
+		view.getComboBoxSmallCategory().addItem("");
         String sql = "SELECT product_name FROM product";
         try (Connection con = DatabaseUtil.getConnection();
              PreparedStatement pstmt = con.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
-            
             while (rs.next()) {
                 view.getComboBoxSmallCategory().addItem(rs.getString("product_name"));
             }

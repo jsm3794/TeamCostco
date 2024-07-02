@@ -126,6 +126,18 @@ public class HomeTestController extends PanelController<NewHome> {
 			}
 		});
 	}
+	
+	public void houseMap() {
+		
+		view.getHouseMapBtn().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainForm.nav.push("houseMap", true);
+				
+			}
+		});
+	}
 
 	public void startTimer() {
 		timer = new Timer(1000, e -> updateTime());
