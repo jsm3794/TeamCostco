@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 public class DatabaseUtil {
 
-    private static final String JDBC_URL = "jdbc:oracle:thin:@3.34.139.200:1521:xe";
+    private static final String JDBC_URL = "jdbc:oracle:thin:@13.124.79.89:1521:xe";
     private static final String USERNAME = "TeamCostco";
     private static final String PASSWORD = "1234";
 
