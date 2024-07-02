@@ -1,17 +1,16 @@
 package main.java.com.teamcostco.controller;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.SwingUtilities;
 
-import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
-
+import main.java.com.teamcostco.MainForm;
+import main.java.com.teamcostco.dao.DefectProductDAO;
+import main.java.com.teamcostco.dao.ProductDAO;
 import main.java.com.teamcostco.model.Product;
 import main.java.com.teamcostco.model.database.DatabaseUtil;
 import main.java.com.teamcostco.model.manager.DialogManager;
@@ -23,22 +22,24 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
 	private DatabaseUtil connector;
 
 	public AmountModify2Controller(Product model) {
-		connector = new DatabaseUtil();
 		this.model = model;
+		this.connector = new DatabaseUtil();
 		initComponents();
+		setupEventListeners();
+	}
 
+	private void initComponents() {
+		getDetailInfo();
+	}
+
+	private void setupEventListeners() {
 		// 수량 텍스트필드에 숫자만 입력되도록 제한
-		view.getActiveInventoryTextField().addKeyListener(new KeyListener() {
+		view.getDefectAmountField().addKeyListener(new KeyListener() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-				try {
-					char c = e.getKeyChar();
-					if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE) {
-						e.consume();
-						throw new NonNumericValueException();
-					}
-				} catch (NonNumericValueException ex) {
-					JOptionPane.showMessageDialog(view, ex.getMessage(), "Invalid Input", JOptionPane.WARNING_MESSAGE);
+				char c = e.getKeyChar();
+				if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE) {
+					e.consume();
 				}
 			}
 
@@ -52,17 +53,15 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
 		});
 
 		// 조정요청 버튼
-		view.getBtnAdjustRequest().addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				DialogManager.showMessageBox(view, "수량을 수정하시겠습니까?", evt -> updateAmount(), null);
-			}
-		});
-		
+		view.getBtnAdjustRequest().addActionListener(this::handleAdjustRequest);
 	}
 
-	public void initComponents() {
-		getDetailInfo();
+	private void handleAdjustRequest(ActionEvent e) {
+		DialogManager.showMessageBox(view, "수량을 수정하시겠습니까?", evt -> {
+			if (checkValid()) {
+				updateAmount();
+			}
+		}, null);
 	}
 
 	private void getDetailInfo() {
@@ -74,35 +73,85 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
 		view.getSmallIdLabel().setText(model.getSmall_id());
 		view.getAppropriateInventoryLabel().setText(String.valueOf(model.getAppropriate_inventory()));
 		view.getCurrentInventoryLabel().setText(String.valueOf(model.getCurrent_inventory()));
-		view.getActiveInventoryTextField().setText(String.valueOf(model.getActive_inventory()));
+		view.getActiveInventoryLabel().setText(String.valueOf(model.getActive_inventory()));
 		view.getPurchasePriceLabel().setText(String.valueOf(model.getPurchase_price()));
 		view.getSellingPriceLabel().setText(String.valueOf(model.getSelling_price()));
 		view.getProductCodeLabel().setText(model.getProduct_code());
-		// Set other fields as needed
+	}
+
+	private boolean checkValid() {
+		String input = view.getDefectAmountField().getText();
+
+		if (input.isEmpty()) {
+			DialogManager.showMessageBox(view, "수량을 입력해주세요.", null);
+			return false;
+		}
+
+		try {
+			int userInput = Integer.parseInt(input);
+			int activeInventory = model.getActive_inventory();
+
+			if (userInput < 0 || userInput > activeInventory) {
+				DialogManager.showMessageBox(view, "수량이 0이거나 기존보다<br>많을 수 없습니다.", null);
+				return false;
+			}
+		} catch (NumberFormatException e) {
+			DialogManager.showMessageBox(view, "올바른 숫자를 입력해주세요.", null);
+			return false;
+		}
+
+		return true;
 	}
 
 	private void updateAmount() {
-		String sql = "UPDATE product SET amount = ? WHERE product_id = ?";
+		String sql = "UPDATE product SET active_inventory = ? WHERE product_code = ?";
 
-		try (Connection conn = connector.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql);) {
+		try (Connection conn = connector.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
 			conn.setAutoCommit(false);
 
-			int amount = Integer.parseInt(view.getActiveInventoryTextField().getText());
-			pstmt.setInt(1, amount);
-			pstmt.setInt(2, model.getProduct_id());
+			int currentAmount = model.getActive_inventory();
+			int defectAmount = Integer.parseInt(view.getDefectAmountField().getText());
+			int newAmount = currentAmount - defectAmount;
+
+			pstmt.setInt(1, newAmount);
+			pstmt.setString(2, model.getProduct_code());
 
 			int row = pstmt.executeUpdate();
 			if (row > 0) {
 				conn.commit();
-				JOptionPane.showMessageDialog(view, "수정 완료!", "Success", JOptionPane.INFORMATION_MESSAGE);
+				handleSuccessfulUpdate(defectAmount);
 			} else {
 				conn.rollback();
-				JOptionPane.showMessageDialog(view, "업데이트 실패!", "Error", JOptionPane.ERROR_MESSAGE);
+				DialogManager.showMessageBox(view, "수정요청 실패", null);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(view, "데이터베이스 오류", "Error", JOptionPane.ERROR_MESSAGE);
+			DialogManager.showMessageBox(view, "데이터베이스 오류", null);
 		}
+	}
+
+	private void handleSuccessfulUpdate(int defectAmount) {
+		String adjustment = view.getAdjustmentReasonComboBox().getSelectedItem().toString().split(" ")[0];
+		DefectProductDAO.insertDefectProduct(adjustment, String.valueOf(model.getProduct_code()), defectAmount);
+
+		SwingUtilities.invokeLater(() -> {
+
+			MainForm.nav.pop();
+			InventorySearchController isc = (InventorySearchController) MainForm.nav
+					.findLastControllerByClass(InventorySearchController.class);
+			isc.search();
+
+			MainForm.nav.navigateTo("productdetail", true, ProductDAO.getProductByCode(model.getProduct_code()))
+					.thenRun(() -> {
+
+						DialogManager.showMessageBox(MainForm.nav.getCurrent().getPanel(), "수정요청이 성공적으로 처리되었습니다.",
+								null);
+
+					});
+
+		});
+
 	}
 
 	public void resetFields() {
@@ -110,8 +159,9 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
 		view.getMainIdLabel().setText("");
 		view.getMediumIdLabel().setText("");
 		view.getSmallIdLabel().setText("");
-		view.getActiveInventoryTextField().setText("0");
+		view.getCurrentInventoryLabel().setText("");
 		view.getPurchasePriceLabel().setText("");
+		view.getActiveInventoryLabel().setText("");
 		view.getSellingPriceLabel().setText("");
 		view.getProductCodeLabel().setText("");
 		view.getAdjustmentReasonComboBox().setSelectedIndex(0);
@@ -120,24 +170,5 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
 	@Override
 	public String toString() {
 		return "재고수정";
-	}
-}
-
-// 예외 클래스들은 그대로 유지
-class NegativeAmount extends Exception {
-	public NegativeAmount() {
-		super("수량이 음수입니다.");
-	}
-}
-
-class ExeedStorageAmount extends Exception {
-	public ExeedStorageAmount() {
-		super("창고보관수량을 초과하는 수량입니다.");
-	}
-}
-
-class NonNumericValueException extends Exception {
-	public NonNumericValueException() {
-		super("숫자만 입력 가능합니다.");
 	}
 }
