@@ -62,7 +62,7 @@ public class WareHouseListController extends PanelController<WareHouseListPanel>
 	}
 
 	private void searchDefectiveProducts() {
-		StringBuilder sql = new StringBuilder("SELECT DISTINCT product_name, disposal_method, defect_amount "
+		StringBuilder sql = new StringBuilder("SELECT DISTINCT product_name, disposal_id, defect_amount "
 				+ "FROM defectproduct " + "INNER JOIN product USING (product_code) "
 				+ "INNER JOIN maincategory main ON main.main_id = product.main_id "
 				+ "INNER JOIN mediumcategory medi ON main.main_id = medi.main_id "
@@ -94,7 +94,7 @@ public class WareHouseListController extends PanelController<WareHouseListPanel>
 			parameters.add(selectedSmall);
 		}
 
-		sql.append("ORDER BY disposal_method DESC");
+		sql.append("ORDER BY disposal_id DESC");
 
 		try (Connection conn = connector.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql.toString())) {
@@ -217,6 +217,6 @@ public class WareHouseListController extends PanelController<WareHouseListPanel>
 
 	@Override
 	public String toString() {
-		return "창고목록";
+		return "불량재고";
 	}
 }

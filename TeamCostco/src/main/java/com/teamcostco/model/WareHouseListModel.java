@@ -5,12 +5,12 @@ import java.sql.SQLException;
 
 public class WareHouseListModel {
     private String product_name;
-    private String disposal_method;
+    private String disposal_id;
     private Integer defect_amount;
 
     public WareHouseListModel(ResultSet rs) throws SQLException {
         product_name = rs.getString("product_name");
-        disposal_method = rs.getString("disposal_method");
+        disposal_id = rs.getString("disposal_id");
         defect_amount = rs.getInt("defect_amount");
     }
 
@@ -22,12 +22,12 @@ public class WareHouseListModel {
         this.product_name = product_name;
     }
 
-    public String getDisposal_method() {
-        return disposal_method;
+    public String getDisposal_id() {
+        return disposal_id;
     }
 
-    public void setDisposal_method(String disposal_method) {
-        this.disposal_method = disposal_method;
+    public void setDisposal_id(String disposal_id) {
+        this.disposal_id = disposal_id;
     }
 
     public Integer getDefect_amount() {
@@ -40,6 +40,6 @@ public class WareHouseListModel {
 
     @Override
     public String toString() {
-        return "WareHouseListModel [product_name=" + product_name + ", disposal_method=" + disposal_method + ", defect_amount=" + defect_amount + "]";
+        return "WareHouseListModel [product_name=" + product_name + ", disposal_id=" + disposal_id + ", defect_amount=" + defect_amount + "]";
     }
 }

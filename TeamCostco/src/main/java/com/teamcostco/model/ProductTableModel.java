@@ -24,12 +24,14 @@ public class ProductTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        WareHouseListModel row = data.get(rowIndex);
+        
+    	WareHouseListModel row = data.get(rowIndex);
+        
         switch (columnIndex) {
             case 0:
                 return row.getProduct_name();
             case 1:
-                return row.getDisposal_method();
+                return row.getDisposal_id();
             case 2:
                 return row.getDefect_amount();
             default:
