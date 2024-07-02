@@ -217,6 +217,6 @@ public class WareHouseListController extends PanelController<WareHouseListPanel>
 
 	@Override
 	public String toString() {
-		return "창고목록";
+		return "불량재고";
 	}
 }

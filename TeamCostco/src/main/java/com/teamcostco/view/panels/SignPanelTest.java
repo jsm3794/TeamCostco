@@ -36,30 +36,30 @@ public class SignPanelTest extends JPanel {
 		setPreferredSize(new Dimension(480, 640));
 		setLayout(null);
 
-		JLabel lblNewLabel = new JLabel("ID");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(12, 130, 126, 40);
-		add(lblNewLabel);
+		JLabel idLabel = new JLabel("ID");
+		idLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		idLabel.setBounds(12, 130, 126, 40);
+		add(idLabel);
 
-		JLabel lblNewLabel_1 = new JLabel("PASSWORD");
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_1.setBounds(12, 180, 126, 40);
-		add(lblNewLabel_1);
+		JLabel passwordLabel = new JLabel("PASSWORD");
+		passwordLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		passwordLabel.setBounds(12, 180, 126, 40);
+		add(passwordLabel);
 
-		JLabel lblNewLabel_2 = new JLabel("이름");
-		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_2.setBounds(12, 230, 126, 40);
-		add(lblNewLabel_2);
+		JLabel nameLabel = new JLabel("이름");
+		nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		nameLabel.setBounds(12, 230, 126, 40);
+		add(nameLabel);
 
-		JLabel lblNewLabel_3 = new JLabel("이메일");
-		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3.setBounds(12, 280, 126, 40);
-		add(lblNewLabel_3);
+		JLabel emailLabel = new JLabel("이메일");
+		emailLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		emailLabel.setBounds(12, 280, 126, 40);
+		add(emailLabel);
 
-		JLabel lblNewLabel_4 = new JLabel("전화번호");
-		lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_4.setBounds(12, 330, 126, 40);
-		add(lblNewLabel_4);
+		JLabel phonenumberLabel = new JLabel("전화번호");
+		phonenumberLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		phonenumberLabel.setBounds(12, 330, 126, 40);
+		add(phonenumberLabel);
 
 		new_idField = new JTextField();
 		new_idField.setHorizontalAlignment(SwingConstants.CENTER);
@@ -104,12 +104,12 @@ public class SignPanelTest extends JPanel {
 		new_passwordField.setBounds(150, 180, 235, 40);
 		add(new_passwordField);
 		
-		JLabel lblNewLabel_5 = new JLabel("회원가입을 위해 정보를 입력해주세요.");
-		lblNewLabel_5.setFont(new Font("굴림", Font.BOLD, 22));
-		lblNewLabel_5.setForeground(Constants.BUTTON_BACKGROUND_COLOR);
-		lblNewLabel_5.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_5.setBounds(12, 27, 456, 57);
-		add(lblNewLabel_5);
+		JLabel signLabel = new JLabel("회원가입을 위해 정보를 입력해주세요.");
+		signLabel.setFont(new Font("굴림", Font.BOLD, 22));
+		signLabel.setForeground(Constants.BUTTON_BACKGROUND_COLOR);
+		signLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		signLabel.setBounds(12, 27, 456, 57);
+		add(signLabel);
 		
 		lblNewLabel_6 = new JLabel("이용약관 개인정보 수집 및 정보이용에 동의합니다.       ");
 		lblNewLabel_6.setFont(new Font("맑은 고딕", Font.PLAIN, 12));

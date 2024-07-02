@@ -151,7 +151,8 @@ public class AmountModify2Controller extends PanelController<AmountModifyPanel2>
 					InventorySearchController isc = (InventorySearchController) MainForm.nav
 							.findLastControllerByClass(InventorySearchController.class);
 					isc.search();
-
+					
+					MainForm.nav.pop();
 					MainForm.nav.navigateTo("productdetail", true, ProductDAO.getProductByCode(model.getProduct_code()))
 							.thenRun(() -> {
 								context.close();

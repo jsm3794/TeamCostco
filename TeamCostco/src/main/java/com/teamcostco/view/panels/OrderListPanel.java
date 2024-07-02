@@ -71,10 +71,12 @@ public class OrderListPanel extends JPanel {
         setupDatePanel();
         addToSearchPanel(datePanel, gbc, 1, 0);
 
-        addToSearchPanel(new JLabel("상품명"), gbc, 0, 1);
+        addToSearchPanel(new JLabel("품번"), gbc, 0, 1);
         addToSearchPanel(itemNumberField, gbc, 1, 1);
+        itemNumberField.setHorizontalAlignment(SwingConstants.CENTER);
 
         addToSearchPanel(supplierLabel, gbc, 0, 2);
+        supplierField.setHorizontalAlignment(SwingConstants.CENTER);
         addToSearchPanel(supplierField, gbc, 1, 2);
 
         setupRadioButtons(gbc);

@@ -22,7 +22,6 @@ public class WareHouseListModel {
 	public String getProduct_name() {
 		return product_name;
 	}
-
 	public String getDisposal_id() {
 		return disposal_id;
 	}
@@ -40,6 +39,4 @@ public class WareHouseListModel {
 		return "WareHouseListModel [product_name=" + product_name + ", disposal_id=" + disposal_id
 				+ ", defect_amount=" + defect_amount + ", created_At=" + created_At + "]";
 	}
-
-    
 }

@@ -4,8 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.Enumeration;
+import java.util.Map;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
 
@@ -16,6 +18,7 @@ import main.java.com.teamcostco.controller.HomeTestController;
 import main.java.com.teamcostco.controller.InventoryMovementController;
 import main.java.com.teamcostco.controller.InventorySearchController;
 import main.java.com.teamcostco.controller.LoginController;
+import main.java.com.teamcostco.controller.MapController;
 import main.java.com.teamcostco.controller.OrderDetailController;
 import main.java.com.teamcostco.controller.OrderListController;
 import main.java.com.teamcostco.controller.OrderRequestController;
@@ -76,13 +79,14 @@ public class MainForm {
 		nav.mappingTarget("orderRequest", OrderRequestController.class); // 발주요청
 		nav.mappingTarget("productdetail", ProductDetailController.class); // 상품상세조회
 		nav.mappingTarget("editaccount", EditAccountController.class); // 회원정보수정
+		nav.mappingTarget("map", MapController.class); // 지도
 		
 		
 		// Navigator 디자인
 		nav.setPreferredSize(new Dimension(FORM_WIDTH, FORM_HEIGHT));
 
 		// 기본 페이지로 이동
-		nav.navigateTo("home", false);
+		nav.navigateTo("map", true);
 	}
 
 	private static void setupUISettings() {

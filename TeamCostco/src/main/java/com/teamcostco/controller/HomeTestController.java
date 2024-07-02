@@ -26,7 +26,7 @@ public class HomeTestController extends PanelController<NewHome> {
 				inventoryMovement();
 				productCheck();
 				orderHistory();
-				storageList();
+				defectiveInventory();
 				pdaSetting();
 				productEntry();
 				orderRequest();
@@ -82,13 +82,13 @@ public class HomeTestController extends PanelController<NewHome> {
 		});
 	}
 
-	public void storageList() {
+	public void defectiveInventory() {
 
-		view.getWareHouseListBtn().addActionListener(new ActionListener() {
+		view.getDefectiveInventoryBtn().addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainForm.nav.push("storageList", true);
+				MainForm.nav.push("defectiveInventory", true);
 			}
 		});
 	}
@@ -123,6 +123,18 @@ public class HomeTestController extends PanelController<NewHome> {
 			public void actionPerformed(ActionEvent e) {
 				MainForm.nav.push("productEntry", true);
 
+			}
+		});
+	}
+	
+	public void houseMap() {
+		
+		view.getHouseMapBtn().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainForm.nav.push("houseMap", true);
+				
 			}
 		});
 	}
