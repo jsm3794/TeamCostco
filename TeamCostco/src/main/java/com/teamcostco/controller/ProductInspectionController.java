@@ -1,25 +1,38 @@
 package main.java.com.teamcostco.controller;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JComboBox;
+import java.util.Objects;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.table.DefaultTableModel;
-import main.java.com.teamcostco.model.Product;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.SwingWorker;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import main.java.com.teamcostco.model.ProductInspection;
 import main.java.com.teamcostco.model.database.DatabaseUtil;
 import main.java.com.teamcostco.view.panels.ProductInspectionPanel;
 
@@ -28,255 +41,482 @@ import main.java.com.teamcostco.view.panels.ProductInspectionPanel;
  */
 public class ProductInspectionController extends PanelController<ProductInspectionPanel> {
 
-    private List<Product> products; // 제품 리스트를 저장할 리스트
-    private List<String> categories; // 카테고리 리스트를 저장할 리스트
+	private List<ProductInspection> productInspections;
+	private List<String> categories;
+	private ProductInspection selectedProduct;
+	private List<ProductInspection> selectedProducts = new ArrayList<>();
 
-    /**
-     * 생성자
-     */
-    public ProductInspectionController() {
-        products = new ArrayList<>(); // 제품 리스트 초기화
-        loadTableData(); // 테이블 데이터 로드 메서드 호출하여 테이블 초기화
+	/**
+	 * 생성자
+	 */
+	public ProductInspectionController() {
+		productInspections = new ArrayList<>();
+		loadTableData();
 
-        // 검수 확인 버튼의 ActionListener 설정
-        view.checkButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                processCheckedItems(); // 검수 확인된 항목 처리 메서드 호출
-            }
-        });
+		categories = retrieveCategoriesFromDatabase();
+		for (String item : categories) {
+			view.categoryComboBox.addItem(item);
+		}
 
-        // 불량 처리 버튼의 ActionListener 설정
-        view.defectButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showDefectDialog(); // 불량 처리 다이얼로그 표시 메서드 호출
-            }
-        });
+		view.productNumberField.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				updateTableData();
+			}
 
-        categories = retrieveCategoriesFromDatabase(); // 데이터베이스에서 카테고리 목록을 가져오는 메서드 호출하여 카테고리 리스트 초기화
-        for (String item : categories) {
-            view.categoryComboBox.addItem(item); // 카테고리 리스트의 각 항목을 콤보박스에 추가
-        }
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				updateTableData();
+			}
 
-        // 검색 필드와 카테고리 콤보박스의 ActionListener 설정
-        ActionListener updateTableListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String productNumber = view.productNumberField.getText(); // 검색할 제품 번호 가져오기
-                String selectedCategory = (String) view.categoryComboBox.getSelectedItem(); // 선택된 카테고리 가져오기
-                List<Product> searchedProducts = fetchDataFromDatabase(productNumber, selectedCategory); // 데이터베이스에서 제품 목록 가져오기
-                updateTable(searchedProducts); // 테이블 업데이트 메서드 호출하여 테이블 갱신
-                view.checkButton.setEnabled(!searchedProducts.isEmpty()); // 검색 결과에 따라 검수 확인 버튼 활성/비활성 설정
-            }
-        };
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				updateTableData();
+			}
+		});
 
-        view.productNumberField.addActionListener(updateTableListener); // 검색 필드에 ActionListener 추가
-        view.categoryComboBox.addActionListener(updateTableListener); // 카테고리 콤보박스에 ActionListener 추가
-    }
+		view.categoryComboBox.addActionListener(e -> updateTableData());
 
-    /**
-     * 데이터베이스에서 카테고리 목록을 가져오는 메서드
-     * 
-     * @return 카테고리 목록
-     */
-    private List<String> retrieveCategoriesFromDatabase() {
-        List<String> categories = new ArrayList<>(); // 카테고리 목록을 저장할 리스트 생성
-        categories.add("전체"); // "전체" 항목 추가
+		view.checkButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				displayInspectionResultPanels(true);
+			}
+		});
 
-        try (Connection conn = DatabaseUtil.getConnection(); 
-             Statement stmt = conn.createStatement(); 
-             ResultSet rs = stmt.executeQuery("SELECT main_name FROM maincategory")) {
+	}
 
-            while (rs.next()) {
-                categories.add(rs.getString("main_name")); // 리스트에 카테고리 추가
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // 예외 처리
-        }
+	/**
+	 * 테이블 업데이트 메서드
+	 * 
+	 * @param list 제품 검수 목록
+	 */
+	private void updateTable(List<ProductInspection> list) {
+		view.resultPanel.removeAll();
+		for (ProductInspection data : list) {
+			JPanel entryPanel = createEntryPanel(data);
+			if (entryPanel != null) {
+				view.resultPanel.add(entryPanel);
+			}
+		}
+		view.resultPanel.revalidate();
+		view.resultPanel.repaint();
+	}
 
-        return categories; // 카테고리 목록 반환
-    }
+	/**
+	 * 제품 검수 항목 패널 생성 메서드
+	 * 
+	 * @param data 제품 검수 데이터
+	 * @return 제품 검수 항목 패널
+	 */
+	private JPanel createEntryPanel(ProductInspection data) {
+		JPanel entryPanel = new JPanel();
+		entryPanel.setLayout(new BoxLayout(entryPanel, BoxLayout.X_AXIS));
 
-    /**
-     * 테이블 데이터 로드 메서드
-     */
-    private void loadTableData() {
-        products.clear(); // 기존 제품 리스트 초기화
-        view.allProducts = fetchDataFromDatabase(null, "전체"); // 전체 제품 데이터 로드
-        updateTable(view.allProducts); // 테이블 업데이트 메서드 호출하여 테이블 초기화
-    }
+		JPanel checkBoxPanel = new JPanel();
+		checkBoxPanel.setLayout(new BoxLayout(checkBoxPanel, BoxLayout.Y_AXIS));
+		JCheckBox checkBox = new JCheckBox();
+		checkBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+		checkBoxPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+		checkBoxPanel.add(checkBox);
+		entryPanel.add(checkBoxPanel);
 
-    /**
-     * 데이터베이스에서 데이터 가져오기 메서드
-     * 
-     * @param productcode 검색할 제품 코드
-     * @param mainid      선택된 카테고리
-     * @return 데이터베이스에서 가져온 제품 리스트
-     */
-    private List<Product> fetchDataFromDatabase(String productcode, String mainid) {
-        products.clear(); // 기존 제품 리스트 초기화
-        String query = "SELECT product_code, mc.main_name AS MAIN_NAME, product_name FROM product INNER JOIN maincategory mc using(main_id) WHERE 1=1";
+		JPanel infoPanel = new JPanel();
+		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+		infoPanel.add(new JLabel("상품명: " + data.getProduct_name()));
+		infoPanel.add(new JLabel("상품코드: " + data.getProductcode()));
+		infoPanel.add(new JLabel("대분류: " + data.getMain_name()));
+		infoPanel.add(new JLabel("발주수량: " + data.getOrderquantity()));
+		infoPanel.add(new JLabel("입고수량: " + data.getCheckquantity()));
 
-        if (productcode != null && !productcode.isEmpty()) {
-            query += " AND PRODUCT_CODE LIKE ?";
-        }
-        if (mainid != null && !"전체".equals(mainid)) {
-            query += " AND MAIN_NAME = ?";
-        }
+		entryPanel.add(infoPanel);
 
-        try (Connection conn = DatabaseUtil.getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(query)) {
-            int parameterIndex = 1;
+		entryPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		entryPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, entryPanel.getPreferredSize().height));
+		entryPanel.setPreferredSize(new Dimension(460, entryPanel.getPreferredSize().height));
 
-            if (productcode != null && !productcode.isEmpty()) {
-                ps.setString(parameterIndex++, "%" + productcode + "%");
-            }
-            if (mainid != null && !"전체".equals(mainid)) {
-                ps.setString(parameterIndex++, mainid);
-            }
+		entryPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				selectedProduct = data;
+				updateSelectedProductHighlight();
+			}
+		});
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Product product = new Product();
-                    product.setProduct_code(rs.getString("PRODUCT_CODE"));
-                    product.setMain_id(rs.getString("MAIN_NAME"));
-                    product.setProduct_name(rs.getString("PRODUCT_NAME"));
-                    products.add(product); // 제품 리스트에 추가
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // 데이터베이스 오류 메시지 표시
-            JOptionPane.showMessageDialog(null, "데이터베이스에서 데이터를 가져오는 중 오류가 발생했습니다.", "데이터베이스 오류", JOptionPane.ERROR_MESSAGE);
-        }
+		checkBox.addActionListener(e -> {
+			if (checkBox.isSelected()) {
+				selectedProducts.add(data);
+			} else {
+				selectedProducts.remove(data);
+			}
+		});
 
-        return products; // 가져온 제품 리스트 반환
-    }
+		return entryPanel;
+	}
 
-    /**
-     * 테이블 업데이트 메서드
-     * 
-     * @param products 업데이트할 제품 리스트
-     */
-    public void updateTable(List<Product> products) {
-        view.tableModel.setRowCount(0); // 기존 데이터 제거
-        for (Product product : products) {
-            view.tableModel.addRow(new Object[] { 
-                false, // 검수 확인 체크박스 기본값 false
-                product.getProduct_code(), 
-                product.getMain_id(), 
-                product.getProduct_name() 
-            });
-        }
-    }
+	/**
+	 * 선택된 제품 강조 표시 업데이트 메서드
+	 */
+	private void updateSelectedProductHighlight() {
+		for (Component component : view.resultPanel.getComponents()) {
+			if (component instanceof JPanel) {
+				JPanel panel = (JPanel) component;
+				ProductInspection product = getProductFromPanel(panel);
+				if (product != null && product.equals(selectedProduct)) {
+					panel.setBackground(Color.LIGHT_GRAY);
+				} else {
+					panel.setBackground(null);
+				}
+			}
+		}
+		view.resultPanel.repaint();
+	}
 
-    /**
-     * 검수 확인된 항목 처리 메서드
-     */
-    private void processCheckedItems() {
-        DefaultTableModel model = (DefaultTableModel) view.table.getModel();
-        for (int i = 0; i < model.getRowCount(); i++) {
-            boolean isSelected = (Boolean) model.getValueAt(i, 0);
-            if (isSelected) {
-                // 선택된 항목 정보 가져오기
-                String productcode = (String) model.getValueAt(i, 1);
-                String mainid = (String) model.getValueAt(i, 2);
-                String productName = (String) model.getValueAt(i, 3);
+	/**
+	 * 데이터베이스에서 카테고리 목록을 가져오는 메서드
+	 * 
+	 * @return 카테고리 목록
+	 */
+	private List<String> retrieveCategoriesFromDatabase() {
+		List<String> categories = new ArrayList<>();
+		categories.add("전체");
 
-                // 선택된 항목 정보 콘솔에 출력
-                System.out.println("검수완료: [제품번호: " + productcode + ", 품목: " + mainid + ", 제품명: " + productName + "]");
-            }
-        }
-    }
+		try (Connection conn = DatabaseUtil.getConnection();
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery("SELECT main_name FROM maincategory")) {
 
-    /**
-     * 불량 처리 다이얼로그 표시 메서드
-     */
-    private void showDefectDialog() {
-        DefaultTableModel model = (DefaultTableModel) view.table.getModel(); // 테이블 모델 가져오기
-        JPanel defectPanel = new JPanel(new GridBagLayout()); // 불량 처리 다이얼로그 패널 생성
-        GridBagConstraints gbc = new GridBagConstraints(); // GridBagLayout 사용을 위한 constraints 생성
-        gbc.insets = new Insets(5, 5, 5, 5); // 패딩 설정
+			while (rs.next()) {
+				categories.add(rs.getString("main_name"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(view, "카테고리를 가져오는 중 오류가 발생했습니다.", "데이터베이스 오류", JOptionPane.ERROR_MESSAGE);
+		}
 
-        String[] defectOptions = { "환불", "반품", "폐기" }; // 불량 처리 옵션 배열
-        JLabel defectLabel = new JLabel("불량 처리 옵션:"); // 라벨 생성
-        JComboBox<String> defectComboBox = new JComboBox<>(defectOptions); // 불량 처리 옵션 콤보박스 생성
+		return categories;
+	}
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        defectPanel.add(defectLabel, gbc); // 불량 처리 옵션 라벨 패널에 추가
+	/**
+	 * 테이블 데이터 로드 메서드
+	 */
+	private void loadTableData() {
+		productInspections.clear();
 
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        defectPanel.add(defectComboBox, gbc); // 불량 처리 옵션 콤보박스 패널에 추가
+		new SwingWorker<List<ProductInspection>, Void>() {
+			@Override
+			protected List<ProductInspection> doInBackground() throws Exception {
+				return fetchDataFromDatabase(null, "전체");
+			}
 
-        JLabel reasonLabel = new JLabel("사유:"); // 사유 라벨 생성
-        JTextArea reasonArea = new JTextArea(5, 20); // 사유 입력 텍스트 에어리어 생성
+			@Override
+			protected void done() {
+				try {
+					List<ProductInspection> allProducts = get();
+					updateTable(allProducts);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+					JOptionPane.showMessageDialog(view, "데이터를 가져오는 중 오류가 발생했습니다.", "오류", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}.execute();
+	}
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        defectPanel.add(reasonLabel, gbc); // 사유 라벨 패널에 추가
+	/**
+	 * 데이터베이스에서 제품 검수 데이터를 가져오는 메서드
+	 * 
+	 * @param productName 제품명
+	 * @param mainname    카테고리 이름
+	 * @return 제품 검수 목록
+	 */
+	private List<ProductInspection> fetchDataFromDatabase(String productName, String mainname) {
+		List<ProductInspection> inspections = new ArrayList<>();
 
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        defectPanel.add(reasonArea, gbc); // 사유 입력 텍스트 에어리어 패널에 추가
+		StringBuilder query = new StringBuilder("SELECT product_code, main_name, product_name, order_quantity,"
+				+ " check_quantity, DATE_OF_RECEIPT FROM productinspection INNER JOIN product using(product_code) "
+				+ "INNER JOIN maincategory USING (main_id) WHERE 1=1");
 
-        // 불량 처리 다이얼로그 표시
-        int option = JOptionPane.showConfirmDialog(view, defectPanel, "불량 처리", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		List<Object> params = new ArrayList<>();
 
-        // OK 버튼 클릭 시 처리
-        if (option == JOptionPane.OK_OPTION) {
-            String defectOption = (String) defectComboBox.getSelectedItem(); // 선택된 불량 처리 옵션 가져오기
-            String reason = reasonArea.getText(); // 입력된 사유 가져오기
-            processDefectedItems(defectOption, reason); // 불량 처리 항목 처리 메서드 호출
-        }
-    }
+		if (productName != null && !productName.isEmpty()) {
+			query.append(" AND product_name LIKE ?");
+			params.add("%" + productName + "%");
+		}
 
-    /**
-     * 불량 처리 항목 처리 메서드
-     * 
-     * @param defectOption 불량 처리 옵션
-     * @param reason       불량 처리 사유
-     */
-    private void processDefectedItems(String defectOption, String reason) {
-        DefaultTableModel model = (DefaultTableModel) view.table.getModel(); // 테이블 모델 가져오기
-        StringBuilder message = new StringBuilder(); // 메시지를 저장할 StringBuilder 생성
+		if (mainname != null && !"전체".equals(mainname)) {
+			query.append(" AND main_name = ?");
+			params.add(mainname);
+		}
 
-        // 테이블 모든 행에 대해 처리
-        for (int i = 0; i < model.getRowCount(); i++) {
-            boolean isSelected = (Boolean) model.getValueAt(i, 0); // 검수 확인 체크박스 상태 가져오기
-            if (isSelected) {
-                // 선택된 항목 정보 가져오기
-                String productcode = (String) model.getValueAt(i, 1);
-                String mainid = (String) model.getValueAt(i, 2);
-                String productName = (String) model.getValueAt(i, 3);
+		try (Connection conn = DatabaseUtil.getConnection();
+				PreparedStatement ps = conn.prepareStatement(query.toString())) {
 
-                // 메시지에 불량 처리 정보 추가
-                message.append("불량확인: [제품번호: ").append(productcode).append(", 품목: ").append(mainid)
-                        .append(", 제품명: ").append(productName).append(", 처리옵션: ").append(defectOption)
-                        .append(", 사유: ").append(reason).append("]\n");
-            }
-        }
+			for (int i = 0; i < params.size(); i++) {
+				ps.setObject(i + 1, params.get(i));
+			}
 
-        // 불량 처리 완료 메시지 다이얼로그 표시
-        JOptionPane.showMessageDialog(view, message.toString(), "불량 처리 완료", JOptionPane.INFORMATION_MESSAGE);
-    }
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					ProductInspection inspection = new ProductInspection(rs);
+					inspections.add(inspection);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(view, "데이터베이스에서 데이터를 가져오는 중 오류가 발생했습니다.", "데이터베이스 오류",
+					JOptionPane.ERROR_MESSAGE);
+		}
 
-    /**
-     * 날짜 형식을 포맷하는 메서드
-     * 
-     * @param date 날짜 객체
-     * @return 포맷된 날짜 문자열
-     */
-    private String formatDate(java.util.Date date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // 날짜 포맷 설정
-        return sdf.format(date); // 포맷된 날짜 문자열 반환
-    }
+		return inspections;
+	}
 
-    @Override
-    public String toString() {
-        return "제품검수"; // 객체를 문자열로 표현하는 메서드
-    }
+	/**
+	 * 제품번호 및 카테고리에 따라 테이블 데이터를 업데이트하는 메서드
+	 */
+	private void updateTableData() {
+		String productCode = view.productNumberField.getText().trim();
+		String selectedCategory = (String) view.categoryComboBox.getSelectedItem();
+
+		new SwingWorker<List<ProductInspection>, Void>() {
+			@Override
+			protected List<ProductInspection> doInBackground() throws Exception {
+				return fetchDataFromDatabase(productCode, selectedCategory);
+			}
+
+			@Override
+			protected void done() {
+				try {
+					List<ProductInspection> filteredProducts = get();
+					updateTable(filteredProducts);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+					JOptionPane.showMessageDialog(view, "데이터를 가져오는 중 오류가 발생했습니다.", "오류", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}.execute();
+	}
+
+	/**
+	 * 패널에서 제품 검수 데이터 객체를 추출하는 메서드
+	 * 
+	 * @param panel 제품 검수 데이터가 표시된 패널
+	 * @return 제품 검수 데이터 객체(Productinspection), 해당 데이터가 없는 경우 null 반환
+	 */
+	private ProductInspection getProductFromPanel(JPanel panel) {
+		JPanel infoPanel = (JPanel) panel.getComponent(1);
+		JLabel productNameLabel = (JLabel) infoPanel.getComponent(0);
+		String productName = productNameLabel.getText().substring(5);
+
+		JLabel productCodeLabel = (JLabel) infoPanel.getComponent(1);
+		String productCode = productCodeLabel.getText().substring(6);
+
+		for (ProductInspection product : productInspections) {
+			if (product.getProduct_name().equals(productName) && product.getProductcode().equals(productCode)) {
+				return product;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * 검수 결과 패널을 표시하는 메서드
+	 * 
+	 * @param isInspectionPassed true면 검수 통과, false면 불량 확인
+	 */
+	private void displayInspectionResultPanels(boolean isInspectionPassed) {
+		// 첫 번째 패널에서만 선택된 제품 목록을 확인하고 메시지를 표시함
+		if (isFirstPanel()) {
+			// 선택된 제품 목록이 비어있는 경우 메시지 표시
+			if (selectedProducts.isEmpty()) {
+				JOptionPane.showMessageDialog(view, "제품을 선택하세요.", isInspectionPassed ? "검수 확인" : "불량 확인",
+						JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+		}
+
+		JPanel resultPanel = new JPanel();
+		resultPanel.setLayout(new BoxLayout(resultPanel, BoxLayout.Y_AXIS));
+		resultPanel.setBackground(Color.WHITE);
+		resultPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+		List<JTextField> missingFields = new ArrayList<>();
+
+		for (ProductInspection product : selectedProducts) {
+			JPanel productPanel = new JPanel();
+			productPanel.setLayout(new GridLayout(7, 2)); // 행 수를 7로 변경 (체크박스 제외)
+			productPanel.setBackground(Color.WHITE);
+			productPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
+
+			addLabelPair(productPanel, "발주번호", product.getProductcode());
+			addLabelPair(productPanel, "카테고리", product.getMain_name());
+			addLabelPair(productPanel, "상품명", product.getProduct_name());
+			addLabelPair(productPanel, "발주수량", String.valueOf(product.getOrderquantity()));
+			addLabelPair(productPanel, "입고수량", String.valueOf(product.getCheckquantity()));
+			addLabelPair(productPanel, "입고일자", product.getDateofreceipt().toString());
+
+			// 누락개수 입력 필드 추가
+			JLabel missingLabel = new JLabel("누락개수:");
+			missingLabel.setHorizontalAlignment(JLabel.RIGHT);
+			missingLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+			JTextField missingField = new JTextField();
+			missingField.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+			missingFields.add(missingField);
+
+			productPanel.add(missingLabel);
+			productPanel.add(missingField);
+
+			resultPanel.add(productPanel);
+		}
+
+		JScrollPane scrollPane = new JScrollPane(resultPanel);
+		scrollPane.setPreferredSize(new Dimension(400, 300));
+
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		JButton confirmButton = new JButton("검수확인");
+		confirmButton.setBackground(new Color(0, 123, 255));
+		confirmButton.setForeground(Color.WHITE);
+		confirmButton.addActionListener(e -> {
+			// 첫 번째 패널에서만 불량 제품 저장
+			updateInventory(selectedProducts);
+			if (isFirstPanel()) {
+				saveDefectProducts(selectedProducts, missingFields);
+			}
+			JOptionPane.showMessageDialog(view, "검수 결과가 저장되었습니다.");
+		});
+		buttonPanel.add(confirmButton);
+
+		JPanel mainPanel = new JPanel(new BorderLayout());
+		mainPanel.add(scrollPane, BorderLayout.CENTER);
+		mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+		JOptionPane.showOptionDialog(view, mainPanel, isInspectionPassed ? "검수 확인 결과" : "불량 확인 결과",
+				JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, new Object[] {}, null);
+	}
+
+	/**
+	 * 첫 번째 패널인지 확인하는 메서드
+	 * 
+	 * @return 첫 번째 패널이면 true, 아니면 false
+	 */
+	private boolean isFirstPanel() {
+		// 첫 번째 패널을 구분하는 조건을 여기에 추가
+		// 예를 들어 view.checkButton을 기준으로 첫 번째 패널 여부를 판단할 수 있음
+		return true; // 첫 번째 패널인 경우 true 반환
+	}
+
+	private void updateInventory(List<ProductInspection> products) {
+		// SQL 쿼리문
+		String sql = "UPDATE product SET CURRENT_INVENTORY = CURRENT_INVENTORY + ? WHERE PRODUCT_CODE = ?";
+		try (Connection conn = DatabaseUtil.getConnection()) {
+
+			try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+				// 각 제품에 대해 입고 수량 업데이트
+				for (ProductInspection product : products) {
+					int checkQuantity = product.getCheckquantity();
+					String productCode = product.getProductcode();
+
+					// 제품 코드와 입고 수량 검증
+					if (productCode == null || productCode.isEmpty() || checkQuantity <= 0) {
+						System.out.println("Invalid product code or check quantity for product: " + product);
+						continue; // 잘못된 데이터는 건너뜀
+					}
+
+					// PreparedStatement에 값 설정
+					pstmt.setInt(1, checkQuantity);
+					pstmt.setString(2, productCode);
+
+					// SQL 실행
+					pstmt.executeUpdate();
+
+					System.out.println(checkQuantity);
+					System.out.println(productCode);
+				}
+
+			} catch (SQLException ex) {
+				// 예외 발생 시 롤백
+				ex.printStackTrace();
+				conn.rollback();
+				throw ex; // 예외를 다시 throw하여 상위 호출자에게 전파
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			// 데이터베이스 오류를 사용자에게 알림
+			JOptionPane.showMessageDialog(view, "입고 수량을 업데이트하는 중 오류가 발생했습니다.", "데이터베이스 오류", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	/**
+	 * 불량 제품을 DB의 defectproduct 테이블에 저장하는 메서드
+	 * 
+	 * @param products      검수 결과가 불량으로 판정된 제품 목록
+	 * @param missingFields 누락 개수 입력 필드 목록
+	 */
+	private void saveDefectProducts(List<ProductInspection> products, List<JTextField> missingFields) {
+		// SQL 쿼리문
+		String sql = "INSERT INTO defectproduct (PRODUCT_CODE, DEFECT_AMOUNT, CREATED_AT) VALUES (?, ?, CURRENT_TIMESTAMP)";
+
+		try (Connection conn = DatabaseUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			// 각 제품에 대해 불량 제품 정보를 저장
+			for (int i = 0; i < products.size(); i++) {
+				ProductInspection product = products.get(i);
+				int defectAmount = 0;
+				try {
+					// 누락 개수 입력 필드에서 숫자를 가져옴
+					defectAmount = Integer.parseInt(missingFields.get(i).getText());
+				} catch (NumberFormatException ex) {
+					// 누락 개수가 숫자가 아닌 경우 0으로 처리
+				}
+
+				// 누락 개수가 0보다 큰 경우에만 저장
+				if (defectAmount > 0) {
+					// PreparedStatement에 값 설정
+					pstmt.setString(1, product.getProductcode());
+					pstmt.setInt(2, defectAmount);
+
+					// SQL 실행
+					pstmt.executeUpdate();
+				}
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(view, "불량 제품을 저장하는 중 오류가 발생했습니다.", "데이터베이스 오류", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+
+	private void addLabelPair(JPanel panel, String key, String value) {
+		JLabel keyLabel = new JLabel(key + ":");
+		keyLabel.setHorizontalAlignment(JLabel.RIGHT);
+		keyLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+		JLabel valueLabel = new JLabel(value);
+		valueLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+		panel.add(keyLabel);
+		panel.add(valueLabel);
+	}
+
+	@Override
+	public String toString() {
+		return "Product Inspection Controller";
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null || getClass() != obj.getClass())
+			return false;
+		ProductInspection that = (ProductInspection) obj;
+		return Objects.equals(getProductcode(), that.getProductcode());
+	}
+
+	private Object getProductcode() {
+		return null;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getProductcode());
+	}
 }
