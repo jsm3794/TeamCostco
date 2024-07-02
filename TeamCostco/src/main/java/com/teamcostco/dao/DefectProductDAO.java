@@ -12,7 +12,7 @@ import main.java.com.teamcostco.model.database.DatabaseUtil;
 public class DefectProductDAO {
 
 	public static boolean insertDefectProduct(String disposal_method, String product_code, int amount) {
-		String sql = "INSERT INTO defectproduct VALUES (0, ?, ?, ?)";
+		String sql = "INSERT INTO defectproduct VALUES (0, ?, ?, ?, sysdate)";
 
 		try (Connection conn = DatabaseUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql);) {
 			pstmt.setString(1, disposal_method);

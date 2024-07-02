@@ -113,10 +113,13 @@ public class OrderListController extends PanelController<OrderListPanel> {
 				sql += " AND CLIENT_NAME LIKE ?";
 			}
 			if (view.waitingwarehousing.isSelected()) {
-				sql += "AND ORDER_QUANTITY > quantity_of_wh";
-			} else {
-				sql += "AND ORDER_QUANTITY <= quantity_of_wh";
-			}
+		        sql += " AND ORDER_QUANTITY > quantity_of_wh";
+		    } else {
+		        sql += " AND ORDER_QUANTITY <= quantity_of_wh";
+		    }
+		    
+		    sql += " order by order_request_id DESC";
+
 
 			try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 				int paramIndex = 1;
@@ -192,7 +195,7 @@ public class OrderListController extends PanelController<OrderListPanel> {
 
 	private LocalDate parseDate(String dateStr) {
 		try {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy/MM/dd");
 			return LocalDate.parse(dateStr, formatter);
 		} catch (DateTimeParseException e) {
 			return null;
