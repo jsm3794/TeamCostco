@@ -2,6 +2,8 @@ package main.java.com.teamcostco.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
@@ -19,35 +21,20 @@ public class LoginController extends PanelController<LoginPanel> {
 	}
 
 	public void initComponents() {
+
 		view.getLoginButton().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				DialogManager.Context context = DialogManager.showLoadingBox(view);
+				doLogin();
 
-				new SwingWorker<Void, Void>() {
+			}
+		});
 
-					@Override
-					protected Void doInBackground() throws Exception {
-						String id = view.getIdField().getText();
-						String pw = new String(view.getPasswordField().getPassword());
-
-						AuthManager.getInstance().login(id, pw);
-						return null;
-					}
-
-					@Override
-					protected void done() {
-						context.close();
-						if (AuthManager.getInstance().isLoggedIn()) {
-							MainForm.nav.navigateTo("home", false);
-						} else {
-							DialogManager.showMessageBox(view, "아이디 또는 비밀번호를<br>확인해주세요", null);
-						}
-					};
-
-				}.execute();
-
+		view.getPasswordField().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doLogin();
 			}
 		});
 
@@ -59,6 +46,33 @@ public class LoginController extends PanelController<LoginPanel> {
 			}
 		});
 
+	}
+
+	public void doLogin() {
+		DialogManager.Context context = DialogManager.showLoadingBox(view);
+
+		new SwingWorker<Void, Void>() {
+
+			@Override
+			protected Void doInBackground() throws Exception {
+				String id = view.getIdField().getText();
+				String pw = new String(view.getPasswordField().getPassword());
+
+				AuthManager.getInstance().login(id, pw);
+				return null;
+			}
+
+			@Override
+			protected void done() {
+				context.close();
+				if (AuthManager.getInstance().isLoggedIn()) {
+					MainForm.nav.navigateTo("home", false);
+				} else {
+					DialogManager.showMessageBox(view, "아이디 또는 비밀번호를<br>확인해주세요", null);
+				}
+			};
+
+		}.execute();
 	}
 
 	public void signComponents() {
