@@ -107,18 +107,18 @@ public class OrderListController extends PanelController<OrderListPanel> {
 				sql += " AND REQUEST_DATE <= ?";
 			}
 			if (!view.itemNumberField.getText().trim().isEmpty()) {
-				sql += " AND PRODUCT_CODE LIKE ?";
+				sql += " AND p.PRODUCT_NAME LIKE ?";
 			}
 			if (!view.supplierField.getText().trim().isEmpty()) {
 				sql += " AND CLIENT_NAME LIKE ?";
 			}
 			if (view.waitingwarehousing.isSelected()) {
-		        sql += " AND ORDER_QUANTITY > quantity_of_wh";
+		        sql += " AND o.ORDER_QUANTITY > o.quantity_of_wh";
 		    } else {
-		        sql += " AND ORDER_QUANTITY <= quantity_of_wh";
+		        sql += " AND o.ORDER_QUANTITY <= o.quantity_of_wh";
 		    }
 		    
-		    sql += " order by order_request_id DESC";
+		    sql += " order by o.order_request_id DESC";
 
 
 			try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
