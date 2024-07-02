@@ -9,7 +9,7 @@ SELECT product_code, product_name, disposal_method, defect_amount
 FROM defectproduct
 INNER JOIN product USING (product_code);
 
--- 불량개수 세기
+-- 불량사유개수 세기
 SELECT disposal_method, COUNT(*) AS "각 불량별 횟수" FROM defectproduct GROUP BY disposal_method;
 
 */

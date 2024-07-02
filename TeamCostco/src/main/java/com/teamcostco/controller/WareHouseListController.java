@@ -8,37 +8,77 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import main.java.com.teamcostco.model.AllCategoryJoin;
-import main.java.com.teamcostco.model.CategoryData;
 import main.java.com.teamcostco.model.WareHouseListModel;
 import main.java.com.teamcostco.model.database.DatabaseUtil;
 import main.java.com.teamcostco.view.panels.WareHouseListPanel;
 
-// 할일
-// ()은 보류
-// 1. 콤보박스에 불량사유 추가 --> 생각해보니 굳이 db연결할 필요가 없네용 패널에서 ㄱㄱ
-// 2. 불량사유와 상품명으로 검색되게
-// (불량재고처분)
-// (각 불량별 횟수)
-
 public class WareHouseListController extends PanelController<WareHouseListPanel> {
-	private DatabaseUtil connector;
+    private DatabaseUtil connector;
 
-	public WareHouseListController() {
-		this.connector = new DatabaseUtil();
-		initialize();
-	}
+    public WareHouseListController() {
+        this.connector = new DatabaseUtil();
+        initialize();
+    }
 
-	private void initialize() {
+    private void initialize() {
+        view.getSearchButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String productName = view.getProductNameField().getText();
+                String disposalMethod = (String) view.getDisposalComboBox().getSelectedItem();
+                searchDefect(productName, disposalMethod);
+            }
+        });
+    }
 
-	}
-	
+    private void searchDefect(String productName, String disposalMethod) {
+        String sql = "SELECT product_code, product_name, disposal_method, defect_amount "
+                + "FROM defectproduct "
+                + "INNER JOIN product USING (product_code) ";
 
+        boolean hasProductName = !productName.isEmpty();
+        boolean hasDisposalMethod = !disposalMethod.equals("모든 불량사유");
 
-	@Override
-	public String toString() {
-		return "불량목록";
-	}
+        if (hasProductName || hasDisposalMethod) {
+            sql += "WHERE ";
+            if (hasProductName) {
+                sql += "product_name LIKE ? ";
+                if (hasDisposalMethod) {
+                    sql += "AND ";
+                }
+            }
+            if (hasDisposalMethod) {
+                sql += "disposal_method = ? ";
+            }
+        }
+
+        try (
+            Connection conn = connector.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+        ) {
+            int paramIndex = 1;
+            if (hasProductName) {
+                pstmt.setString(paramIndex++, '%' + productName + '%');
+            }
+            if (hasDisposalMethod) {
+                pstmt.setString(paramIndex, disposalMethod.substring(0, disposalMethod.indexOf(" ")));
+            }
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                List<WareHouseListModel> results = new ArrayList<>();
+                while (rs.next()) {
+                    results.add(new WareHouseListModel(rs));
+                }
+                view.getTableModel().setData(results);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "불량목록";
+    }
 }

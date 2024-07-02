@@ -12,13 +12,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 import main.java.com.teamcostco.model.ProductTableModel;
 import main.java.com.teamcostco.view.textfields.JPlaceholderTextField;
 import main.utils.Constants;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.Font;
 
 public class WareHouseListPanel extends JPanel {
@@ -27,20 +27,15 @@ public class WareHouseListPanel extends JPanel {
     private JButton searchButton;
     private ProductTableModel tableModel;  
     private JComboBox<String> disposalComboBox;
-    private String[] disposalMethodItem = {
-    		"DAM001 - 파손 (Damage)"
-    				+ "DEF002 - 결함 (Defective)"
-    				+ "EXP003- 유통기한 경과 (Expired)"
-    				+ "MIS004 - 잘못된 사양 (Mismatched Specification)"
-    				+ "CON005 - 오염 (Contaminated)"
+    private static String[] disposalMethodItem = {
+            "모든 불량사유"
+            , "DAM001 - 파손 (Damage)"
+            , "DEF002 - 결함 (Defective)"
+            , "EXP003 - 유통기한 경과 (Expired)"
+            , "MIS004 - 잘못된 사양 (Mismatched Specification)"
+            , "CON005 - 오염 (Contaminated)"
+            , "MSW006 - 창고로 재고이동 (Moving Stock to Warehouse)"
     };
-    
-    
-    // 불량사유 배열에 값을 추가합니다.
-    public void addDmItem(String item) {
-    	
-    }
-    
 
     public WareHouseListPanel() {
         setBackground(new Color(255, 255, 255));
@@ -58,7 +53,7 @@ public class WareHouseListPanel extends JPanel {
 
         add(inputPanel, BorderLayout.NORTH);
         
-        disposalComboBox = new JComboBox<String>(disposalMethodItem);
+        disposalComboBox = new JComboBox<>(disposalMethodItem);
         disposalComboBox.setFont(new Font("맑은 고딕", Font.PLAIN, 15));
         inputPanel.add(disposalComboBox);
 
@@ -70,15 +65,55 @@ public class WareHouseListPanel extends JPanel {
         // Initialize the table model
         tableModel = new ProductTableModel(new ArrayList<>());
         productTable = new JTable(tableModel);
-        add(new JScrollPane(productTable), BorderLayout.CENTER);
+
+        // Set column widths
+        setTableColumnWidths();
+
+        // Disable auto resize mode for the table to allow horizontal scrolling
+        productTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+        // Add horizontal scroll pane
+        JScrollPane scrollPane = new JScrollPane(productTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        add(scrollPane, BorderLayout.CENTER);
     }
 
-   
+    private void setTableColumnWidths() {
+        int[] columnWidths = {100, 200, 300, 150}; // Adjusted column widths
+        TableColumnModel columnModel = productTable.getColumnModel();
+        for (int i = 0; i < columnWidths.length; i++) {
+            TableColumn column = columnModel.getColumn(i);
+            column.setPreferredWidth(columnWidths[i]);
+        }
+    }
+
+    public JTextField getProductNameField() {
+        return productNameField;
+    }
+
+    public JTable getProductTable() {
+        return productTable;
+    }
+
+    public JButton getSearchButton() {
+        return searchButton;
+    }
+
+    public ProductTableModel getTableModel() {
+        return tableModel;
+    }
+
+    public JComboBox<String> getDisposalComboBox() {
+        return disposalComboBox;
+    }
+
+    public static String[] getDisposalMethodItem() {
+        return disposalMethodItem;
+    }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("조정요청");
+        JFrame frame = new JFrame("불량목록");
         frame.getContentPane().add(new WareHouseListPanel());
-        frame.setSize(480, 640);
+        frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
     }
