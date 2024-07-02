@@ -6,7 +6,7 @@ import javax.swing.table.AbstractTableModel;
 
 public class ProductTableModel extends AbstractTableModel {
     private List<WareHouseListModel> data;
-    private String[] columnNames = {"제품명", "불량사유", "불량개수"};
+    private String[] columnNames = {"상품명", "불량사유", "불량개수", "날짜"};
 
     public ProductTableModel(List<WareHouseListModel> data) {
         this.data = data;
@@ -34,6 +34,8 @@ public class ProductTableModel extends AbstractTableModel {
                 return row.getDisposal_id();
             case 2:
                 return row.getDefect_amount();
+            case 3 :
+            	return row.getCreated_At();
             default:
                 return null;
         }
