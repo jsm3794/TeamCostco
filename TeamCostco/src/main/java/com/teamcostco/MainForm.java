@@ -24,6 +24,7 @@ import main.java.com.teamcostco.controller.OrderListController;
 import main.java.com.teamcostco.controller.OrderRequestController;
 import main.java.com.teamcostco.controller.ProductDetailController;
 import main.java.com.teamcostco.controller.ProductInspectionController;
+import main.java.com.teamcostco.controller.ProductInspectionDetailController;
 import main.java.com.teamcostco.controller.ProductRegistrationController;
 import main.java.com.teamcostco.controller.SettingsController;
 import main.java.com.teamcostco.controller.SignTestController;
@@ -74,19 +75,20 @@ public class MainForm {
 		nav.mappingTarget("warehousereceiving", WareHouseReceivingController.class); // 입고
 		nav.mappingTarget("inventoryUpdate", AmountModify2Controller.class);
 		nav.mappingTarget("productCheck", ProductInspectionController.class); // 제품검수
+		nav.mappingTarget("productDetailCheck", ProductInspectionDetailController.class);
 		nav.mappingTarget("inventoryMovement", InventoryMovementController.class); // 재고처리
 		nav.mappingTarget("pdaSetting", SettingsController.class); // 환경설정
 		nav.mappingTarget("orderRequest", OrderRequestController.class); // 발주요청
 		nav.mappingTarget("productdetail", ProductDetailController.class); // 상품상세조회
 		nav.mappingTarget("editaccount", EditAccountController.class); // 회원정보수정
-		nav.mappingTarget("map", MapController.class); // 지도
+		nav.mappingTarget("houseMap", MapController.class); // 지도
 		
 		
 		// Navigator 디자인
 		nav.setPreferredSize(new Dimension(FORM_WIDTH, FORM_HEIGHT));
 
 		// 기본 페이지로 이동
-		nav.navigateTo("map", true);
+		nav.navigateTo("home", true);
 	}
 
 	private static void setupUISettings() {
