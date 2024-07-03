@@ -4,13 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import main.java.com.teamcostco.MainForm;
 import main.java.com.teamcostco.model.MemberModel;
 import main.java.com.teamcostco.model.database.DatabaseUtil;
 
 public class AuthManager {
 	private static AuthManager instance;
-	private boolean isLoggedIn = false;
+	private boolean isLoggedIn;
 	private MemberModel memberModel;
 
 	private AuthManager() {
@@ -25,32 +25,69 @@ public class AuthManager {
 		return instance;
 	}
 
-	public boolean login(String id, String pw) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+	public void updateAuth() {
+		if (!isLoggedIn || memberModel == null) {
+			return;
+		}
 
-		try {
-			conn = DatabaseUtil.getConnection();
-			String sql = "SELECT * FROM employees WHERE login_id = ? AND login_pw = ?";
-			ps = conn.prepareStatement(sql);
-			ps.setString(1, id);
-			ps.setString(2, pw);
-			rs = ps.executeQuery();
+		String sql = "SELECT * FROM employees WHERE employee_id = ?";
+
+		try (Connection conn = DatabaseUtil.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+			ps.setString(1, memberModel.getMember_id());
+
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					MemberModel updatedMember = new MemberModel(rs);
+
+					this.memberModel = updatedMember;
+				} else {
+					logout();
+					throw new RuntimeException("User information not found. Logged out.");
+				}
+			}
+		} catch (SQLException e) {
+			handleUpdateAuthException(e);
+		}
+	}
+
+	private void handleUpdateAuthException(SQLException e) {
+		e.printStackTrace();
+		System.out.println("Failed to update authentication information: " + e.getMessage());
+	}
+
+	public boolean login(String id, String pw) {
+		try (Connection conn = DatabaseUtil.getConnection();
+				PreparedStatement ps = prepareLoginStatement(conn, id, pw);
+				ResultSet rs = ps.executeQuery()) {
 
 			if (rs.next()) {
 				this.isLoggedIn = true;
 				memberModel = new MemberModel(rs);
+				initializeAutoLogout();
 				return true;
-			} else {
-				return false;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		} finally {
-			DatabaseUtil.close(conn, ps, rs);
+			handleLoginException(e);
 		}
+		return false;
+	}
+
+	private PreparedStatement prepareLoginStatement(Connection conn, String id, String pw) throws SQLException {
+		String sql = "SELECT * FROM employees WHERE login_id = ? AND login_pw = ?";
+		PreparedStatement ps = conn.prepareStatement(sql);
+		ps.setString(1, id);
+		ps.setString(2, pw);
+		return ps;
+	}
+
+	private void initializeAutoLogout() {
+		AutoLogoutManager.getInstance().initialize(MainForm.frame);
+	}
+
+	private void handleLoginException(SQLException e) {
+		e.printStackTrace();
+		// 여기에 로깅이나 사용자에게 오류 메시지를 보여주는 코드를 추가할 수 있습니다.
 	}
 
 	public void logout() {

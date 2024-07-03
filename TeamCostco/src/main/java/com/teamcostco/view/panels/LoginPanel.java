@@ -19,13 +19,13 @@ public class LoginPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private static final Dimension PANEL_SIZE = new Dimension(480, 640);
 
-	private JPlaceholderTextField idField;
-	private JPlaceholderPasswordField passwordField;
-	private JButton loginButton;
-	private JButton signButton;
-	private JPanel imagePanel;
-	private JLabel imageLabel;
-	private JLabel lblPdaLogin;
+	public JPlaceholderTextField idField;
+	public JPlaceholderPasswordField passwordField;
+	public JButton loginButton;
+	public JButton signButton;
+	public JPanel imagePanel;
+	public JLabel imageLabel;
+	public JLabel lblPdaLogin;
 
 	/**
 	 * Create the panel.
@@ -70,14 +70,14 @@ public class LoginPanel extends JPanel {
 		add(passwordField);
 		add(imagePanel);
 		add(signButton);
-		
+
 		JLabel lblNewLabel = new JLabel("TeamCostco");
 		lblNewLabel.setForeground(new Color(0x067FC4));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setFont(new Font("맑은 고딕", Font.BOLD, 25));
 		lblNewLabel.setBounds(12, 173, 457, 28);
 		add(lblNewLabel);
-		
+
 		lblPdaLogin = new JLabel("PDA Login");
 		lblPdaLogin.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPdaLogin.setForeground(Color.DARK_GRAY);

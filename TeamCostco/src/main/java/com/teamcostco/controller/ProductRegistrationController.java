@@ -50,13 +50,13 @@ public class ProductRegistrationController extends PanelController<ProductRegist
 	}
 
 	private void loadMediumCategories() {
-		String sql = "SELECT main_name, midium_name FROM midiumcategory INNER JOIN maincategory USING(main_id)";
+		String sql = "SELECT main_name, medium_name FROM mediumcategory INNER JOIN maincategory USING(main_id)";
 		try (Connection con = DatabaseUtil.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);
 				ResultSet rs = pstmt.executeQuery()) {
 			while (rs.next()) {
 				String largeCategory = rs.getString("main_name");
-				String mediumCategory = rs.getString("midium_name");
+				String mediumCategory = rs.getString("medium_name");
 				if (!mediumCategories.containsKey(largeCategory)) {
 					mediumCategories.put(largeCategory, new ArrayList<>());
 				}
@@ -68,12 +68,12 @@ public class ProductRegistrationController extends PanelController<ProductRegist
 	}
 
 	private void loadSmallCategories() {
-		String sql = "SELECT midium_name, small_name FROM smallcategory INNER JOIN midiumcategory USING(midium_id)";
+		String sql = "SELECT medium_name, small_name FROM smallcategory INNER JOIN mediumcategory USING(medium_id)";
 		try (Connection con = DatabaseUtil.getConnection();
 				PreparedStatement pstmt = con.prepareStatement(sql);
 				ResultSet rs = pstmt.executeQuery()) {
 			while (rs.next()) {
-				String mediumCategory = rs.getString("midium_name");
+				String mediumCategory = rs.getString("medium_name");
 				String smallCategory = rs.getString("small_name");
 				if (!smallCategories.containsKey(mediumCategory)) {
 					smallCategories.put(mediumCategory, new ArrayList<>());
@@ -89,7 +89,9 @@ public class ProductRegistrationController extends PanelController<ProductRegist
 		view.getInitializationBtn().addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				MainForm.nav.navigateTo("registration", true);
+				MainForm.nav.stopUpdate();
+				
+				MainForm.nav.navigateTo("productEntry", true).thenRun(() -> {MainForm.nav.resumeUpdate();});
 			}
 		});
 
@@ -172,7 +174,7 @@ public class ProductRegistrationController extends PanelController<ProductRegist
 				}
 
 				// INSERT 쿼리 실행
-				String sql = "INSERT INTO product VALUES(?, 'PRID' || LPAD(?, 8, '0'), ?, ?, ?, ?, ?, ?, 0, 0)";
+				String sql = "INSERT INTO product VALUES(?, 'PRID' || LPAD(?, 8, '0'), ?, ?, ?, ?, ?, ?, 0, 0, 0)";
 				try (Connection con = DatabaseUtil.getConnection();
 						PreparedStatement pstmt = con.prepareStatement(sql)) {
 
@@ -186,8 +188,11 @@ public class ProductRegistrationController extends PanelController<ProductRegist
 					pstmt.setInt(8, sellingPrice);
 
 					pstmt.executeUpdate();
-					DialogManager.showMessageBox(view, "등록성공", evt ->{MainForm.nav.pop();});
-					
+					String msg = String.format("등록성공<br>ID: PRID%08d<br>상품: %s", seq_val, productName);
+					DialogManager.showMessageBox(view, msg, evt -> {
+						MainForm.nav.navigateTo("registration", true);
+					});
+
 				} catch (SQLException ex) {
 					ex.printStackTrace();
 				}
@@ -213,12 +218,12 @@ public class ProductRegistrationController extends PanelController<ProductRegist
 
 	private String findMediumCategoryId(String text) {
 		String str = "";
-		String sql = "SELECT midium_id FROM midiumcategory WHERE midium_name = ?";
+		String sql = "SELECT medium_id FROM mediumcategory WHERE medium_name = ?";
 		try (Connection con = DatabaseUtil.getConnection(); PreparedStatement pstmt = con.prepareStatement(sql)) {
 			pstmt.setString(1, text);
 			try (ResultSet rs = pstmt.executeQuery()) {
 				if (rs.next()) {
-					str = rs.getString("midium_id");
+					str = rs.getString("medium_id");
 				}
 			}
 		} catch (SQLException e) {
@@ -241,22 +246,6 @@ public class ProductRegistrationController extends PanelController<ProductRegist
 			e.printStackTrace();
 		}
 		return str;
-	}
-
-	private String getProductCode() {
-		try (Connection con = DatabaseUtil.getConnection();) {
-			String sql = "SELECT product_seq.currval FROM product";
-			try (PreparedStatement pstmt = con.prepareStatement(sql)) {
-				try (ResultSet rs = pstmt.executeQuery();) {
-					if (rs.next()) {
-						return String.format("PRID%08d", rs.getInt("product_seq.currval"));
-					}
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	@Override

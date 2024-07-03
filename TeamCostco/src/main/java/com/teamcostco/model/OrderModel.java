@@ -19,9 +19,8 @@ public class OrderModel {
 		this.client = rs.getString("client_name");
 		this.item_number = rs.getString("product_id");
 		this.product_name = rs.getString("product_name");
-		this.order_quantity = rs.getInt("order_num");
+		this.order_quantity = rs.getInt("order_quantity");
 		this.quantity_of_wh = rs.getInt("quantity_of_wh");
-		this.remaining_capacity = rs.getInt("remaining_capacity");
 		this.order_date = rs.getDate("request_date");
 	}
 
@@ -90,7 +89,6 @@ public class OrderModel {
 	    sb.append("상품명=").append(product_name).append(lineSeparator);
 	    sb.append("발주수량=").append(order_quantity).append(lineSeparator);
 	    sb.append("창고잔량=").append(quantity_of_wh).append(lineSeparator);
-	    sb.append("입고수량=").append(remaining_capacity).append(lineSeparator);
 	    sb.append("발주일자=").append(order_date);
 	    return sb.toString();
 	}
