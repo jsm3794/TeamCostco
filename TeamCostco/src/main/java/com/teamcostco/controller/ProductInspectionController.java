@@ -14,6 +14,7 @@ import java.util.List;
 
 public class ProductInspectionController extends PanelController<ProductInspectionPanel> {
 
+
 	private List<Productinspection> productInspections;
 	private List<String> categories;
 

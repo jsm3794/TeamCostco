@@ -66,6 +66,7 @@ public class ProductInspectionPanel extends JPanel {
         // 하단 패널 (버튼)
         JPanel buttonPanel = new JPanel();
         checkButton = new JButton("검수확인");
+
         checkButton.setBackground(Constants.BUTTON_BACKGROUND_COLOR);
         checkButton.setForeground(Constants.BUTTON_FOREGROUND_COLOR);
         buttonPanel.add(checkButton);

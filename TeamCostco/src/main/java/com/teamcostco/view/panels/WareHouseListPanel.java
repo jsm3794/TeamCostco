@@ -58,7 +58,7 @@ public class WareHouseListPanel extends JPanel {
         return mainCateComboBox;
     }
 
-    public JComboBox<String> getmediumCateCombo() {
+    public JComboBox<String> getMediumCateCombo() {
         return mediumCateCombo;
     }
 
